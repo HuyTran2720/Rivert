@@ -85,8 +85,6 @@ Unresolved:
 
 | Direction | Why |
 |---|---|
-| Flood reporting / crowd mapping | PetaBencana.id already does this, well |
-| Flood risk visualisation | InaRISK (BNPB) and Google Flood Hub occupy this |
 | Evacuation routing | Our evidence says the failure is road capacity, not wayfinding; lethal if wrong |
 | Route-based hazard alerts | Sitata and GeoSure exist; Google Maps ships this natively |
 | Serving tourists as primary users | Not re-recruitable for testing; least affected group in the Feb 2026 flood |
