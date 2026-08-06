@@ -1,0 +1,962 @@
+[
+  {
+    "id": "05DEDEA2-D069-4C7C-9B58-447E0D09D019",
+    "timestamp": "2026-08-06T00:00:00Z",
+    "levelMM": 201.1,
+    "rawDistanceMM": 2798.9,
+    "source": "mock",
+    "confidence": 0.961
+  },
+  {
+    "id": "45F45CD3-3831-44E3-9302-AA9B9C05F0EB",
+    "timestamp": "2026-08-06T00:01:00Z",
+    "levelMM": 199.7,
+    "rawDistanceMM": 2800.3,
+    "source": "mock",
+    "confidence": 0.943
+  },
+  {
+    "id": "6C956E45-D07E-443C-B85A-7ED199716AF7",
+    "timestamp": "2026-08-06T00:02:00Z",
+    "levelMM": 206.3,
+    "rawDistanceMM": 2793.7,
+    "source": "mock",
+    "confidence": 0.962
+  },
+  {
+    "id": "051EC153-0449-4025-B398-967E46005CEF",
+    "timestamp": "2026-08-06T00:03:00Z",
+    "levelMM": 210.9,
+    "rawDistanceMM": 2789.1,
+    "source": "mock",
+    "confidence": 0.942
+  },
+  {
+    "id": "7919A1C0-BF96-436B-9236-239B3442AC9E",
+    "timestamp": "2026-08-06T00:04:00Z",
+    "levelMM": 220.5,
+    "rawDistanceMM": 2779.5,
+    "source": "mock",
+    "confidence": 0.9
+  },
+  {
+    "id": "B1ABA87B-4674-4720-8C67-D2B94136E1D9",
+    "timestamp": "2026-08-06T00:05:00Z",
+    "levelMM": 225.7,
+    "rawDistanceMM": 2774.3,
+    "source": "mock",
+    "confidence": 0.926
+  },
+  {
+    "id": "EA002B36-351A-4F08-90C3-1BC4C003907D",
+    "timestamp": "2026-08-06T00:06:00Z",
+    "levelMM": 233.3,
+    "rawDistanceMM": 2766.7,
+    "source": "mock",
+    "confidence": 0.902
+  },
+  {
+    "id": "226DF327-19B8-4F2A-8CCA-FFA9597A9033",
+    "timestamp": "2026-08-06T00:07:00Z",
+    "levelMM": 233.0,
+    "rawDistanceMM": 2767.0,
+    "source": "mock",
+    "confidence": 0.974
+  },
+  {
+    "id": "281F4A19-C4E0-4C25-9CDE-9837B67A005F",
+    "timestamp": "2026-08-06T00:08:00Z",
+    "levelMM": 242.0,
+    "rawDistanceMM": 2758.0,
+    "source": "mock",
+    "confidence": 0.97
+  },
+  {
+    "id": "9A463C3C-419C-47E1-A872-B0EA104334FA",
+    "timestamp": "2026-08-06T00:09:00Z",
+    "levelMM": 245.4,
+    "rawDistanceMM": 2754.6,
+    "source": "mock",
+    "confidence": 0.967
+  },
+  {
+    "id": "B9FD9C49-25E7-40E7-9005-BFCB071622C6",
+    "timestamp": "2026-08-06T00:10:00Z",
+    "levelMM": 253.5,
+    "rawDistanceMM": 2746.5,
+    "source": "mock",
+    "confidence": 0.925
+  },
+  {
+    "id": "D277190E-AC54-4D9B-A49C-835A4C648F1C",
+    "timestamp": "2026-08-06T00:11:00Z",
+    "levelMM": 262.5,
+    "rawDistanceMM": 2737.5,
+    "source": "mock",
+    "confidence": 0.905
+  },
+  {
+    "id": "BEF67FFD-036E-4F8E-A9FA-960F46A83450",
+    "timestamp": "2026-08-06T00:12:00Z",
+    "levelMM": 265.6,
+    "rawDistanceMM": 2734.4,
+    "source": "mock",
+    "confidence": 0.97
+  },
+  {
+    "id": "38988F71-B3EC-433C-90B8-6E732560D24F",
+    "timestamp": "2026-08-06T00:13:00Z",
+    "levelMM": 274.0,
+    "rawDistanceMM": 2726.0,
+    "source": "mock",
+    "confidence": 0.976
+  },
+  {
+    "id": "F51F1FDE-3A6C-4BAD-A87A-A2D5C59F47EE",
+    "timestamp": "2026-08-06T00:14:00Z",
+    "levelMM": 284.7,
+    "rawDistanceMM": 2715.3,
+    "source": "mock",
+    "confidence": 0.907
+  },
+  {
+    "id": "4A6B5364-5D8C-40C3-807B-38548445334D",
+    "timestamp": "2026-08-06T00:15:00Z",
+    "levelMM": 291.0,
+    "rawDistanceMM": 2709.0,
+    "source": "mock",
+    "confidence": 0.939
+  },
+  {
+    "id": "EA6E81DF-81BE-4A10-A4BE-B647A7873C69",
+    "timestamp": "2026-08-06T00:16:00Z",
+    "levelMM": 295.7,
+    "rawDistanceMM": 2704.3,
+    "source": "mock",
+    "confidence": 0.906
+  },
+  {
+    "id": "8C701394-EDBE-4476-BF70-8673FE2B8718",
+    "timestamp": "2026-08-06T00:17:00Z",
+    "levelMM": 306.1,
+    "rawDistanceMM": 2693.9,
+    "source": "mock",
+    "confidence": 0.961
+  },
+  {
+    "id": "D8BEE192-B88C-4342-B9D7-E7F598721798",
+    "timestamp": "2026-08-06T00:18:00Z",
+    "levelMM": 315.3,
+    "rawDistanceMM": 2684.7,
+    "source": "mock",
+    "confidence": 0.961
+  },
+  {
+    "id": "B7C7A9A1-92FB-43D5-BBD3-C94B7FDD7B8B",
+    "timestamp": "2026-08-06T00:19:00Z",
+    "levelMM": 316.5,
+    "rawDistanceMM": 2683.5,
+    "source": "mock",
+    "confidence": 0.91
+  },
+  {
+    "id": "AA0840BC-B469-47B7-8F56-A12314DF469F",
+    "timestamp": "2026-08-06T00:20:00Z",
+    "levelMM": 330.5,
+    "rawDistanceMM": 2669.5,
+    "source": "mock",
+    "confidence": 0.938
+  },
+  {
+    "id": "FC58D55B-25DE-42D1-BA87-61BF666CAB43",
+    "timestamp": "2026-08-06T00:21:00Z",
+    "levelMM": 337.4,
+    "rawDistanceMM": 2662.6,
+    "source": "mock",
+    "confidence": 0.944
+  },
+  {
+    "id": "88683D32-46C8-4B1E-B097-309738736DBF",
+    "timestamp": "2026-08-06T00:22:00Z",
+    "levelMM": 342.3,
+    "rawDistanceMM": 2657.7,
+    "source": "mock",
+    "confidence": 0.921
+  },
+  {
+    "id": "749CB2BE-BDEC-4167-A029-55FDA3CAF062",
+    "timestamp": "2026-08-06T00:23:00Z",
+    "levelMM": 348.7,
+    "rawDistanceMM": 2651.3,
+    "source": "mock",
+    "confidence": 0.97
+  },
+  {
+    "id": "824EFCB3-A61D-488E-80EA-8A01DCF372C7",
+    "timestamp": "2026-08-06T00:24:00Z",
+    "levelMM": 363.0,
+    "rawDistanceMM": 2637.0,
+    "source": "mock",
+    "confidence": 0.934
+  },
+  {
+    "id": "BA424BCB-B727-4515-B39F-A9FA936B90C1",
+    "timestamp": "2026-08-06T00:25:00Z",
+    "levelMM": 366.1,
+    "rawDistanceMM": 2633.9,
+    "source": "mock",
+    "confidence": 0.917
+  },
+  {
+    "id": "0CC1B2CE-266D-4B7A-902E-0948F9FD3790",
+    "timestamp": "2026-08-06T00:26:00Z",
+    "levelMM": 372.2,
+    "rawDistanceMM": 2627.8,
+    "source": "mock",
+    "confidence": 0.943
+  },
+  {
+    "id": "22048B11-F5E6-4D14-B6A6-B24B991DD986",
+    "timestamp": "2026-08-06T00:27:00Z",
+    "levelMM": 380.3,
+    "rawDistanceMM": 2619.7,
+    "source": "mock",
+    "confidence": 0.958
+  },
+  {
+    "id": "C3537D5A-3F63-442E-88AC-A277415A6913",
+    "timestamp": "2026-08-06T00:28:00Z",
+    "levelMM": 394.5,
+    "rawDistanceMM": 2605.5,
+    "source": "mock",
+    "confidence": 0.916
+  },
+  {
+    "id": "556B9D99-B6DD-4D08-A8A4-DB20CFE17229",
+    "timestamp": "2026-08-06T00:29:00Z",
+    "levelMM": 400.8,
+    "rawDistanceMM": 2599.2,
+    "source": "mock",
+    "confidence": 0.925
+  },
+  {
+    "id": "6C2058F7-B6C1-4A4B-95C4-A93AF2863247",
+    "timestamp": "2026-08-06T00:30:00Z",
+    "levelMM": 402.5,
+    "rawDistanceMM": 2597.5,
+    "source": "mock",
+    "confidence": 0.98
+  },
+  {
+    "id": "1D0E3829-07CE-4329-82DD-4BDD21F5C22E",
+    "timestamp": "2026-08-06T00:31:00Z",
+    "levelMM": 450.6,
+    "rawDistanceMM": 2549.4,
+    "source": "mock",
+    "confidence": 0.952
+  },
+  {
+    "id": "FCB66FF0-B13D-4468-B7E0-0DB53C12F8E6",
+    "timestamp": "2026-08-06T00:32:00Z",
+    "levelMM": 497.7,
+    "rawDistanceMM": 2502.3,
+    "source": "mock",
+    "confidence": 0.935
+  },
+  {
+    "id": "2C7430AC-3368-4CDD-8FE1-CD5067DD17AD",
+    "timestamp": "2026-08-06T00:33:00Z",
+    "levelMM": 549.9,
+    "rawDistanceMM": 2450.1,
+    "source": "mock",
+    "confidence": 0.941
+  },
+  {
+    "id": "C5D3AF42-735E-44D9-8F49-867BCA4C6428",
+    "timestamp": "2026-08-06T00:34:00Z",
+    "levelMM": 593.9,
+    "rawDistanceMM": 2406.1,
+    "source": "mock",
+    "confidence": 0.91
+  },
+  {
+    "id": "E681E748-0AF4-41A1-9798-FEC75F9D3925",
+    "timestamp": "2026-08-06T00:35:00Z",
+    "levelMM": 644.0,
+    "rawDistanceMM": 2356.0,
+    "source": "mock",
+    "confidence": 0.918
+  },
+  {
+    "id": "12EC9B11-DF8F-4E48-B9B2-7F91F901352B",
+    "timestamp": "2026-08-06T00:36:00Z",
+    "levelMM": 694.9,
+    "rawDistanceMM": 2305.1,
+    "source": "mock",
+    "confidence": 0.927
+  },
+  {
+    "id": "85F910CD-1692-4173-9BF0-BCFAB94C08EC",
+    "timestamp": "2026-08-06T00:37:00Z",
+    "levelMM": 742.0,
+    "rawDistanceMM": 2258.0,
+    "source": "mock",
+    "confidence": 0.947
+  },
+  {
+    "id": "7BAC25C2-04F9-4057-998D-CE205666FE5B",
+    "timestamp": "2026-08-06T00:38:00Z",
+    "levelMM": 792.6,
+    "rawDistanceMM": 2207.4,
+    "source": "mock",
+    "confidence": 0.918
+  },
+  {
+    "id": "5C4EE613-C278-437D-A2FC-A33A74F6438B",
+    "timestamp": "2026-08-06T00:39:00Z",
+    "levelMM": 839.1,
+    "rawDistanceMM": 2160.9,
+    "source": "mock",
+    "confidence": 0.918
+  },
+  {
+    "id": "22B2048D-EBBC-4F6A-8845-19E6A8794751",
+    "timestamp": "2026-08-06T00:40:00Z",
+    "levelMM": 888.8,
+    "rawDistanceMM": 2111.2,
+    "source": "mock",
+    "confidence": 0.906
+  },
+  {
+    "id": "C3445242-2301-4F34-AB7D-D8D817EC6395",
+    "timestamp": "2026-08-06T00:41:00Z",
+    "levelMM": 932.3,
+    "rawDistanceMM": 2067.7,
+    "source": "mock",
+    "confidence": 0.95
+  },
+  {
+    "id": "61DB16C9-FEEA-4E73-8CBF-89B7B341E529",
+    "timestamp": "2026-08-06T00:42:00Z",
+    "levelMM": 982.4,
+    "rawDistanceMM": 2017.6,
+    "source": "mock",
+    "confidence": 0.918
+  },
+  {
+    "id": "8DC758E8-52C6-418D-8E20-6FFBB3D51D09",
+    "timestamp": "2026-08-06T00:43:00Z",
+    "levelMM": 1031.6,
+    "rawDistanceMM": 1968.4,
+    "source": "mock",
+    "confidence": 0.972
+  },
+  {
+    "id": "FEF5BF85-FB03-4312-862E-08E282E4AF5B",
+    "timestamp": "2026-08-06T00:44:00Z",
+    "levelMM": 1078.7,
+    "rawDistanceMM": 1921.3,
+    "source": "mock",
+    "confidence": 0.969
+  },
+  {
+    "id": "9395C39E-ACBC-47C5-81F3-1CB4C17F6975",
+    "timestamp": "2026-08-06T00:45:00Z",
+    "levelMM": 1128.6,
+    "rawDistanceMM": 1871.4,
+    "source": "mock",
+    "confidence": 0.906
+  },
+  {
+    "id": "15CAD220-79AA-4275-A1C5-61800730F351",
+    "timestamp": "2026-08-06T00:46:00Z",
+    "levelMM": 1176.3,
+    "rawDistanceMM": 1823.7,
+    "source": "mock",
+    "confidence": 0.919
+  },
+  {
+    "id": "36CB7F0A-258B-4CC2-B72F-85855EA24FA7",
+    "timestamp": "2026-08-06T00:47:00Z",
+    "levelMM": 1226.4,
+    "rawDistanceMM": 1773.6,
+    "source": "mock",
+    "confidence": 0.954
+  },
+  {
+    "id": "FADD7985-42D2-43DF-841F-464179C5CE4B",
+    "timestamp": "2026-08-06T00:48:00Z",
+    "levelMM": 1278.0,
+    "rawDistanceMM": 1722.0,
+    "source": "mock",
+    "confidence": 0.917
+  },
+  {
+    "id": "524CBFAB-AE8A-4284-B4B7-39D60DC0CDF1",
+    "timestamp": "2026-08-06T00:49:00Z",
+    "levelMM": 1324.6,
+    "rawDistanceMM": 1675.4,
+    "source": "mock",
+    "confidence": 0.911
+  },
+  {
+    "id": "5ACA758F-35FD-493B-838C-E70EE137FAC7",
+    "timestamp": "2026-08-06T00:50:00Z",
+    "levelMM": 1373.3,
+    "rawDistanceMM": 1626.7,
+    "source": "mock",
+    "confidence": 0.975
+  },
+  {
+    "id": "136D9E02-068A-49FF-8FD1-DC0D5F253771",
+    "timestamp": "2026-08-06T00:51:00Z",
+    "levelMM": 1420.8,
+    "rawDistanceMM": 1579.2,
+    "source": "mock",
+    "confidence": 0.946
+  },
+  {
+    "id": "9E7E6036-BCEF-4E54-A995-589842D23C31",
+    "timestamp": "2026-08-06T00:52:00Z",
+    "levelMM": 1469.9,
+    "rawDistanceMM": 1530.1,
+    "source": "mock",
+    "confidence": 0.938
+  },
+  {
+    "id": "E663E610-5F58-4400-991C-3447952083C6",
+    "timestamp": "2026-08-06T00:53:00Z",
+    "levelMM": 1524.0,
+    "rawDistanceMM": 1476.0,
+    "source": "mock",
+    "confidence": 0.963
+  },
+  {
+    "id": "39F8368F-680D-4ED1-A7C3-0F9A16CF678B",
+    "timestamp": "2026-08-06T00:54:00Z",
+    "levelMM": 1570.4,
+    "rawDistanceMM": 1429.6,
+    "source": "mock",
+    "confidence": 0.965
+  },
+  {
+    "id": "4CED0304-4B1A-43EF-A61B-BFA28C40BBC9",
+    "timestamp": "2026-08-06T00:55:00Z",
+    "levelMM": 1618.8,
+    "rawDistanceMM": 1381.2,
+    "source": "mock",
+    "confidence": 0.915
+  },
+  {
+    "id": "23B651EC-8B8C-4789-8190-C0248C0460CB",
+    "timestamp": "2026-08-06T00:56:00Z",
+    "levelMM": 1664.0,
+    "rawDistanceMM": 1336.0,
+    "source": "mock",
+    "confidence": 0.908
+  },
+  {
+    "id": "751299ED-EA0B-4A1D-B112-587BAF97BF9B",
+    "timestamp": "2026-08-06T00:57:00Z",
+    "levelMM": 1717.2,
+    "rawDistanceMM": 1282.8,
+    "source": "mock",
+    "confidence": 0.934
+  },
+  {
+    "id": "5F4AE032-6F66-4720-842F-26E7CD75911A",
+    "timestamp": "2026-08-06T00:58:00Z",
+    "levelMM": 1761.4,
+    "rawDistanceMM": 1238.6,
+    "source": "mock",
+    "confidence": 0.934
+  },
+  {
+    "id": "91B89265-5F5B-4DFC-AB3D-D9B44651CF55",
+    "timestamp": "2026-08-06T00:59:00Z",
+    "levelMM": 1811.9,
+    "rawDistanceMM": 1188.1,
+    "source": "mock",
+    "confidence": 0.937
+  },
+  {
+    "id": "EC89B68B-8EF6-4A95-A4CC-331AF73BAC5C",
+    "timestamp": "2026-08-06T01:00:00Z",
+    "levelMM": 1865.5,
+    "rawDistanceMM": 1134.5,
+    "source": "mock",
+    "confidence": 0.958
+  },
+  {
+    "id": "B4C26E77-9844-4BBE-8096-4496D294A379",
+    "timestamp": "2026-08-06T01:01:00Z",
+    "levelMM": 1911.4,
+    "rawDistanceMM": 1088.6,
+    "source": "mock",
+    "confidence": 0.954
+  },
+  {
+    "id": "EF022BCC-CA11-4B0D-89B0-BED6BF17F782",
+    "timestamp": "2026-08-06T01:02:00Z",
+    "levelMM": 1959.4,
+    "rawDistanceMM": 1040.6,
+    "source": "mock",
+    "confidence": 0.979
+  },
+  {
+    "id": "3839F8E5-C315-4373-BDCE-ECDC835F13D8",
+    "timestamp": "2026-08-06T01:03:00Z",
+    "levelMM": 2009.2,
+    "rawDistanceMM": 990.8,
+    "source": "mock",
+    "confidence": 0.908
+  },
+  {
+    "id": "F29CB73A-24E7-4B9C-92B9-6A5ACACD4433",
+    "timestamp": "2026-08-06T01:04:00Z",
+    "levelMM": 2059.2,
+    "rawDistanceMM": 940.8,
+    "source": "mock",
+    "confidence": 0.932
+  },
+  {
+    "id": "89078026-CDF3-4FFB-A0D7-571811F21474",
+    "timestamp": "2026-08-06T01:05:00Z",
+    "levelMM": 2107.3,
+    "rawDistanceMM": 892.7,
+    "source": "mock",
+    "confidence": 0.927
+  },
+  {
+    "id": "2817CA41-5E34-40FF-9740-2090F9770EA6",
+    "timestamp": "2026-08-06T01:06:00Z",
+    "levelMM": 2151.7,
+    "rawDistanceMM": 848.3,
+    "source": "mock",
+    "confidence": 0.969
+  },
+  {
+    "id": "C6885888-6E68-44FD-B70C-FD7CB9DD8D48",
+    "timestamp": "2026-08-06T01:07:00Z",
+    "levelMM": 2198.8,
+    "rawDistanceMM": 801.2,
+    "source": "mock",
+    "confidence": 0.92
+  },
+  {
+    "id": "3155326E-401A-44E7-B86A-59C0A66658F0",
+    "timestamp": "2026-08-06T01:08:00Z",
+    "levelMM": 2249.8,
+    "rawDistanceMM": 750.2,
+    "source": "mock",
+    "confidence": 0.915
+  },
+  {
+    "id": "E9604B42-7108-41E2-9ABF-97B24F13A2B0",
+    "timestamp": "2026-08-06T01:09:00Z",
+    "levelMM": 2298.1,
+    "rawDistanceMM": 701.9,
+    "source": "mock",
+    "confidence": 0.936
+  },
+  {
+    "id": "D4CC4419-4891-4ABA-BE55-930EF5A07EB2",
+    "timestamp": "2026-08-06T01:10:00Z",
+    "levelMM": 2297.7,
+    "rawDistanceMM": 702.3,
+    "source": "mock",
+    "confidence": 0.934
+  },
+  {
+    "id": "196F894D-7432-445A-834E-DB851BED2E39",
+    "timestamp": "2026-08-06T01:11:00Z",
+    "levelMM": 2313.4,
+    "rawDistanceMM": 686.6,
+    "source": "mock",
+    "confidence": 0.922
+  },
+  {
+    "id": "4462BD07-2D67-4C62-BA26-A94ADF0EE4DD",
+    "timestamp": "2026-08-06T01:12:00Z",
+    "levelMM": 2322.5,
+    "rawDistanceMM": 677.5,
+    "source": "mock",
+    "confidence": 0.92
+  },
+  {
+    "id": "A6A18955-754A-4ABB-91DC-93ABCB8E1AAE",
+    "timestamp": "2026-08-06T01:13:00Z",
+    "levelMM": 2327.1,
+    "rawDistanceMM": 672.9,
+    "source": "mock",
+    "confidence": 0.974
+  },
+  {
+    "id": "30D15735-945E-46B6-AE9D-ECA2977B89DF",
+    "timestamp": "2026-08-06T01:14:00Z",
+    "levelMM": 2338.1,
+    "rawDistanceMM": 661.9,
+    "source": "mock",
+    "confidence": 0.935
+  },
+  {
+    "id": "DEF32316-1F6B-4E77-AE8F-B2FB5BC4255D",
+    "timestamp": "2026-08-06T01:15:00Z",
+    "levelMM": 2343.3,
+    "rawDistanceMM": 656.7,
+    "source": "mock",
+    "confidence": 0.969
+  },
+  {
+    "id": "EFFFB3CF-D1F8-4BC7-B743-3077B11E18C4",
+    "timestamp": "2026-08-06T01:16:00Z",
+    "levelMM": 2353.5,
+    "rawDistanceMM": 646.5,
+    "source": "mock",
+    "confidence": 0.944
+  },
+  {
+    "id": "005312A6-83FE-4397-951E-F122F7732B22",
+    "timestamp": "2026-08-06T01:17:00Z",
+    "levelMM": 2354.6,
+    "rawDistanceMM": 645.4,
+    "source": "mock",
+    "confidence": 0.904
+  },
+  {
+    "id": "594A5411-F403-4730-8E10-16D84C4BFDDB",
+    "timestamp": "2026-08-06T01:18:00Z",
+    "levelMM": 2356.3,
+    "rawDistanceMM": 643.7,
+    "source": "mock",
+    "confidence": 0.98
+  },
+  {
+    "id": "097330BD-5299-40BB-B68A-BDFD73F4C948",
+    "timestamp": "2026-08-06T01:19:00Z",
+    "levelMM": 2357.8,
+    "rawDistanceMM": 642.2,
+    "source": "mock",
+    "confidence": 0.967
+  },
+  {
+    "id": "1EEE994A-CB85-4F57-9685-A5B31978B966",
+    "timestamp": "2026-08-06T01:20:00Z",
+    "levelMM": 2360.3,
+    "rawDistanceMM": 639.7,
+    "source": "mock",
+    "confidence": 0.978
+  },
+  {
+    "id": "618A5F09-6913-4223-B152-93F1A818C958",
+    "timestamp": "2026-08-06T01:21:00Z",
+    "levelMM": 2356.3,
+    "rawDistanceMM": 643.7,
+    "source": "mock",
+    "confidence": 0.974
+  },
+  {
+    "id": "0429D3CE-F65E-4A68-8A80-C015CA79632B",
+    "timestamp": "2026-08-06T01:22:00Z",
+    "levelMM": 2355.6,
+    "rawDistanceMM": 644.4,
+    "source": "mock",
+    "confidence": 0.968
+  },
+  {
+    "id": "41B9C49A-6349-4570-B9D7-78BBA7B4A40A",
+    "timestamp": "2026-08-06T01:23:00Z",
+    "levelMM": 2353.4,
+    "rawDistanceMM": 646.6,
+    "source": "mock",
+    "confidence": 0.913
+  },
+  {
+    "id": "F43B6D43-9419-4D71-A5B7-5DF1D08C5589",
+    "timestamp": "2026-08-06T01:24:00Z",
+    "levelMM": 2343.3,
+    "rawDistanceMM": 656.7,
+    "source": "mock",
+    "confidence": 0.939
+  },
+  {
+    "id": "72028CA0-2644-44FC-A918-D05F880C2540",
+    "timestamp": "2026-08-06T01:25:00Z",
+    "levelMM": 2334.6,
+    "rawDistanceMM": 665.4,
+    "source": "mock",
+    "confidence": 0.917
+  },
+  {
+    "id": "0804224B-6D2C-48FA-8EE6-5C04B62675E5",
+    "timestamp": "2026-08-06T01:26:00Z",
+    "levelMM": 2332.5,
+    "rawDistanceMM": 667.5,
+    "source": "mock",
+    "confidence": 0.932
+  },
+  {
+    "id": "AF5047E5-C444-4842-BAE8-913D00D1EEC5",
+    "timestamp": "2026-08-06T01:27:00Z",
+    "levelMM": 2319.6,
+    "rawDistanceMM": 680.4,
+    "source": "mock",
+    "confidence": 0.905
+  },
+  {
+    "id": "8CAC3A75-2E77-4BFB-A14A-7D2B7E50A47D",
+    "timestamp": "2026-08-06T01:28:00Z",
+    "levelMM": 2306.6,
+    "rawDistanceMM": 693.4,
+    "source": "mock",
+    "confidence": 0.93
+  },
+  {
+    "id": "AFE87563-CE29-424B-8E64-6A898BFD5CD4",
+    "timestamp": "2026-08-06T01:29:00Z",
+    "levelMM": 2296.4,
+    "rawDistanceMM": 703.6,
+    "source": "mock",
+    "confidence": 0.979
+  },
+  {
+    "id": "7E7A601A-BBCF-4AC3-B602-DD2592C36D42",
+    "timestamp": "2026-08-06T01:30:00Z",
+    "levelMM": 2296.9,
+    "rawDistanceMM": 703.1,
+    "source": "mock",
+    "confidence": 0.921
+  },
+  {
+    "id": "947A8BCC-7FBB-4DDB-AA77-30FB940BDB25",
+    "timestamp": "2026-08-06T01:31:00Z",
+    "levelMM": 2196.9,
+    "rawDistanceMM": 803.1,
+    "source": "mock",
+    "confidence": 0.963
+  },
+  {
+    "id": "805FAEDD-242E-4E13-8BD7-882129647650",
+    "timestamp": "2026-08-06T01:32:00Z",
+    "levelMM": 2133.1,
+    "rawDistanceMM": 866.9,
+    "source": "mock",
+    "confidence": 0.936
+  },
+  {
+    "id": "9E399DA9-EFC6-4E5A-9D75-CFEB91666708",
+    "timestamp": "2026-08-06T01:33:00Z",
+    "levelMM": 2074.6,
+    "rawDistanceMM": 925.4,
+    "source": "mock",
+    "confidence": 0.934
+  },
+  {
+    "id": "0537A4A0-D2A9-4E63-886A-ABF7C7308CF6",
+    "timestamp": "2026-08-06T01:34:00Z",
+    "levelMM": 2021.6,
+    "rawDistanceMM": 978.4,
+    "source": "mock",
+    "confidence": 0.977
+  },
+  {
+    "id": "17F7E958-9A0D-4AA7-86C7-8445B57C71B7",
+    "timestamp": "2026-08-06T01:35:00Z",
+    "levelMM": 1977.7,
+    "rawDistanceMM": 1022.3,
+    "source": "mock",
+    "confidence": 0.98
+  },
+  {
+    "id": "B4022D86-5290-41C3-872F-C82D1F6B18A8",
+    "timestamp": "2026-08-06T01:36:00Z",
+    "levelMM": 1938.9,
+    "rawDistanceMM": 1061.1,
+    "source": "mock",
+    "confidence": 0.944
+  },
+  {
+    "id": "EF09BD7A-8273-4E4F-9D45-080C100AD45B",
+    "timestamp": "2026-08-06T01:37:00Z",
+    "levelMM": 1893.5,
+    "rawDistanceMM": 1106.5,
+    "source": "mock",
+    "confidence": 0.957
+  },
+  {
+    "id": "AB6FE7BF-B9C2-4E8E-9D63-21CC5A8263AF",
+    "timestamp": "2026-08-06T01:38:00Z",
+    "levelMM": 1857.2,
+    "rawDistanceMM": 1142.8,
+    "source": "mock",
+    "confidence": 0.912
+  },
+  {
+    "id": "AC05F9C4-4F45-4C3D-9B71-A4891469510D",
+    "timestamp": "2026-08-06T01:39:00Z",
+    "levelMM": 1818.0,
+    "rawDistanceMM": 1182.0,
+    "source": "mock",
+    "confidence": 0.924
+  },
+  {
+    "id": "7E495077-B8F7-41F4-AF50-D78B083D80FA",
+    "timestamp": "2026-08-06T01:40:00Z",
+    "levelMM": 1774.0,
+    "rawDistanceMM": 1226.0,
+    "source": "mock",
+    "confidence": 0.977
+  },
+  {
+    "id": "9A7C3786-3F76-4621-A0D5-2DB79502B495",
+    "timestamp": "2026-08-06T01:41:00Z",
+    "levelMM": 1743.7,
+    "rawDistanceMM": 1256.3,
+    "source": "mock",
+    "confidence": 0.946
+  },
+  {
+    "id": "D84B6CCD-D963-451E-9847-C302FB524532",
+    "timestamp": "2026-08-06T01:42:00Z",
+    "levelMM": 1708.3,
+    "rawDistanceMM": 1291.7,
+    "source": "mock",
+    "confidence": 0.943
+  },
+  {
+    "id": "FCA28AAB-DBA8-426F-8E6B-9418EBBFDEF4",
+    "timestamp": "2026-08-06T01:43:00Z",
+    "levelMM": 1673.0,
+    "rawDistanceMM": 1327.0,
+    "source": "mock",
+    "confidence": 0.96
+  },
+  {
+    "id": "C64D3F3C-AC8F-46ED-B31D-AF39115EC0D0",
+    "timestamp": "2026-08-06T01:44:00Z",
+    "levelMM": 1637.4,
+    "rawDistanceMM": 1362.6,
+    "source": "mock",
+    "confidence": 0.905
+  },
+  {
+    "id": "EF35F74F-A7F0-4378-A571-2495F2406B9F",
+    "timestamp": "2026-08-06T01:45:00Z",
+    "levelMM": 1607.7,
+    "rawDistanceMM": 1392.3,
+    "source": "mock",
+    "confidence": 0.947
+  },
+  {
+    "id": "8872CD3A-D6DD-4CC7-B575-A319CE4B5A28",
+    "timestamp": "2026-08-06T01:46:00Z",
+    "levelMM": 1571.5,
+    "rawDistanceMM": 1428.5,
+    "source": "mock",
+    "confidence": 0.94
+  },
+  {
+    "id": "3F3C15A2-36BA-4C1D-9C6D-9EECC05A96B2",
+    "timestamp": "2026-08-06T01:47:00Z",
+    "levelMM": 1542.6,
+    "rawDistanceMM": 1457.4,
+    "source": "mock",
+    "confidence": 0.968
+  },
+  {
+    "id": "B9411049-53FE-4DFC-94C7-148EAE3CD543",
+    "timestamp": "2026-08-06T01:48:00Z",
+    "levelMM": 1511.8,
+    "rawDistanceMM": 1488.2,
+    "source": "mock",
+    "confidence": 0.913
+  },
+  {
+    "id": "30971FF5-9CCB-4C56-9073-A1F4E3A96652",
+    "timestamp": "2026-08-06T01:49:00Z",
+    "levelMM": 1485.5,
+    "rawDistanceMM": 1514.5,
+    "source": "mock",
+    "confidence": 0.977
+  },
+  {
+    "id": "83EECE69-75B4-4CA8-8C4F-9856B160AE1C",
+    "timestamp": "2026-08-06T01:50:00Z",
+    "levelMM": 1454.9,
+    "rawDistanceMM": 1545.1,
+    "source": "mock",
+    "confidence": 0.906
+  },
+  {
+    "id": "CC2521B3-981E-48F6-91C7-D6D3124BBF4A",
+    "timestamp": "2026-08-06T01:51:00Z",
+    "levelMM": 1420.6,
+    "rawDistanceMM": 1579.4,
+    "source": "mock",
+    "confidence": 0.915
+  },
+  {
+    "id": "ACC796DA-1184-4ABB-9772-683450562CB0",
+    "timestamp": "2026-08-06T01:52:00Z",
+    "levelMM": 1393.4,
+    "rawDistanceMM": 1606.6,
+    "source": "mock",
+    "confidence": 0.948
+  },
+  {
+    "id": "5FFB5E77-51F8-4F11-9C15-B83FEC44A5CB",
+    "timestamp": "2026-08-06T01:53:00Z",
+    "levelMM": 1362.2,
+    "rawDistanceMM": 1637.8,
+    "source": "mock",
+    "confidence": 0.954
+  },
+  {
+    "id": "BF95DD32-E02F-425E-8B6B-60BE18CF84EA",
+    "timestamp": "2026-08-06T01:54:00Z",
+    "levelMM": 1339.8,
+    "rawDistanceMM": 1660.2,
+    "source": "mock",
+    "confidence": 0.919
+  },
+  {
+    "id": "787905C1-AB9F-43CA-B396-31E8E27B16E7",
+    "timestamp": "2026-08-06T01:55:00Z",
+    "levelMM": 1311.5,
+    "rawDistanceMM": 1688.5,
+    "source": "mock",
+    "confidence": 0.91
+  },
+  {
+    "id": "A66FBBFD-E4D4-4C34-9E04-47F5FAD01653",
+    "timestamp": "2026-08-06T01:56:00Z",
+    "levelMM": 1279.3,
+    "rawDistanceMM": 1720.7,
+    "source": "mock",
+    "confidence": 0.971
+  },
+  {
+    "id": "B69A0DCD-CC28-4A63-9155-0057BFF01EAC",
+    "timestamp": "2026-08-06T01:57:00Z",
+    "levelMM": 1254.8,
+    "rawDistanceMM": 1745.2,
+    "source": "mock",
+    "confidence": 0.92
+  },
+  {
+    "id": "4C7950B7-4BB8-481A-830A-4AA0D5D4399C",
+    "timestamp": "2026-08-06T01:58:00Z",
+    "levelMM": 1227.6,
+    "rawDistanceMM": 1772.4,
+    "source": "mock",
+    "confidence": 0.948
+  },
+  {
+    "id": "820A8425-864A-4354-82FC-2AE808F25451",
+    "timestamp": "2026-08-06T01:59:00Z",
+    "levelMM": 1197.2,
+    "rawDistanceMM": 1802.8,
+    "source": "mock",
+    "confidence": 0.95
+  }
+]
