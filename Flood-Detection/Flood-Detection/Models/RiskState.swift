@@ -11,8 +11,7 @@
 //        thresholds, and everything UI-facing (colour, copy, alerts)
 //        keys off it.
 //
-//  USED BY: ThresholdEvaluator, DashboardController, UserPlan,
-//           DesignSystem (colour mapping, once decided)
+//  USED BY: SiteState, DashboardController
 //
 //  STATUS: Implemented.
 //
@@ -26,9 +25,17 @@ enum RiskState: String, Codable, CaseIterable {
     case normal
 
     /// At or above "siaga". Something worth paying attention to.
+    /// freeboardBenchMM <= 0, OR timeToBankMin.lowerBound < 120
     case watch
 
-    /// At or above "awas", or drainage failure is imminent. User should
-    /// be taking action.
+    /// At or above "awas", or drainage failure is imminent. User should be taking action.
+    /// timeToBankMin.lowerBound < 30
     case act
+    
+    /// The water is over the bank now
+    /// freeboardBankMM <= 0
+    case flooding
+    
+    /// Stale or low confidence
+    case unknown
 }
