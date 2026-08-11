@@ -1,0 +1,38 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Secrets — never commit
+Secrets.xcconfig
+*.env
+.env.local
+Config/Secrets.plist
+GoogleService-Info.plist
+
+# Firmware build artefacts (if ESP32 code lives in this repo)
+.pio/
+.vscode/
+*.bin
+*.elf
+
+# Logs
+*.log
