@@ -36,3 +36,6 @@ GoogleService-Info.plist
 
 # Logs
 *.log
+
+# Firebase
+*GoogleService-Info.plist
