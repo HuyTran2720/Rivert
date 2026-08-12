@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0410302C494F003303A5 /* FirebaseCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		3E6E840F3024752900A7D079 /* Flood-Detection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flood-Detection.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				3E6E84113024752900A7D079 /* Flood-Detection */,
+				3EDC040F302C494F003303A5 /* Frameworks */,
 				3E6E84103024752900A7D079 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +49,13 @@
 				3E6E840F3024752900A7D079 /* Flood-Detection.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3EDC040F302C494F003303A5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -65,6 +78,7 @@
 			);
 			name = "Flood-Detection";
 			packageProductDependencies = (
+				3EDC0410302C494F003303A5 /* FirebaseCore */,
 			);
 			productName = "Flood-Detection";
 			productReference = 3E6E840F3024752900A7D079 /* Flood-Detection.app */;
@@ -346,6 +360,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3EDC0410302C494F003303A5 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3E6E84073024752900A7D079 /* Project object */;
 }
