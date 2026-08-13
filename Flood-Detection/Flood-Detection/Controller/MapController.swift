@@ -98,7 +98,7 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
     /// Returns a short glyph string to display inside the map pin marker.
     private func glyphForRisk(_ risk: RiskLevel) -> String {
         switch risk {
-        case .high:   return "‼️"
+        case .high:   return "🔥"
         case .medium: return "⚠️"
         case .low:    return "✓"
         }

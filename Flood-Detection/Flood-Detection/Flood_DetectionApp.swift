@@ -11,7 +11,10 @@ import SwiftUI
 struct Flood_DetectionApp: App {
     var body: some Scene {
         WindowGroup {
-            MainInfoView()
+            NavigationStack {
+                MainInfoView()
+            }
+        }
         }
     }
-}
+
