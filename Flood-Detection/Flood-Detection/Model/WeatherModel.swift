@@ -26,6 +26,14 @@ enum weatherIcon: String {
     case clear
     case cloudy
     case storm
+    
+    var systemImageName: String {
+        switch self {
+        case .rain: return "cloud.rain.fill"
+        case .clear: return "sun.max.fill"
+        case .cloudy: return "cloud.fill"
+        case .storm: return "cloud.bolt.rain.fill"
+        }
+    }
 }
-
 
