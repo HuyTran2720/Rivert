@@ -25,7 +25,7 @@ struct Flood_DetectionApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainInfoView()
+            ContentView()
         }
     }
 }
