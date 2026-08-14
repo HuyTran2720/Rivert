@@ -6,7 +6,7 @@
 //
 
 struct DashboardDataModel  {
-    let location: map
+//    let location: map
     let weather: WeatherModel
     let waterStatus: WaterStatusData
     let dashboardStatus: SafetyStatus
