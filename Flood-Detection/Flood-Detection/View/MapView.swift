@@ -55,11 +55,7 @@ struct MapView: UIViewRepresentable {
             let pin = FloodZoneAnnotation()
             pin.coordinate = zone.center
             pin.title = zone.name
-<<<<<<< HEAD
-            pin.subtitle = zone.riskLevel.rawValue
-=======
             pin.subtitle = "\(zone.riskLevel.statusEmoji) \(zone.riskLevel.rawValue)"
->>>>>>> FEAT-Model
             pin.riskLevel = zone.riskLevel
             pin.zoneName = zone.name
             pin.zoneDescription = zone.description
@@ -67,10 +63,3 @@ struct MapView: UIViewRepresentable {
         }
     }
 }
-<<<<<<< HEAD
-#Preview {
-    MapView()
-        .ignoresSafeArea()
-}
-=======
->>>>>>> FEAT-Model

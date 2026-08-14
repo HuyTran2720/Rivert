@@ -44,25 +44,11 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
             let detailButton = UIButton(type: .detailDisclosure)
             markerView?.rightCalloutAccessoryView = detailButton
 
-<<<<<<< HEAD
-            // Add a risk-status SF Symbol icon on the left side of the callout
-            let statusImage = UIImage(
-                systemName: floodAnnotation.riskLevel.statusIcon
-            )?.withTintColor(
-                floodAnnotation.riskLevel.pinTintColor,
-                renderingMode: .alwaysOriginal
-            )
-            let statusImageView = UIImageView(image: statusImage)
-            statusImageView.contentMode = .scaleAspectFit
-            statusImageView.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-            markerView?.leftCalloutAccessoryView = statusImageView
-=======
             // Add a risk-status emoji on the left side of the callout
             let statusLabel = UILabel()
             statusLabel.font = UIFont.systemFont(ofSize: 28)
             statusLabel.text = floodAnnotation.riskLevel.statusEmoji
             markerView?.leftCalloutAccessoryView = statusLabel
->>>>>>> FEAT-Model
         } else {
             // Reusing — just update which annotation this view represents
             markerView?.annotation = floodAnnotation
@@ -70,11 +56,7 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
 
         // Color the pin marker based on risk level (red / yellow / green)
         markerView?.markerTintColor = floodAnnotation.riskLevel.pinTintColor
-<<<<<<< HEAD
-        markerView?.glyphImage = UIImage(systemName: floodAnnotation.riskLevel.glyphIcon)
-=======
         markerView?.glyphText = glyphForRisk(floodAnnotation.riskLevel)
->>>>>>> FEAT-Model
         markerView?.titleVisibility = .adaptive
 
         return markerView
@@ -90,11 +72,7 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
 
         // Build the alert message
         let alert = UIAlertController(
-<<<<<<< HEAD
-            title: "\(floodAnnotation.riskLevel.rawValue) — \(floodAnnotation.zoneName)",
-=======
             title: "\(floodAnnotation.riskLevel.statusEmoji) \(floodAnnotation.zoneName)",
->>>>>>> FEAT-Model
             message: """
             Risk Level: \(floodAnnotation.riskLevel.rawValue)
 
@@ -115,9 +93,6 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
         }
     }
 
-<<<<<<< HEAD
-
-=======
     // MARK: - Helpers
 
     /// Returns a short glyph string to display inside the map pin marker.
@@ -128,5 +103,4 @@ class MapCoordinator: NSObject, MKMapViewDelegate {
         case .low:    return "✓"
         }
     }
->>>>>>> FEAT-Model
 }

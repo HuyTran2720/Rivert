@@ -29,30 +29,12 @@ enum RiskLevel: String, CaseIterable {
         }
     }
 
-<<<<<<< HEAD
-    /// SF Symbol name for the status indicator icon (circle.fill variants).
-    var statusIcon: String {
-        switch self {
-        case .high:   return "exclamationmark.circle.fill"
-        case .medium: return "exclamationmark.triangle.fill"
-        case .low:    return "checkmark.circle.fill"
-        }
-    }
-
-    /// SF Symbol name for the glyph displayed inside the map pin marker.
-    var glyphIcon: String {
-        switch self {
-        case .high:   return "flame.fill"
-        case .medium: return "exclamationmark.triangle.fill"
-        case .low:    return "checkmark"
-=======
     /// An emoji circle that visually indicates the risk status.
     var statusEmoji: String {
         switch self {
         case .high:   return "🔴"
         case .medium: return "🟡"
         case .low:    return "🟢"
->>>>>>> FEAT-Model
         }
     }
 }
@@ -161,13 +143,3 @@ extension FloodZone {
         ),
     ]
 }
-<<<<<<< HEAD
-
-struct map {
-    let longitude: String
-    let latitude: String
-    let placeName: String
-    let mapStatus: SafetyStatus
-}
-=======
->>>>>>> FEAT-Model
