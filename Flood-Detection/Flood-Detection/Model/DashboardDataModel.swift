@@ -5,10 +5,14 @@
 //  Created by Gian Denggan Benjamin on 14/08/26.
 //
 
+import SwiftUI
+
 struct DashboardDataModel  {
-//    let location: map
+    let location: MapDataModel
     let weather: WeatherModel
     let waterStatus: WaterStatusData
-    let dashboardStatus: SafetyStatus
+    var dashboardStatus: SafetyStatus {
+        location.mapStatus
+    }
     
 }

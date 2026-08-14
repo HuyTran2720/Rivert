@@ -11,10 +11,16 @@ struct WaterStatusData {
     let staleness: String
 }
 
-
 enum waterTrend: String {
-    case rising
     case risingFast
-    case falling 
-    case fallingFast
+    case dropingFast
+    case normal
+    
+    var systemImageName: String {
+        switch self {
+        case .risingFast: return "arrow.up"
+        case .dropingFast: return "arrow.down"
+        case .normal: return "water.waves"
+        }
+    }
 }

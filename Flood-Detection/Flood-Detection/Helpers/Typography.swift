@@ -11,13 +11,14 @@ import SwiftUI
 
 //MARK: - Fonts
 extension Font {
-    static var headingFD1: Font { .custom("Avenir-Black", size: 32)}
-    static var headingFD2: Font { .custom("Avenir-Black", size: 16)}
-    static var headingFD3: Font { .custom("Avenir-Black", size: 14)}
-    static var bodyFD1: Font { .custom("Avenir-Black", size: 14)}
-    static var bodyFD2: Font { .custom("Avenir-Black", size: 12)}
-    static var bodyFD3: Font { .custom("Avenir-Black", size: 10)}
-}
+    static var headingFD1: Font { .system(size: 32, weight: .bold, design: .default) }
+    static var headingFD2: Font { .system(size: 16, weight: .bold, design: .default) }
+    static var headingFD3: Font { .system(size: 14, weight: .bold, design: .default) }
+        
+    static var bodyFD1: Font { .system(size: 14, weight: .regular, design: .default) }
+    static var bodyFD2: Font { .system(size: 12, weight: .regular, design: .default) }
+    static var bodyFD3: Font { .system(size: 10, weight: .regular, design: .default) }
+    }
 
 //MARK: - Color
 extension Color {
@@ -36,11 +37,15 @@ extension Color {
     static let yellowOutline = Color(red: 255 / 255.0, green: 236 / 255.0, blue: 126 / 255.0)
     static let yellowTitle   = Color(red: 201 / 255.0, green: 151 / 255.0, blue: 0 / 255.0)
     static let yellowText    = Color(red: 159 / 255.0, green: 119 / 255.0, blue: 0 / 255.0)
+    static let yellowBackground    = Color(red: 255 / 255.0, green: 247 / 255.0, blue: 200 / 255.0)
+
 
     //warning color - red
     static let redOutline    = Color(red: 255 / 255.0, green: 151 / 255.0, blue: 151 / 255.0)
     static let redTitle      = Color(red: 214 / 255.0, green: 62 / 255.0, blue: 62 / 255.0)
     static let redText       = Color(red: 215 / 255.0, green: 154 / 255.0, blue: 154 / 255.0)
+    static let redBackground = Color(red: 255 / 255.0, green: 231 / 255.0, blue: 231 / 255.0)
+
     
 }
 
