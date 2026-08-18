@@ -2,14 +2,18 @@
 //  RiskState.swift
 //  Flood-Detection
 //
-//  WHAT: The three-level risk classification shown to the user: normal,
-//        watch, or act.
+//  WHAT: The risk classification shown to the user: normal, caution,
+//        danger, or unknown.
 //
 //  WHY:  Raw millimetre numbers don't mean anything to someone deciding
 //        whether to move their belongings upstairs. This is the
-//        simplified output ThresholdEvaluator produces from level +
-//        thresholds, and everything UI-facing (colour, copy, alerts)
-//        keys off it.
+//        simplified output the backend produces from level + rate of
+//        rise, and everything UI-facing (colour, copy, alerts) keys off
+//        it.
+//
+//  MIRRORS: RiskState in backend/functions/src/calc.ts. The raw values
+//        below are decoded straight from the state document, so both
+//        sides must use the same spellings.
 //
 //  USED BY: SiteState, DashboardController
 //
@@ -21,21 +25,18 @@ import Foundation
 /// Simplified risk classification for display and alerting.
 enum RiskState: String, Codable, CaseIterable {
 
-    /// Below the "siaga" threshold. No action needed.
+    /// Nothing to do. Water is low, or not rising fast enough to matter.
     case normal
 
-    /// At or above "siaga". Something worth paying attention to.
-    /// freeboardBenchMM <= 0, OR timeToBankMin.lowerBound < 120
-    case watch
+    /// Worth paying attention to. Either the water has already spread
+    /// onto the benches, or it is projected to overspill before long.
+    case caution
 
-    /// At or above "awas", or drainage failure is imminent. User should be taking action.
-    /// timeToBankMin.lowerBound < 30
-    case act
-    
-    /// The water is over the bank now
-    /// freeboardBankMM <= 0
-    case flooding
-    
-    /// Stale or low confidence
+    /// Take action now. Either the water is over the bank already, or
+    /// overspill is projected within minutes.
+    case danger
+
+    /// The sensor has gone quiet, or we could not fit a rate of rise.
+    /// Never shown as "safe" — silence and calm look identical.
     case unknown
 }
