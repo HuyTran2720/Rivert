@@ -11,96 +11,153 @@
 
 import UIKit
 import MapKit
+import SwiftUI
+
+// MARK: - FloodZoneAnnotationView
+
+/// Custom annotation view that renders a circle pin icon with the flood
+/// warning image inside. When zoomed in, a MapAnnotationCard appears
+/// directly next to the pin — no MapKit callout bubble, no white background.
+class FloodZoneAnnotationView: MKAnnotationView {
+
+    static let pinReuseID = "FloodZonePin"
+
+    private var cardHostView: UIView?
+
+    /// Controls whether the info card beside the pin is visible.
+    var isCardVisible: Bool = false {
+        didSet {
+            guard oldValue != isCardVisible else { return }
+            UIView.animate(withDuration: 0.2) {
+                self.cardHostView?.alpha = self.isCardVisible ? 1 : 0
+            }
+        }
+    }
+
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        canShowCallout = false   // No MapKit callout — we draw our own card
+        clipsToBounds = false
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cardHostView?.removeFromSuperview()
+        cardHostView = nil
+        isCardVisible = false
+    }
+
+    // MARK: - Configuration
+
+    /// Sets the pin icon and builds the card for a given flood annotation.
+    func configure(with floodAnnotation: FloodZoneAnnotation) {
+
+        // 1. Render the circle pin icon using the PinMarker component
+        let pinImage = PinMarker.image(for: floodAnnotation.status)
+        self.image = pinImage
+
+        // Offset so the bottom-center of the circle sits at the coordinate
+        centerOffset = CGPoint(x: 0, y: -PinMarker.diameter / 2)
+
+        // 2. Build the MapAnnotationCard as a subview
+        cardHostView?.removeFromSuperview()
+
+        let card = MapAnnotationCard(
+            title: floodAnnotation.zoneName,
+            message: floodAnnotation.zoneDescription,
+            status: floodAnnotation.status
+        )
+        let hostingController = UIHostingController(rootView: card)
+        hostingController.view.backgroundColor = .clear
+
+        // Size the card to fit its content
+        let fittingSize = hostingController.view.systemLayoutSizeFitting(
+            CGSize(width: 220, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+
+        let cardView = hostingController.view!
+
+        // Position the card to the right of the pin, vertically centered
+        let pinWidth = pinImage.size.width
+        let pinHeight = pinImage.size.height
+        cardView.frame = CGRect(
+            x: pinWidth / 2 + 6,
+            y: -(fittingSize.height / 2) - (pinHeight / 2),
+            width: fittingSize.width,
+            height: fittingSize.height
+        )
+        cardView.alpha = isCardVisible ? 1 : 0
+
+        addSubview(cardView)
+        self.cardHostView = cardView
+    }
+
+}
+
 
 // MARK: - MapCoordinator
 
 /// Acts as the MKMapViewDelegate to handle map events.
-/// - Configures how each pin (annotation) looks on the map.
-/// - Handles what happens when the user taps a pin's detail button.
+/// - Provides each annotation with a FloodZoneAnnotationView (custom pin + card).
+/// - Toggles card visibility based on zoom level.
 class MapCoordinator: NSObject, MKMapViewDelegate {
+
+    /// The latitude-delta threshold below which we consider the map "zoomed in"
+    /// and show annotation cards.
+    private let zoomThreshold: Double = 0.05
 
     // MARK: - Pin Appearance
 
     /// Called by MapKit whenever it needs to display an annotation.
-    /// We customize each pin with the flood zone's risk color and emoji.
+    /// Returns a custom FloodZoneAnnotationView with no MapKit callout.
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 
-        // Only customize our FloodZoneAnnotation pins (skip the user's location dot, etc.)
+        // Only customize our FloodZoneAnnotation pins
         guard let floodAnnotation = annotation as? FloodZoneAnnotation else {
             return nil
         }
 
-        let reuseID = "FloodZoneMarker"
+        var annotationView = mapView.dequeueReusableAnnotationView(
+            withIdentifier: FloodZoneAnnotationView.pinReuseID
+        ) as? FloodZoneAnnotationView
 
-        // Try to reuse an existing annotation view for better scroll performance
-        var markerView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKMarkerAnnotationView
-
-        if markerView == nil {
-            // First time — create a new marker view
-            markerView = MKMarkerAnnotationView(annotation: floodAnnotation, reuseIdentifier: reuseID)
-            markerView?.canShowCallout = true   // Show the popup bubble when tapped
-
-            // Add an info button (ℹ️) on the right side of the callout
-            let detailButton = UIButton(type: .detailDisclosure)
-            markerView?.rightCalloutAccessoryView = detailButton
-
-            // Add a risk-status emoji on the left side of the callout
-            let statusLabel = UILabel()
-            statusLabel.font = UIFont.systemFont(ofSize: 28)
-            statusLabel.text = floodAnnotation.riskLevel.statusEmoji
-            markerView?.leftCalloutAccessoryView = statusLabel
+        if annotationView == nil {
+            annotationView = FloodZoneAnnotationView(
+                annotation: floodAnnotation,
+                reuseIdentifier: FloodZoneAnnotationView.pinReuseID
+            )
         } else {
-            // Reusing — just update which annotation this view represents
-            markerView?.annotation = floodAnnotation
+            annotationView?.annotation = floodAnnotation
         }
 
-        // Color the pin marker based on risk level (red / yellow / green)
-        markerView?.markerTintColor = floodAnnotation.riskLevel.pinTintColor
-        markerView?.glyphText = glyphForRisk(floodAnnotation.riskLevel)
-        markerView?.titleVisibility = .adaptive
+        annotationView?.configure(with: floodAnnotation)
 
-        return markerView
+        // Set initial card visibility based on current zoom
+        let isZoomedIn = mapView.region.span.latitudeDelta < zoomThreshold
+        annotationView?.isCardVisible = isZoomedIn
+
+        return annotationView
     }
 
-    // MARK: - Pin Detail Tap
+    // MARK: - Zoom-Aware Card Visibility
 
-    /// Called when the user taps the info button (ℹ️) inside a pin's callout.
-    /// Shows an alert with the full zone name, risk level, and description.
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    /// Called every time the visible map region changes (pan, zoom, rotate).
+    /// Toggles the MapAnnotationCard visibility on all annotations based
+    /// on the current zoom level.
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let isZoomedIn = mapView.region.span.latitudeDelta < zoomThreshold
 
-        guard let floodAnnotation = view.annotation as? FloodZoneAnnotation else { return }
-
-        // Build the alert message
-        let alert = UIAlertController(
-            title: "\(floodAnnotation.riskLevel.statusEmoji) \(floodAnnotation.zoneName)",
-            message: """
-            Risk Level: \(floodAnnotation.riskLevel.rawValue)
-
-            \(floodAnnotation.zoneDescription)
-            """,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the topmost view controller
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            var topVC = rootVC
-            while let presented = topVC.presentedViewController {
-                topVC = presented
+        for annotation in mapView.annotations {
+            if let floodAnnotation = annotation as? FloodZoneAnnotation,
+               let view = mapView.view(for: floodAnnotation) as? FloodZoneAnnotationView {
+                view.isCardVisible = isZoomedIn
             }
-            topVC.present(alert, animated: true)
-        }
-    }
-
-    // MARK: - Helpers
-
-    /// Returns a short glyph string to display inside the map pin marker.
-    private func glyphForRisk(_ risk: RiskLevel) -> String {
-        switch risk {
-        case .high:   return "‼️"
-        case .medium: return "⚠️"
-        case .low:    return "✓"
         }
     }
 }
