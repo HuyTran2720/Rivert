@@ -37,9 +37,8 @@ struct DashboardView: View {
                 
                 Spacer()
                 Spacer()
-                
-                Text("Background Image")
-                
+                Image(.townBuilding)
+                Image(.grass)
                 Spacer()
                 
                 Text("Time")

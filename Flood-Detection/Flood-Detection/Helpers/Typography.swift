@@ -26,12 +26,14 @@ extension Color {
     //Primary, secondary, terniary
     static let primaryFD = Color.white
     static let secondaryFD = Color(red: 77 / 255.0, green: 161 / 255.0, blue: 171 / 255.0)
-    static let terniaryFD = Color(red: 62 / 255.0, green: 124 / 255.0, blue: 144 / 255.0)
-
+    static let terniaryFD = Color(red: 75 / 255.0, green: 124 / 255.0, blue: 144 / 255.0)
+    
     
     //dashboard background color
     static let softCyan = Color(red: 196 / 255.0, green: 237 / 255.0, blue: 238 / 255.0)
     static let softMint = Color(red: 239 / 255.0, green: 246 / 255.0, blue: 234 / 255.0)
+    static let extraFD = Color(red: 62 / 255.0, green: 107 / 255.0, blue: 115 / 255.0)
+    static let littledotsFD = Color(red: 105 / 255.0, green: 234 / 255.0, blue: 240 / 255.0)
     
     //warning color - yellow
     static let yellowOutline = Color(red: 255 / 255.0, green: 236 / 255.0, blue: 126 / 255.0)
@@ -78,6 +80,9 @@ struct ColorView : View {
                     .foregroundStyle(Color.secondaryFD)
                 Text("Terniary")
                     .foregroundStyle(Color.terniaryFD)
+                Text("Extra")
+                    .foregroundStyle(Color.terniaryFD)
+
             }
         }
     }
