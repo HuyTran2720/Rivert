@@ -1,17 +1,18 @@
 import { onRequest } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import { getFirestore, Timestamp, FieldValue } from "firebase-admin/firestore";
+import { computeSiteState, RATE_WINDOW_MIN, Reading, Calibration } from "./calc";
 
 admin.initializeApp();
 const db = getFirestore();
 
-interface Reading {
+interface WireReading {
   deviceId: string;
   timestamp: string;
   rawDistanceMM: number;
 }
 
-function isValidReading(r: unknown): r is Reading {
+function isValidReading(r: unknown): r is WireReading {
   if (typeof r !== "object" || r === null) return false;
   const x = r as Record<string, unknown>;
   return (
@@ -21,6 +22,8 @@ function isValidReading(r: unknown): r is Reading {
     typeof x.rawDistanceMM === "number"
   );
 }
+
+const RECOMPUTE_INTERVAL_MS = 30_000;
 
 export const ingest = onRequest(
   { region: "asia-southeast2" },
@@ -57,7 +60,7 @@ export const ingest = onRequest(
     // plausibility filtering happens at calculation time, because
     // discarding weird readings here destroys the evidence we'd need
     // to diagnose a misbehaving sensor.
-    const valid: Reading[] = [];
+    const valid: WireReading[] = [];
     const rejected: unknown[] = [];
     for (const r of incoming) {
       if (isValidReading(r)) valid.push(r);
@@ -90,10 +93,65 @@ export const ingest = onRequest(
     const last = valid[valid.length - 1];
     console.log(`stored ${valid.length} from ${last.deviceId} | ${last.rawDistanceMM}mm`);
 
-    // TODO: recompute state from the last 30 min, write state/legian-01,
-    //       push if riskState changed.
+    const siteId = last.deviceId;
+    const stateRef = db.doc(`state/${siteId}`);
+    const prevStateSnap = await stateRef.get();
+    const prevState = prevStateSnap.exists ? prevStateSnap.data() : null;
 
-    res.json({ ok: true, accepted: valid.length, rejected: rejected.length });
+    // Raw is stored above regardless; the expensive window query + calc +
+    // state write only runs at most every 30s, even though the device
+    // posts every 10s.
+    const lastComputedAt = prevState?.computedAt?.toDate?.() ?? null;
+    const dueForRecompute =
+      !lastComputedAt ||
+      (Date.now() - lastComputedAt.getTime()) >= RECOMPUTE_INTERVAL_MS;
+
+    if (!dueForRecompute) {
+      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      return;
+    }
+
+    const now = new Date();
+    const windowStart = new Date(now.getTime() - RATE_WINDOW_MIN * 60_000);
+
+    const [siteSnap, windowSnap] = await Promise.all([
+      db.doc(`sites/${siteId}`).get(),
+      db.collection("readings")
+        .where("deviceId", "==", siteId)
+        .where("timestamp", ">=", Timestamp.fromDate(windowStart))
+        .orderBy("timestamp")
+        .get(),
+    ]);
+
+    if (!siteSnap.exists) {
+      console.error(`sites/${siteId} missing — skipping recompute`);
+      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      return;
+    }
+
+    const cal = siteSnap.data() as Calibration;
+    if (cal.calibrated === undefined) cal.calibrated = false;
+    const readings: Reading[] = windowSnap.docs.map((d) => {
+      const data = d.data();
+      return {
+        deviceId: data.deviceId,
+        timestamp: (data.timestamp as Timestamp).toDate(),
+        rawDistanceMM: data.rawDistanceMM,
+      };
+    });
+
+    const newState = computeSiteState(siteId, readings, cal, now);
+
+    if (!newState) {
+      console.warn(`no plausible readings in window for ${siteId} — state not overwritten`);
+      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      return;
+    }
+
+    await stateRef.set(newState);
+    console.log(`state/${siteId} → ${newState.riskState} (level ${newState.levelMM}mm)`);
+
+    res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: true });
   }
 );
 

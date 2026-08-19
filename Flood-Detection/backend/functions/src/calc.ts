@@ -30,11 +30,12 @@ export function toReading(w: WireReading): Reading {
 /** Tape-measured site geometry. All distances measured DOWN from the
  * sensor, so dBank < dBench < dBed. */
 export interface Calibration {
-  dBed: number;
-  dBench: number;
-  dBank: number;
-  wLowflow: number;
-  wBench: number;
+  d_bed: number;
+  d_bench: number;
+  d_bank: number;
+  w_bottom: number;
+  w_bench: number;
+  w_top: number;
   calibrated: boolean;
 }
 
@@ -77,7 +78,7 @@ export interface SiteState {
 }
 
 // Demo values. Field values in brackets.
-const RATE_WINDOW_MIN = 1; // [15]
+export const RATE_WINDOW_MIN = 1; // [15]
 const MIN_READINGS_FOR_RATE = 3;
 const MAX_PROJECTION_MIN = 10; // [240]
 const DANGER_WITHIN_MIN = 1; // [30]
@@ -93,8 +94,8 @@ const MS_PER_MIN = 60 * 1000;
  * @return {boolean} True if the reading is geometrically possible.
  */
 export function isPlausible(r: Reading, cal: Calibration): boolean {
-  if (r.rawDistanceMM > cal.dBed + 100) return false;
-  if (r.rawDistanceMM < cal.dBank - 500) return false;
+  if (r.rawDistanceMM > cal.d_bed + 100) return false;
+  if (r.rawDistanceMM < cal.d_bank - 500) return false;
   return true;
 }
 
@@ -104,7 +105,7 @@ export function isPlausible(r: Reading, cal: Calibration): boolean {
  * @return {number} Water height above the channel bed, mm.
  */
 export function levelMM(rawDistanceMM: number, cal: Calibration): number {
-  return cal.dBed - rawDistanceMM;
+  return cal.d_bed - rawDistanceMM;
 }
 
 /**
@@ -118,7 +119,7 @@ export function freeboardBenchMM(
   rawDistanceMM: number,
   cal: Calibration,
 ): number {
-  return rawDistanceMM - cal.dBench;
+  return rawDistanceMM - cal.d_bench;
 }
 
 /**
@@ -130,7 +131,7 @@ export function freeboardBankMM(
   rawDistanceMM: number,
   cal: Calibration,
 ): number {
-  return rawDistanceMM - cal.dBank;
+  return rawDistanceMM - cal.d_bank;
 }
 
 /**
@@ -217,7 +218,11 @@ function round1(x: number): number {
 }
 
 /**
- * Climb time, slowed by wBench/wLowflow above the benches.
+ * Climb time. Below the bench the channel holds a constant width
+ * (w_bottom). Above the bench the walls slope outward on a straight
+ * grade — width increases linearly from (w_bottom + w_bench) at the
+ * bench up to w_top at the bank. The trapezoidal average of those two
+ * endpoints is the exact integral of a linear width function.
  *
  * @param {number} narrowMM Distance to climb inside the channel.
  * @param {number} wideMM Distance to climb above the benches.
@@ -233,9 +238,15 @@ function travelMinutes(
 ): number {
   if (rateMMPerMin <= 0) return Infinity;
 
-  const wideRate = rateMMPerMin * (cal.wLowflow / cal.wBench);
   const narrowMin = Math.max(0, narrowMM) / rateMMPerMin;
-  const wideMin = wideRate > 0 ? Math.max(0, wideMM) / wideRate : Infinity;
+
+  // Q is constant; the measured rate reflects width w_bottom.
+  const q = cal.w_bottom * rateMMPerMin;
+  const widthAtBench = cal.w_bottom + cal.w_bench;
+  const avgWideWidth = (widthAtBench + cal.w_top) / 2;
+  const wideMin = q > 0 ?
+    (Math.max(0, wideMM) * avgWideWidth) / q :
+    Infinity;
 
   return narrowMin + wideMin;
 }
