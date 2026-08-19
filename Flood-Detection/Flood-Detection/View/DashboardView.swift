@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DashboardView: View {
     var body: some View {
+        NavigationStack {
+            
         ZStack {
             Rectangle()
                 .fill(LinearGradient.backgroundGradient)
@@ -21,8 +23,9 @@ struct DashboardView: View {
                             .font(.bodyFD2)
                         
                         Spacer()
-                        
-                        Text("Location")
+                        NavigationLink(destination: MapView().ignoresSafeArea()){
+                            Text("Location")
+                        }
                     }
                     HStack(spacing: 15) {
                         Text("Icon")
@@ -52,6 +55,7 @@ struct DashboardView: View {
                 }
                 .padding(.horizontal, 40)
                 .padding(.bottom, 30)
+            }
             }
             
         }
