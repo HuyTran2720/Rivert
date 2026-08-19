@@ -1,7 +1,9 @@
-import { onRequest } from "firebase-functions/v2/https";
+import {onRequest} from "firebase-functions/v2/https";
+import {onSchedule} from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
-import { getFirestore, Timestamp, FieldValue } from "firebase-admin/firestore";
-import { computeSiteState, RATE_WINDOW_MIN, Reading, Calibration } from "./calc";
+import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
+import {computeSiteState, RATE_WINDOW_MIN, Reading, Calibration} from "./calc";
+import {fetchWeather} from "./weather";
 
 admin.initializeApp();
 const db = getFirestore();
@@ -12,6 +14,10 @@ interface WireReading {
   rawDistanceMM: number;
 }
 
+/**
+ * @param {unknown} r Anything that arrived in the request body.
+ * @return {boolean} True if it has the shape of a WireReading.
+ */
 function isValidReading(r: unknown): r is WireReading {
   if (typeof r !== "object" || r === null) return false;
   const x = r as Record<string, unknown>;
@@ -26,9 +32,8 @@ function isValidReading(r: unknown): r is WireReading {
 const RECOMPUTE_INTERVAL_MS = 30_000;
 
 export const ingest = onRequest(
-  { region: "asia-southeast2" },
+  {region: "asia-southeast2"},
   async (req, res) => {
-
     // Fail loudly if config is missing — otherwise undefined !== undefined
     // is false and a request with NO header would be accepted.
     const expected = process.env.DEVICE_SECRET;
@@ -52,7 +57,7 @@ export const ingest = onRequest(
     const incoming = Array.isArray(req.body) ? req.body : [req.body];
 
     if (incoming.length === 0) {
-      res.status(400).json({ error: "empty batch" });
+      res.status(400).json({error: "empty batch"});
       return;
     }
 
@@ -69,11 +74,14 @@ export const ingest = onRequest(
 
     if (rejected.length > 0) {
       console.warn(`rejected ${rejected.length} malformed:`,
-                   JSON.stringify(rejected));
+        JSON.stringify(rejected));
     }
 
     if (valid.length === 0) {
-      res.status(400).json({ error: "no valid readings", rejected: rejected.length });
+      res.status(400).json({
+        error: "no valid readings",
+        rejected: rejected.length,
+      });
       return;
     }
 
@@ -81,17 +89,20 @@ export const ingest = onRequest(
     // network drop overwrites rather than duplicating.
     const batch = db.batch();
     for (const r of valid) {
-        const id = `${r.deviceId}_${r.timestamp}`.replace(/[/.]/g, "_");
-        batch.set(db.doc(`readings/${id}`), { // batch stored into /readings
+      const id = `${r.deviceId}_${r.timestamp}`.replace(/[/.]/g, "_");
+      batch.set(db.doc(`readings/${id}`), { // batch stored into /readings
         ...r,
         timestamp: Timestamp.fromDate(new Date(r.timestamp)),
         serverReceivedAt: FieldValue.serverTimestamp(),
-        });
+      });
     }
     await batch.commit();
 
     const last = valid[valid.length - 1];
-    console.log(`stored ${valid.length} from ${last.deviceId} | ${last.rawDistanceMM}mm`);
+    console.log(
+      `stored ${valid.length} from ${last.deviceId} | ` +
+      `${last.rawDistanceMM}mm`,
+    );
 
     const siteId = last.deviceId;
     const stateRef = db.doc(`state/${siteId}`);
@@ -107,7 +118,12 @@ export const ingest = onRequest(
       (Date.now() - lastComputedAt.getTime()) >= RECOMPUTE_INTERVAL_MS;
 
     if (!dueForRecompute) {
-      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      res.json({
+        ok: true,
+        accepted: valid.length,
+        rejected: rejected.length,
+        recomputed: false,
+      });
       return;
     }
 
@@ -125,7 +141,12 @@ export const ingest = onRequest(
 
     if (!siteSnap.exists) {
       console.error(`sites/${siteId} missing — skipping recompute`);
-      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      res.json({
+        ok: true,
+        accepted: valid.length,
+        rejected: rejected.length,
+        recomputed: false,
+      });
       return;
     }
 
@@ -143,27 +164,81 @@ export const ingest = onRequest(
     const newState = computeSiteState(siteId, readings, cal, now);
 
     if (!newState) {
-      console.warn(`no plausible readings in window for ${siteId} — state not overwritten`);
-      res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: false });
+      console.warn(
+        `no plausible readings in window for ${siteId} — ` +
+        "state not overwritten",
+      );
+      res.json({
+        ok: true,
+        accepted: valid.length,
+        rejected: rejected.length,
+        recomputed: false,
+      });
       return;
     }
 
-    await stateRef.set(newState);
-    console.log(`state/${siteId} → ${newState.riskState} (level ${newState.levelMM}mm)`);
+    // merge: the weather field on this document is written by
+    // refreshWeather, not by us. A plain set() would delete it.
+    await stateRef.set(newState, {merge: true});
+    console.log(
+      `state/${siteId} → ${newState.riskState} ` +
+      `(level ${newState.levelMM}mm)`,
+    );
 
-    res.json({ ok: true, accepted: valid.length, rejected: rejected.length, recomputed: true });
+    res.json({
+      ok: true,
+      accepted: valid.length,
+      rejected: rejected.length,
+      recomputed: true,
+    });
   }
+);
+
+// The BMKG url in weather.ts is hardcoded to Legian's village code, so
+// this fetch is only valid for this one site.
+const WEATHER_SITE_ID = "legian-01";
+
+// Hourly, because that is as often as the upstream forecasts actually
+// change: BMKG re-runs its model roughly every 6h, Open-Meteo hourly.
+export const refreshWeather = onSchedule(
+  {
+    schedule: "every 1 hours",
+    region: "asia-southeast2",
+    timeZone: "Asia/Makassar",
+  },
+  async () => {
+    const weather = await fetchWeather(new Date());
+
+    // fetchWeather never throws; null means the upstream API failed.
+    // Keeping yesterday's forecast beats blanking the field.
+    if (!weather) {
+      console.warn("weather refresh produced nothing — keeping last copy");
+      return;
+    }
+
+    // merge: this function owns the weather field and nothing else on
+    // the document. ingest owns all the rest.
+    await db
+      .doc(`state/${WEATHER_SITE_ID}`)
+      .set({weather}, {merge: true});
+
+    console.log(
+      `weather/${WEATHER_SITE_ID} → ${weather.nowDesc}, ` +
+      `${weather.precipRateMMPerHour}mm/h, ` +
+      `${weather.precipProbabilityNext6hPct}% next 6h`,
+    );
+  },
 );
 
 // ! TESTING PURPOSES
 export const ping = onRequest(
-  { region: "asia-southeast2" },
+  {region: "asia-southeast2"},
   async (req, res) => {
     if (req.get("x-device-secret") !== process.env.DEVICE_SECRET) {
       res.status(401).send("unauthorized");
       return;
     }
     const doc = await db.doc("sites/legian-01").get();
-    res.json({ ok: true, site: doc.data() });
+    res.json({ok: true, site: doc.data()});
   }
 );

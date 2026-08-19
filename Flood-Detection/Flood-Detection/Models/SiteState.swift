@@ -1,23 +1,22 @@
 //
 //  SiteState.swift
-//  FloodApp
+//  Flood-Detection
 //
-//  WHAT: Everything currently known about one monitored location. A
-//        complete snapshot, not a stream.
+//  WHAT: The single document the app reads. Everything on screen comes
+//        from one snapshot of this type.
 //
-//  WHY:  The server stores exactly one of these per site, overwritten on
-//        every update. The app subscribes with a single listener and
-//        renders whatever it says. The app never assembles a picture from
-//        multiple sources and never decides which fields matter.
+//  WHY:  The app subscribes to one document and renders whatever it
+//        says. It never assembles a picture from pieces, so the server
+//        has to hand it a complete, self-consistent state every time.
 //
-//  USED BY: DashboardController, FloodWidget, all dashboard views
+//  MIRRORS: SiteState in backend/functions/src/calc.ts, plus the
+//        `weather` field which is merged onto the same document by the
+//        refreshWeather scheduled function. If you change one, change
+//        the other — the field names below are the wire format.
 //
-//  STATUS: Complete. Pure data — no logic, no formatting, no computed
-//          display properties. Formatting lives in Extensions/Formatters
-//          because the widget needs it too and does not share controllers.
+//  USED BY: DashboardController, MainInfoView
 //
-//  TARGET MEMBERSHIP: must be a member of BOTH the app target and the
-//  widget extension target.
+//  STATUS: Implemented.
 //
 
 import Foundation
@@ -26,69 +25,36 @@ struct SiteState: Codable, Equatable, Sendable {
 
     let siteId: String
 
-    // MARK: Measurement
-
-    /// Water height above the channel bed, in millimetres.
+    /// Water height above the channel bed, mm.
     let levelMM: Double
 
-    /// What the sensor actually measured, distance down to the water.
-    /// Kept for transparency and for checking against a tape measure on site.
-    let rawDistanceMM: Double
+    /// Positive means rising. Nil means we could not fit a rate at all,
+    /// which is NOT the same as "not rising" — show them differently.
+    let rateMMPerMin: Double?
 
-    // MARK: Rate
+    /// How far the water is from spilling over at street level, mm.
+    /// Negative means it already has.
+    let freeboardMM: Double
 
-    /// Millimetres per hour. POSITIVE means water is rising.
-    /// Nil means insufficient readings in that window — which is different
-    /// from "not rising". Never default these to zero.
-    let rate5m: Double?
-    let rate15m: Double?
-    let rate30m: Double?
-
-    /// R² of the regression, 0 to 1. How linear the rise actually is.
-    let rateConfidence: Double?
-
-    // MARK: Thresholds
-
-    /// Millimetres before water spreads onto the benches. Negative means
-    /// it already has.
-    let freeboardBenchMM: Double
-
-    /// Millimetres before overspill at street level. Negative means it is
-    /// already flooding.
-    let freeboardBankMM: Double
-
-    /// Nil when not rising.
-    let timeToBenchMin: MinuteRange?
+    /// Minutes until overspill. Nil when the water is not rising, is
+    /// already over, or is further out than the server will project.
     let timeToBankMin: MinuteRange?
 
-    // MARK: Judgement
-
     let riskState: RiskState
+
+    /// Age of the newest sensor reading. Separate from riskState on
+    /// purpose — see Staleness.swift.
     let staleness: Staleness
 
-    // MARK: Recession
-
-    /// True once the level has turned and is falling.
-    let isPeaking: Bool
-
-    /// Only meaningful after the peak; nil otherwise.
-    let timeUntilClearMin: MinuteRange?
-
-    // MARK: History
-
-    /// Short recent series for the trend sparkline.
-    let recentLevels: [LevelPoint]
-
-    // MARK: Provenance
-
-    /// Device timestamp of the newest reading used.
     let latestReadingAt: Date
 
-    /// When the server computed this snapshot.
     let computedAt: Date
 
-    /// False while the site's calibration constants are still placeholders.
-    /// The UI MUST surface this — an uncalibrated system produces
-    /// structurally valid and numerically meaningless output.
+    /// False while the tape-measured site geometry is still a
+    /// placeholder. Every number above is fiction until this is true.
     let calibrated: Bool
+
+    /// Nil until refreshWeather has run at least once, or if the
+    /// forecast APIs were unreachable on every attempt.
+    let weather: Weather?
 }

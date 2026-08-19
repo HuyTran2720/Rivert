@@ -2,10 +2,10 @@
 //  MinuteRange.swift
 //  FloodApp
 //
-//  WHAT: A range of minutes, e.g. 28 to 52.
+//  WHAT: A range of minutes, e.g. 1.4 to 2.6.
 //
 //  WHY:  Every projected value is a range, never a point estimate.
-//        "28 to 52 minutes" survives contact with reality; "40 minutes"
+//        "1.4 to 2.6 minutes" survives contact with reality; "2 minutes"
 //        does not. Swift's ClosedRange is not cleanly Codable across the
 //        JSON shape the server sends, so this wraps it.
 //
@@ -17,6 +17,8 @@
 import Foundation
 
 struct MinuteRange: Codable, Equatable, Sendable {
-    let lower: Int
-    let upper: Int
+    // Double, not Int: at demo scale the server rounds to one
+    // decimal place, so whole minutes would fail to decode.
+    let lower: Double
+    let upper: Double
 }
