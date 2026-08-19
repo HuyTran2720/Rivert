@@ -9,23 +9,26 @@ import SwiftUI
 
 struct SafetyStatusCard: View {
     let status: SafetyStatus
+
     
     var body: some View {
-        HStack(spacing: -10) {
-            Image(imageResource)
-                .resizable()
-                .frame(width: 42, height: 35)
-                .zIndex(1)
-                .padding(.bottom,8)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .foregroundStyle(titleColor)
-                    .fontWeight(.bold)
+            VStack(alignment: .center, spacing: 4) {
+                HStack {
+                    Image(imageResource)
+                        .resizable()
+                        .frame(width: 42, height: 35)
+                        .zIndex(1)
+                        .padding(.bottom,8)
+                    Text(title)
+                        .foregroundStyle(titleColor)
+                        .fontWeight(.bold)
+                }
                 Text(message)
                     .font(.bodyFD2)
                     .foregroundStyle(textColor)
             }
+            .frame(width: 300, alignment: .center)
+            .frame(minHeight: 40, alignment: .center)
             .padding()
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
@@ -34,11 +37,10 @@ struct SafetyStatusCard: View {
                     .stroke(outlineColor, lineWidth: 2)
             )
         }
-    }
         
     private var title: String {
         switch status {
-        case .safe: return ""
+        case .safe: return "SAFE"
         case .caution: return "CAUTION"
         case .danger: return "DANGER"
         }
@@ -46,15 +48,16 @@ struct SafetyStatusCard: View {
     
     private var message: String {
         switch status {
-        case .safe: return ""
+        case .safe: return "it's safe to leave now, stay safe!"
         case .caution: return "Higher flood risk is expected within the next hour. Be prepared!"
         case .danger: return "Floodwater is reaching homes and roads may no longer be accessible."
         }
     }
+
     
     private var imageResource: ImageResource {
         switch status {
-        case .safe: return .cautiousMark // fallback, harusnya nggak pernah kepakai
+        case .safe: return .safeMark // fallback, harusnya nggak pernah kepakai
         case .caution: return .cautiousMark
         case .danger: return .dangerMark
         }
@@ -62,7 +65,7 @@ struct SafetyStatusCard: View {
     
     private var titleColor: Color {
         switch status {
-        case .safe: return .yellowTitle
+        case .safe: return .greenTitle
         case .caution: return .yellowTitle
         case .danger: return .redTitle
         }
@@ -70,7 +73,7 @@ struct SafetyStatusCard: View {
     
     private var textColor: Color {
         switch status {
-        case .safe: return .yellowText
+        case .safe: return .greenText
         case .caution: return .yellowText
         case .danger: return .redText
         }
@@ -78,7 +81,7 @@ struct SafetyStatusCard: View {
     
     private var backgroundColor: Color {
         switch status {
-        case .safe: return .yellowBackground
+        case .safe: return .greenBackground
         case .caution: return .yellowBackground
         case .danger: return .redBackground
         }
@@ -86,7 +89,7 @@ struct SafetyStatusCard: View {
     
     private var outlineColor: Color {
         switch status {
-        case .safe: return .yellowOutline
+        case .safe: return .greenOutline
         case .caution: return .yellowOutline
         case .danger: return .redOutline
         }
@@ -97,6 +100,7 @@ struct SafetyStatusCard: View {
     VStack(spacing: 12) {
         SafetyStatusCard(status: .caution)
         SafetyStatusCard(status: .danger)
+        SafetyStatusCard(status: .safe)
     }
     .padding()
 }
