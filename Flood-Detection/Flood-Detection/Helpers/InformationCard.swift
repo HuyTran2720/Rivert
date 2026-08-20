@@ -14,7 +14,7 @@ struct InformationCard: View {
     
     var body: some View {
         Spacer()
-        ZStack(alignment:.center) {
+        ZStack(alignment: .leading) {
             Rectangle()
                 .fill(LinearGradient(
                     colors: [.white, backgroundColor],
@@ -27,22 +27,22 @@ struct InformationCard: View {
                 DangerPhase()
                 WaterLevelCard(currentLevel: 2.0, range: 0...4)
                     .frame(width: 150, height: 225)
-
+                
                 VStack (alignment:.center, spacing: 30){
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)
-                        .foregroundColor(.yellow)
+                        .foregroundColor(textColor)
                         .bold()
                     WaterRateCard()
-                        HStack {
+                    HStack {
                         Text(currentStatus.rawValue)
-                                .font(.bodyFD2)
-                                .bold()
+                            .font(.bodyFD2)
+                            .bold()
                         Image(systemName: "arrow.up")
                     }
                     .padding(5)
                     .foregroundColor(.white)
-                    .background(.yellow)
+                    .background(textColor)
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
@@ -54,11 +54,19 @@ struct InformationCard: View {
         case .caution: return .yellowBackground
         case .danger: return .redBackground
         }
-
+        
+    }
+    private var textColor: Color {
+        switch status {
+        case .safe: return .greenText
+        case .caution: return .yellowText
+        case .danger: return .redText
+        }
+        
+    }
 }
+    
+    #Preview {
+        InformationCard(status:.caution)
+    }
 
-}
-
-#Preview {
-    InformationCard(status:.caution)
-}

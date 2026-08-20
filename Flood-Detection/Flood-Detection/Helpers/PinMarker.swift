@@ -4,69 +4,68 @@
 //
 //  Created on 18/08/26.
 //
-//  A reusable circular pin marker component for map annotations.
-//  Renders a circle with a light-tinted fill, a colored border,
-//  and a warning icon centered inside — all driven by status.
-//
 
 import UIKit
 import SwiftUI
 
-// MARK: - PinMarker
-
-/// Generates circular pin marker images for map annotations.
-/// Each pin has a light-tinted background, a colored border, and a
-/// warning icon centered inside, all matching the given SafetyStatus.
 struct PinMarker {
 
-    /// The diameter of the pin circle in points.
-    static let diameter: CGFloat = 40
-    /// Creates a circular pin marker image for the given safety status.
-    ///
-    /// - Parameter status: Determines the pin's tint color and icon.
-    /// - Returns: A rendered `UIImage` of the circular pin.
+    static let circleSize: CGFloat = 40
+    static let borderWidth: CGFloat = 4
+    static let pointerHeight: CGFloat = 10
+
+    /// Creates a speech-bubble pin marker image for the given status.
     static func image(for status: SafetyStatus) -> UIImage {
-        let size = CGSize(width: diameter, height: diameter)
+        let totalWidth = circleSize + borderWidth
+        let totalHeight = circleSize + borderWidth + pointerHeight
+        let size = CGSize(width: totalWidth, height: totalHeight)
         let renderer = UIGraphicsImageRenderer(size: size)
 
         return renderer.image { context in
             let ctx = context.cgContext
-            let inset: CGFloat = 1.5
-            let circleRect = CGRect(x: inset, y: inset,
-                                     width: diameter - 2 * inset,
-                                     height: diameter - 2 * inset)
+            let center = CGPoint(x: totalWidth / 2, y: (circleSize + borderWidth) / 2)
+            let radius = circleSize / 2
 
-            // Light tinted circle background
-            ctx.setFillColor(status.pinTintColor.withAlphaComponent(0.12).cgColor)
-            ctx.fillEllipse(in: circleRect)
+            // --- White border circle ---
+            ctx.setFillColor(UIColor.white.cgColor)
+            ctx.addArc(center: center, radius: radius + borderWidth / 2,
+                       startAngle: 0, endAngle: .pi * 2, clockwise: false)
+            ctx.fillPath()
 
-            // Colored border
-            ctx.setStrokeColor(status.pinTintColor.withAlphaComponent(0.5).cgColor)
-            ctx.setLineWidth(1.5)
-            ctx.strokeEllipse(in: circleRect)
+            // --- Bottom pointer (white) ---
+            let pointerBase: CGFloat = 12
+            let bottomOfCircle = center.y + radius + borderWidth / 2
+            ctx.move(to: CGPoint(x: center.x - pointerBase / 2, y: bottomOfCircle - 2))
+            ctx.addLine(to: CGPoint(x: center.x, y: bottomOfCircle + pointerHeight))
+            ctx.addLine(to: CGPoint(x: center.x + pointerBase / 2, y: bottomOfCircle - 2))
+            ctx.closePath()
+            ctx.fillPath()
 
-            // Warning icon centered inside the circle
-            let iconImage = Self.iconImage(for: status)
-            let iconWidth: CGFloat = 24
-            let iconHeight: CGFloat = 20
-            let iconRect = CGRect(
-                x: (diameter - iconWidth) / 2,
-                y: (diameter - iconHeight) / 2,
-                width: iconWidth,
-                height: iconHeight
-            )
-            iconImage.draw(in: iconRect)
-        }
-    }
+            // --- Colored circle fill ---
+            ctx.setFillColor(status.pinTintColor.cgColor)
+            ctx.addArc(center: center, radius: radius,
+                       startAngle: 0, endAngle: .pi * 2, clockwise: false)
+            ctx.fillPath()
 
-    // MARK: - Helpers
+            // --- SF Symbol icon ---
+            let iconName: String
+            switch status {
+            case .danger:  iconName = "light.beacon.max"
+            case .caution: iconName = "exclamationmark.triangle"
+            case .safe:    iconName = "checkmark"
+            }
 
-    /// Returns the appropriate warning icon for the given safety status.
-    private static func iconImage(for status: SafetyStatus) -> UIImage {
-        switch status {
-        case .danger:  return UIImage(resource: .dangerMark)
-        case .caution: return UIImage(resource: .cautiousMark)
-        case .safe:    return UIImage(resource: .safeMark)
+            let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
+            if let symbol = UIImage(systemName: iconName, withConfiguration: config)?
+                .withTintColor(.white, renderingMode: .alwaysOriginal) {
+                let iconRect = CGRect(
+                    x: center.x - symbol.size.width / 2,
+                    y: center.y - symbol.size.height / 2,
+                    width: symbol.size.width,
+                    height: symbol.size.height
+                )
+                symbol.draw(in: iconRect)
+            }
         }
     }
 }
@@ -87,4 +86,3 @@ struct PinMarker {
     }
     .padding()
 }
-
