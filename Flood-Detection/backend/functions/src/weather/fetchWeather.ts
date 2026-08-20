@@ -7,49 +7,27 @@
 // null probabilities. If BMKG fails we publish nothing and the caller
 // keeps whatever it cached last.
 
-import {type Staleness} from "./calc.js";
-
-const BMKG_URL =
-  "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=51.03.01.1004";
-
-const OPEN_METEO_URL =
-  "https://api.open-meteo.com/v1/forecast" +
-  "?latitude=-8.7038&longitude=115.1728" +
-  "&hourly=precipitation_probability&forecast_days=2&timezone=UTC";
-
-// BMKG publishes one row per 3 hours.
-const SLOT_HOURS = 3;
-// How far ahead the rollup looks.
-const HORIZON_HOURS = 6;
-const FETCH_TIMEOUT_MS = 8000;
-// BMKG re-runs its model roughly every 6h; these are generous.
-const WEATHER_STALE_AFTER_MIN = 180;
-const WEATHER_NO_DATA_AFTER_MIN = 720;
-
-const MS_PER_MIN = 60 * 1000;
-const MS_PER_HOUR = 60 * MS_PER_MIN;
-
-/** One parsed BMKG 3-hour forecast slot. */
-export interface WeatherSlot {
-  at: Date;
-  tempC: number;
-  /** Total precipitation across the whole 3h slot, mm. */
-  precipMM: number;
-  cloudPct: number;
-  humidityPct: number;
-  description: string;
-}
-
-/** One hourly rain-probability point from Open-Meteo. */
-export interface ProbPoint {
-  at: Date;
-  probabilityPct: number;
-}
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import { onRequest } from "firebase-functions/v2/https";
+import { type Staleness } from "../types/models";
+import { db } from "../db/firestore";
+import {
+  WEATHER_SLOT_HOURS,
+  WEATHER_HORIZON_HOURS,
+  WEATHER_FETCH_TIMEOUT_MS,
+  WEATHER_STALE_AFTER_MIN,
+  WEATHER_NO_DATA_AFTER_MIN,
+  WEATHER_SITE_ID,
+  MS_PER_MIN,
+  MS_PER_HOUR,
+} from "../config";
+import { BMKG_URL, WeatherSlot, parseBMKG } from "./bmkg";
+import { OPEN_METEO_URL, ProbPoint, parseOpenMeteo } from "./openMeteo";
 
 /** What gets merged into the state document. */
 export interface Weather {
-  /** custom icon */
   nowDesc: string;
+  nowIconURL: string;
   nowTempC: number;
   precipRateMMPerHour: number;
   /** Chance of rain this hour. Null if Open-Meteo was unreachable. */
@@ -70,102 +48,12 @@ export interface Weather {
   fetchedAt: Date;
 }
 
-interface BmkgEntry {
-  datetime?: unknown;
-  t?: unknown;
-  tp?: unknown;
-  tcc?: unknown;
-  hu?: unknown;
-  weather_desc_en?: unknown;
-}
-
-interface BmkgResponse {
-  data?: { cuaca?: BmkgEntry[][] }[];
-}
-
-interface OpenMeteoResponse {
-  hourly?: {
-    time?: unknown[];
-    precipitation_probability?: unknown[];
-  };
-}
-
-/**
- * @param {unknown} v Any value from an external payload.
- * @return {number} The number, or 0 if it was missing or not finite.
- */
-function num(v: unknown): number {
-  return typeof v === "number" && Number.isFinite(v) ? v : 0;
-}
-
-/**
- * @param {unknown} v Any value from an external payload.
- * @return {string} The string, or "" if it was missing.
- */
-function str(v: unknown): string {
-  return typeof v === "string" ? v : "";
-}
-
 /**
  * @param {number} x The value to round.
  * @return {number} x rounded to one decimal place.
  */
 function round1(x: number): number {
   return Math.round(x * 10) / 10;
-}
-
-/**
- * Flatten BMKG's nested day groups into one sorted list.
- *
- * @param {unknown} raw The decoded BMKG response.
- * @return {WeatherSlot[]} Slots, oldest first. Empty if unparseable.
- */
-export function parseBMKG(raw: unknown): WeatherSlot[] {
-  const groups = (raw as BmkgResponse)?.data?.[0]?.cuaca;
-  if (!Array.isArray(groups)) return [];
-
-  const out: WeatherSlot[] = [];
-  for (const group of groups) {
-    if (!Array.isArray(group)) continue;
-    for (const e of group) {
-      const at = new Date(str(e?.datetime));
-      if (Number.isNaN(at.getTime())) continue;
-      out.push({
-        at,
-        tempC: num(e.t),
-        precipMM: num(e.tp),
-        cloudPct: num(e.tcc),
-        humidityPct: num(e.hu),
-        description: str(e.weather_desc_en),
-      });
-    }
-  }
-  return out.sort((a, b) => a.at.getTime() - b.at.getTime());
-}
-
-/**
- * Open-Meteo returns "2026-08-19T00:00" with no zone marker, which JS
- * parses as LOCAL time. Without the appended Z every point shifts.
- *
- * @param {unknown} raw The decoded Open-Meteo response.
- * @return {ProbPoint[]} Points, oldest first. Empty if unparseable.
- */
-export function parseOpenMeteo(raw: unknown): ProbPoint[] {
-  const hourly = (raw as OpenMeteoResponse)?.hourly;
-  const times = hourly?.time;
-  const probs = hourly?.precipitation_probability;
-  if (!Array.isArray(times) || !Array.isArray(probs)) return [];
-
-  const out: ProbPoint[] = [];
-  for (let i = 0; i < times.length; i++) {
-    const t = str(times[i]);
-    if (t === "") continue;
-    const iso = t.endsWith("Z") ? t : `${t}${t.length === 16 ? ":00" : ""}Z`;
-    const at = new Date(iso);
-    if (Number.isNaN(at.getTime())) continue;
-    out.push({at, probabilityPct: num(probs[i])});
-  }
-  return out.sort((a, b) => a.at.getTime() - b.at.getTime());
 }
 
 /**
@@ -178,7 +66,7 @@ function currentSlot(
   now: Date,
 ): WeatherSlot | undefined {
   const t = now.getTime();
-  const slotMs = SLOT_HOURS * MS_PER_HOUR;
+  const slotMs = WEATHER_SLOT_HOURS * MS_PER_HOUR;
   const covering = slots.find(
     (s) => s.at.getTime() <= t && t < s.at.getTime() + slotMs,
   );
@@ -254,8 +142,8 @@ export function summarize(
   if (!current) return null;
 
   const nowMs = now.getTime();
-  const horizonEnd = nowMs + HORIZON_HOURS * MS_PER_HOUR;
-  const slotMs = SLOT_HOURS * MS_PER_HOUR;
+  const horizonEnd = nowMs + WEATHER_HORIZON_HOURS * MS_PER_HOUR;
+  const slotMs = WEATHER_SLOT_HOURS * MS_PER_HOUR;
 
   // Any slot that overlaps the horizon at all counts toward the total.
   let next6hTotalMM = 0;
@@ -277,13 +165,14 @@ export function summarize(
     for (let i = startIdx; i < ahead.length && ahead[i].precipMM > 0; i++) {
       wet++;
     }
-    rainDurationHours = wet * SLOT_HOURS;
+    rainDurationHours = wet * WEATHER_SLOT_HOURS;
   }
 
   return {
     nowDesc: current.description,
+    nowIconURL: current.iconURL,
     nowTempC: current.tempC,
-    precipRateMMPerHour: round1(current.precipMM / SLOT_HOURS),
+    precipRateMMPerHour: round1(current.precipMM / WEATHER_SLOT_HOURS),
     precipProbabilityNowPct: probNearest(probs, now),
     precipProbabilityNext6hPct: probPeak(probs, nowMs, horizonEnd),
     next6hTotalMM: round1(next6hTotalMM),
@@ -299,7 +188,7 @@ export function summarize(
  */
 async function getJSON(url: string): Promise<unknown> {
   const res = await fetch(url, {
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(WEATHER_FETCH_TIMEOUT_MS),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return res.json();
@@ -338,3 +227,61 @@ export async function fetchWeather(now: Date): Promise<Weather | null> {
 
   return summarize(slots, probs, now, now);
 }
+
+// Hourly, because that is as often as the upstream forecasts actually
+// change: BMKG re-runs its model roughly every 6h, Open-Meteo hourly.
+export const refreshWeather = onSchedule(
+  {
+    schedule: "every 1 hours",
+    region: "asia-southeast2",
+    timeZone: "Asia/Makassar",
+  },
+  async () => {
+    const weather = await fetchWeather(new Date());
+
+    // fetchWeather never throws; null means the upstream API failed.
+    // Keeping yesterday's forecast beats blanking the field.
+    if (!weather) {
+      console.warn("weather refresh produced nothing — keeping last copy");
+      return;
+    }
+
+    // merge: this function owns the weather field and nothing else on
+    // the document. ingest owns all the rest.
+    await db
+      .doc(`state/${WEATHER_SITE_ID}`)
+      .set({ weather }, { merge: true });
+
+    console.log(
+      `weather/${WEATHER_SITE_ID} → ${weather.nowDesc}, ` +
+      `${weather.precipRateMMPerHour}mm/h, ` +
+      `${weather.precipProbabilityNext6hPct}% next 6h`,
+    );
+  },
+);
+
+export const refreshWeatherHTTP = onRequest(
+  { region: "asia-southeast2" },
+  async (req, res) => {
+    if (req.get("x-device-secret") !== process.env.DEVICE_SECRET) {
+      res.status(401).send("unauthorized");
+      return;
+    }
+
+    const weather = await fetchWeather(new Date());
+
+    // fetchWeather never throws; null means the upstream API failed.
+    // Keeping yesterday's forecast beats blanking the field.
+    if (!weather) {
+      res.status(502).send("API fetch failed.");
+      return;
+    }
+
+    // merge: this function owns the weather field and nothing else on
+    // the document. ingest owns all the rest.
+    await db
+      .doc(`state/${WEATHER_SITE_ID}`)
+      .set({ weather }, { merge: true });
+    res.json({ ok: true });
+  },
+);
