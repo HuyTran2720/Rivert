@@ -152,6 +152,7 @@ export const ingest = onRequest(
 
     const cal = siteSnap.data() as Calibration;
     if (cal.calibrated === undefined) cal.calibrated = false;
+    if (cal.sensor_offset_mm === undefined) cal.sensor_offset_mm = 0;
     const readings: Reading[] = windowSnap.docs.map((d) => {
       const data = d.data();
       return {
