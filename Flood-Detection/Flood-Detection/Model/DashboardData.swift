@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct DashboardDataModel  {
-    let location: MapDataModel
+struct DashboardData  {
+    let location: MapData
     let weather: WeatherModel
     let waterStatus: WaterStatusData
     var dashboardStatus: SafetyStatus {

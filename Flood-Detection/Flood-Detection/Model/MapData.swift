@@ -5,7 +5,7 @@
 //  Created by RyanMFDR on 14/08/26.
 //
 
-struct MapDataModel {
+struct MapData {
     let longitude: String
     let latitude: String
     let mapStatus: SafetyStatus
