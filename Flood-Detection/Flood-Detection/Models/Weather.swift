@@ -12,7 +12,8 @@
 //
 //  MIRRORS: Weather in backend/functions/src/weather.ts.
 //        BMKG supplies everything except the two probabilities, which
-//        come from Open-Meteo and are nil if that call failed.
+//        come from Open-Meteo and are nil if that call failed. BMKG's
+//        own icon URL is deliberately NOT published — see nowDesc.
 //
 //  USED BY: SiteState
 //
@@ -24,10 +25,9 @@ import Foundation
 struct Weather: Codable, Equatable, Sendable {
 
     /// English description of the current 3-hour slot, e.g. "Partly Cloudy".
+    /// The only condition signal on the wire — the app picks its own
+    /// artwork from this string. No icon URL is published.
     let nowDesc: String
-
-    /// BMKG's own icon for that description. change accordingly
-    let nowIconURL: String
 
     let nowTempC: Double
 

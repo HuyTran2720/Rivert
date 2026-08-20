@@ -38,7 +38,6 @@ export interface WeatherSlot {
   cloudPct: number;
   humidityPct: number;
   description: string;
-  iconURL: string;
 }
 
 /** One hourly rain-probability point from Open-Meteo. */
@@ -49,8 +48,8 @@ export interface ProbPoint {
 
 /** What gets merged into the state document. */
 export interface Weather {
+  /** custom icon */
   nowDesc: string;
-  nowIconURL: string;
   nowTempC: number;
   precipRateMMPerHour: number;
   /** Chance of rain this hour. Null if Open-Meteo was unreachable. */
@@ -78,7 +77,6 @@ interface BmkgEntry {
   tcc?: unknown;
   hu?: unknown;
   weather_desc_en?: unknown;
-  image?: unknown;
 }
 
 interface BmkgResponse {
@@ -139,7 +137,6 @@ export function parseBMKG(raw: unknown): WeatherSlot[] {
         cloudPct: num(e.tcc),
         humidityPct: num(e.hu),
         description: str(e.weather_desc_en),
-        iconURL: str(e.image),
       });
     }
   }
@@ -285,7 +282,6 @@ export function summarize(
 
   return {
     nowDesc: current.description,
-    nowIconURL: current.iconURL,
     nowTempC: current.tempC,
     precipRateMMPerHour: round1(current.precipMM / SLOT_HOURS),
     precipProbabilityNowPct: probNearest(probs, now),
