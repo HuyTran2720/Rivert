@@ -4,6 +4,7 @@ import * as admin from "firebase-admin";
 import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
 import {computeSiteState, RATE_WINDOW_MIN, Reading, Calibration} from "./calc";
 import {fetchWeather} from "./weather";
+import { runWatchDog } from "./watchdog";
 
 admin.initializeApp();
 const db = getFirestore();
@@ -13,6 +14,17 @@ interface WireReading {
   timestamp: string;
   rawDistanceMM: number;
 }
+
+export const staleWatchDog = onSchedule (
+  {
+    schedule: "every 5 minutes",
+    region: "asia-southeast2",
+    timeZone: "Asia/Makassar",
+  },
+  async () => {
+    await runWatchDog();
+  }
+)
 
 /**
  * @param {unknown} r Anything that arrived in the request body.
@@ -228,6 +240,21 @@ export const refreshWeather = onSchedule(
       `${weather.precipRateMMPerHour}mm/h, ` +
       `${weather.precipProbabilityNext6hPct}% next 6h`,
     );
+  },
+);
+
+// the emulator can't fire onSchedule locally, so we neeed to poke this
+// by hand during development. Same auth guard as ping.
+// still useful for testing even if we deploy
+export const staleWatchdogHttp = onRequest(
+  { region: "asia-southeast2" },
+  async (req, res) => {
+    if (req.get("x-device-secret") !== process.env.DEVICE_SECRET) {
+      res.status(401).send("unauthorized");
+      return;
+    }
+    await runWatchDog();
+    res.json({ ok: true });
   },
 );
 
