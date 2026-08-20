@@ -32,10 +32,16 @@ export function toReading(w: WireReading): Reading {
 export interface Calibration {
   d_bed: number;
   d_bench: number;
+  // NOT a threshold — this is d_bed - d_bench, the low-flow channel's
+  // own depth. Unused in calculations below; kept for reference until
+  // we find it a job.
   d_bank: number;
   w_bottom: number;
   w_bench: number;
   w_top: number;
+  // Sensor height above street level. 0 = mounted exactly at street
+  // level.
+  sensor_offset_mm: number;
   calibrated: boolean;
 }
 
@@ -95,7 +101,7 @@ const MS_PER_MIN = 60 * 1000;
  */
 export function isPlausible(r: Reading, cal: Calibration): boolean {
   if (r.rawDistanceMM > cal.d_bed + 100) return false;
-  if (r.rawDistanceMM < cal.d_bank - 500) return false;
+  if (r.rawDistanceMM < cal.sensor_offset_mm - 500) return false;
   return true;
 }
 
@@ -107,6 +113,15 @@ export function isPlausible(r: Reading, cal: Calibration): boolean {
 export function levelMM(rawDistanceMM: number, cal: Calibration): number {
   return cal.d_bed - rawDistanceMM;
 }
+
+// Sign convention: distances are measured DOWN from the sensor, so a
+// bigger rawDistanceMM means the water is farther away — i.e. lower.
+// Freeboard is "how much room is left", so it must be raw minus the
+// threshold's distance-from-sensor, not the other way round: if the
+// sensor sat exactly at a threshold, freeboard would just be
+// rawDistanceMM itself; d_bench/d_bank are the calibrated offset for
+// the sensor actually sitting above it. Get this backwards and every
+// <= 0 danger/caution check below fires exactly when it shouldn't.
 
 /**
  * Not published. Needed by classifyRisk and by timeToBank's channel split.
@@ -123,15 +138,20 @@ export function freeboardBenchMM(
 }
 
 /**
+ * Street level is the actual overspill threshold — the doc's "bank" was
+ * always this, never a separate elevation. If the sensor sat exactly at
+ * street level, freeboard would just be rawDistanceMM; sensor_offset_mm
+ * corrects for the sensor sitting slightly above it.
+ *
  * @param {number} rawDistanceMM Sensor reading.
  * @param {Calibration} cal Site calibration.
- * @return {number} Freeboard to street level, mm. Negative = over bank.
+ * @return {number} Freeboard to street level, mm. Negative = overspilled.
  */
 export function freeboardBankMM(
   rawDistanceMM: number,
   cal: Calibration,
 ): number {
-  return rawDistanceMM - cal.d_bank;
+  return rawDistanceMM - cal.sensor_offset_mm;
 }
 
 /**
