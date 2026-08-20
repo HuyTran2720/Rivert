@@ -8,9 +8,9 @@
 import UIKit
 
 enum SafetyStatus: String, CaseIterable {
-    case danger = "High Risk"
-    case caution = "Medium Risk"
-    case safe = "Low Risk"
+    case danger = "Rising Fast"
+    case caution = "Rising Medium"
+    case safe = "Safe"
 
     /// The color used for the map pin marker.
     var pinTintColor: UIColor {

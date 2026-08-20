@@ -9,10 +9,12 @@ import SwiftUI
 
 struct InformationCard: View {
     let status: SafetyStatus
+    let currentStatus: SafetyStatus = .caution
     
     
     var body: some View {
-        ZStack {
+        Spacer()
+        ZStack(alignment:.center) {
             Rectangle()
                 .fill(LinearGradient(
                     colors: [.white, backgroundColor],
@@ -23,19 +25,25 @@ struct InformationCard: View {
                 .cornerRadius(50)
             HStack {
                 DangerPhase()
-                VStack {
+                WaterLevelCard(currentLevel: 2.0, range: 0...4)
+                    .frame(width: 150, height: 225)
+
+                VStack (alignment:.center, spacing: 30){
                     Text("Rate of Water Rise")
-                        .font(.headingFD2)
-                        .foregroundColor(backgroundColor)
+                        .font(.bodyFD2)
+                        .foregroundColor(.yellow)
                         .bold()
-                    HStack{
-                        Text("Rising Fast")
-                        Image(systemName:"arrow.up")
+                    WaterRateCard()
+                        HStack {
+                        Text(currentStatus.rawValue)
+                                .font(.bodyFD2)
+                                .bold()
+                        Image(systemName: "arrow.up")
                     }
-                            .padding(10)
-                            .foregroundColor(.white)
-                            .background(backgroundColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
+                    .padding(5)
+                    .foregroundColor(.white)
+                    .background(.yellow)
+                    .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
         }

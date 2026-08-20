@@ -11,33 +11,7 @@
 import UIKit
 import MapKit
 
-// MARK: - Risk Level
 
-/// Represents how severe the flood risk is for a given zone.
-/// Each case carries a display label, a pin color, and a status emoji.
-enum RiskLevel: String, CaseIterable {
-    case high   = "High Risk"
-    case medium = "Medium Risk"
-    case low    = "Low Risk"
-
-    /// The color used for the map pin marker.
-    var pinTintColor: UIColor {
-        switch self {
-        case .high:   return UIColor(red: 0.90, green: 0.22, blue: 0.21, alpha: 1.0)
-        case .medium: return UIColor(red: 0.98, green: 0.75, blue: 0.18, alpha: 1.0)
-        case .low:    return UIColor(red: 0.18, green: 0.80, blue: 0.44, alpha: 1.0)
-        }
-    }
-
-    /// An emoji circle that visually indicates the risk status.
-    var statusEmoji: String {
-        switch self {
-        case .high:   return "🔴"
-        case .medium: return "🟡"
-        case .low:    return "🟢"
-        }
-    }
-}
 
 // MARK: - Flood Zone (Data Model)
 
@@ -46,7 +20,7 @@ enum RiskLevel: String, CaseIterable {
 struct FloodZone: Identifiable {
     let id = UUID()
     let name: String
-    let riskLevel: RiskLevel
+    let status: SafetyStatus
     let center: CLLocationCoordinate2D   // Where to place the pin
     let description: String
 }
@@ -57,7 +31,7 @@ struct FloodZone: Identifiable {
 /// Used so the map delegate can access risk level and description when
 /// rendering pins and handling taps.
 class FloodZoneAnnotation: MKPointAnnotation {
-    var riskLevel: RiskLevel = .low
+    var status: SafetyStatus = .safe
     var zoneName: String = ""
     var zoneDescription: String = ""
 }
@@ -84,14 +58,14 @@ extension FloodZone {
 
         FloodZone(
             name: "Denpasar",
-            riskLevel: .high,
+            status: .danger,
             center: CLLocationCoordinate2D(latitude: -8.6500, longitude: 115.2167),
             description: "Urban flooding due to drainage overflow. High population density area."
         ),
 
         FloodZone(
             name: "Kuta",
-            riskLevel: .high,
+            status: .danger,
             center: CLLocationCoordinate2D(latitude: -8.7200, longitude: 115.1700),
             description: "Coastal flooding risk. Low-lying terrain near beach areas."
         ),
@@ -100,21 +74,21 @@ extension FloodZone {
 
         FloodZone(
             name: "Ubud",
-            riskLevel: .medium,
+            status: .caution,
             center: CLLocationCoordinate2D(latitude: -8.5069, longitude: 115.2625),
             description: "River valley flooding during heavy rains. Moderate terrain elevation."
         ),
 
         FloodZone(
             name: "Gianyar",
-            riskLevel: .medium,
+            status: .caution,
             center: CLLocationCoordinate2D(latitude: -8.5415, longitude: 115.3233),
             description: "Seasonal flood risk near rice terraces and river systems."
         ),
 
         FloodZone(
             name: "Tabanan",
-            riskLevel: .medium,
+            status: .caution,
             center: CLLocationCoordinate2D(latitude: -8.5410, longitude: 115.1250),
             description: "Agricultural flooding from river overflow in the rainy season."
         ),
@@ -123,21 +97,21 @@ extension FloodZone {
 
         FloodZone(
             name: "Singaraja",
-            riskLevel: .low,
+            status: .safe,
             center: CLLocationCoordinate2D(latitude: -8.1120, longitude: 115.0882),
             description: "Elevated terrain with good drainage. Minimal flood history."
         ),
 
         FloodZone(
             name: "Karangasem",
-            riskLevel: .low,
+            status: .safe,
             center: CLLocationCoordinate2D(latitude: -8.4486, longitude: 115.6127),
             description: "Highland area near Mount Agung. Well-drained volcanic soil."
         ),
 
         FloodZone(
             name: "Bangli",
-            riskLevel: .low,
+            status: .safe,
             center: CLLocationCoordinate2D(latitude: -8.4544, longitude: 115.3500),
             description: "Central highland region. Elevated terrain provides natural flood protection."
         ),

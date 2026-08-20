@@ -11,7 +11,7 @@ import SwiftUI
 
 struct DangerPhase: View {
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 5) {
             // Text labels
             VStack(alignment: .trailing, spacing: 45) {
                 Text("Danger")
