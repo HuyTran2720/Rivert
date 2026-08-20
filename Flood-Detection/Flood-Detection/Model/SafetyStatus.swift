@@ -29,4 +29,25 @@ enum SafetyStatus: String, CaseIterable {
         case .safe:    return "🟢"
         }
     }
+
+    /// Maps Firestore's `riskState` field ("safe" / "caution" / "danger")
+    /// to this enum. Kept separate from `rawValue` because `rawValue` here
+    /// is the *display* string ("Rising Fast", etc.), not the backend value —
+    /// those are two different vocabularies for the same three states.
+    ///
+    /// Falls back to `.safe` ONLY as a last resort if the backend sends
+    /// something unrecognized — but logs so a bad value doesn't fail silently.
+    init(firestoreValue: String) {
+        switch firestoreValue.lowercased() {
+        case "danger":
+            self = .danger
+        case "caution":
+            self = .caution
+        case "safe":
+            self = .safe
+        default:
+            assertionFailure("Unrecognized riskState from Firestore: \(firestoreValue)")
+            self = .safe
+        }
+    }
 }
