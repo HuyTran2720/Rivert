@@ -13,7 +13,7 @@
 import SwiftUI
 import MapKit
 
-struct MapView: UIViewRepresentable {
+struct MapKitView: UIViewRepresentable {
 
     /// The list of flood zones to display as pins on the map.
     private let floodZones: [FloodZone] = FloodZone.sampleZones
@@ -55,11 +55,29 @@ struct MapView: UIViewRepresentable {
             let pin = FloodZoneAnnotation()
             pin.coordinate = zone.center
             pin.title = zone.name
-            pin.subtitle = "\(zone.riskLevel.statusEmoji) \(zone.riskLevel.rawValue)"
-            pin.riskLevel = zone.riskLevel
+            pin.subtitle = "\(zone.status.statusEmoji) \(zone.status.rawValue)"
+            pin.status = zone.status
             pin.zoneName = zone.name
             pin.zoneDescription = zone.description
             mapView.addAnnotation(pin)
         }
     }
+}
+
+// MARK: - Main Map View
+struct MapView: View {
+    var body: some View {
+        ZStack(alignment: .bottomTrailing) {
+            MapKitView()
+            
+            InformationCard(status: .safe)
+                .padding(.bottom, 40)
+                .padding(.trailing, 16)
+        }
+    }
+}
+
+#Preview {
+    MapView()
+        .ignoresSafeArea()
 }
