@@ -7,11 +7,11 @@
 struct WaterStatusData {
     let currentLevel: Float
     let riseRate: Float
-    let trend:  waterTrend
+    let trend:  WaterTrend
     let staleness: String
 }
 
-enum waterTrend: String {
+enum WaterTrend: String {
     case risingFast
     case dropingFast
     case normal
