@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0410302C494F003303A5 /* FirebaseCore */; };
+		3EDC0412302C494F003303A5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0413302C494F003303A5 /* FirebaseFirestore */; };
+		3EDC0414302C494F003303A5 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0415302C494F003303A5 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */,
+				3EDC0412302C494F003303A5 /* FirebaseFirestore in Frameworks */,
+				3EDC0414302C494F003303A5 /* FirebaseMessaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +96,8 @@
 			name = "Flood-Detection";
 			packageProductDependencies = (
 				3EDC0410302C494F003303A5 /* FirebaseCore */,
+				3EDC0413302C494F003303A5 /* FirebaseFirestore */,
+				3EDC0415302C494F003303A5 /* FirebaseMessaging */,
 			);
 			productName = "Flood-Detection";
 			productReference = 3E6E840F3024752900A7D079 /* Flood-Detection.app */;
@@ -383,6 +389,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		3EDC0413302C494F003303A5 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		3EDC0415302C494F003303A5 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

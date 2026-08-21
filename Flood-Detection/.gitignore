@@ -39,3 +39,6 @@ GoogleService-Info.plist
 
 # Firebase
 *GoogleService-Info.plist
+
+backend/functions/node_modules/
+backend/functions/lib/
