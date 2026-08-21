@@ -10,8 +10,13 @@ import UIKit
 enum SafetyStatus: String, CaseIterable {
     case danger
     case caution
+<<<<<<< HEAD:Flood-Detection/Flood-Detection/Model/SafetyStatusModel.swift
     case safe 
 
+=======
+    case safe
+    
+>>>>>>> Feat-NewMap:Flood-Detection/Flood-Detection/Model/SafetyStatus.swift
     /// The color used for the map pin marker.
     var pinTintColor: UIColor {
         switch self {
@@ -20,7 +25,7 @@ enum SafetyStatus: String, CaseIterable {
         case .safe:    return UIColor(red: 0.18, green: 0.80, blue: 0.44, alpha: 1.0)
         }
     }
-
+    
     /// An emoji circle that visually indicates the risk status.
     var statusEmoji: String {
         switch self {
