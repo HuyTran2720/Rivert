@@ -14,5 +14,4 @@ struct DashboardData  {
     var dashboardStatus: SafetyStatus {
         location.mapStatus
     }
-    
 }

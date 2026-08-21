@@ -14,14 +14,14 @@ struct WeatherModel {
     let weatherProbability: Int
     
     // Icon of each weather
-    let weatherIcon : weatherIcon
+    let weatherIcon : WeatherIcon
     
     // date of the weather
     let date: String
 }
 
 
-enum weatherIcon: String {
+enum WeatherIcon: String {
     case rain
     case clear
     case cloudy

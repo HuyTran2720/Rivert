@@ -86,7 +86,13 @@ struct TimeCard: View {
         .frame(width: 189, height: 59)
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.extraFD, lineWidth: 1)
+                .fill(
+                    LinearGradient(
+                        colors: [.white, .white],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
         )
     }
 }

@@ -55,7 +55,7 @@ struct MapKitView: UIViewRepresentable {
             let pin = FloodZoneAnnotation()
             pin.coordinate = zone.center
             pin.title = zone.name
-            pin.subtitle = "\(zone.status.statusEmoji) \(zone.status.rawValue)"
+//            pin.subtitle = "\(zone.status.statusEmoji) \(zone.status.rawValue)"
             pin.status = zone.status
             pin.zoneName = zone.name
             pin.zoneDescription = zone.description
@@ -69,10 +69,6 @@ struct MapView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             MapKitView()
-            
-            InformationCard(status: .safe)
-                .padding(.bottom, 40)
-                .padding(.trailing, 16)
         }
     }
 }
