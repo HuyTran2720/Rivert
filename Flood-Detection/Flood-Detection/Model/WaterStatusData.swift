@@ -5,13 +5,13 @@
 //  Created by Gian Denggan Benjamin on 13/08/26.
 //
 struct WaterStatusData {
-    let c   : Float
+    let currentLevel: Float
     let riseRate: Float
-    let trend:  waterTrend
+    let trend:  WaterTrend
     let staleness: String
 }
 
-enum waterTrend: String {
+enum WaterTrend: String {
     case risingFast
     case dropingFast
     case normal

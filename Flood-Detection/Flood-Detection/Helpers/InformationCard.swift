@@ -9,8 +9,12 @@ import SwiftUI
 
 struct InformationCard: View {
     let status: SafetyStatus
-    let currentStatus: SafetyStatus = .caution
-    
+    let water = WaterStatusData(
+        currentLevel: 2.0,
+        riseRate : 0.5,
+        trend:.risingFast,
+        staleness: "Now"
+    )
     
     var body: some View {
         Spacer()
@@ -21,7 +25,7 @@ struct InformationCard: View {
                     startPoint: .top,
                     endPoint: .bottom
                 ))
-                .frame(width: 400, height: 400)
+                .frame(width: 400, height: 300)
                 .cornerRadius(50)
             HStack {
                 DangerPhase()
@@ -31,18 +35,18 @@ struct InformationCard: View {
                 VStack (alignment:.center, spacing: 30){
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)
-                        .foregroundColor(.yellow)
+                        .foregroundColor(backgroundColor)
                         .bold()
                     WaterRateCard()
                         HStack {
-                        Text(currentStatus.rawValue)
-                                .font(.bodyFD2)
+                            Text(water.trend.rawValue)
+                                .font(. bodyFD2)
                                 .bold()
-                        Image(systemName: "arrow.up")
+                            Image(systemName: water.trend.systemImageName)
                     }
                     .padding(5)
-                    .foregroundColor(.white)
-                    .background(.yellow)
+                    .foregroundColor(.primaryFD)
+                    .background(backgroundColor)
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
@@ -50,7 +54,7 @@ struct InformationCard: View {
     }
     private var backgroundColor: Color {
         switch status {
-        case .safe: return .greenBackground
+        case .safe: return .secondaryFD
         case .caution: return .yellowBackground
         case .danger: return .redBackground
         }
@@ -60,5 +64,5 @@ struct InformationCard: View {
 }
 
 #Preview {
-    InformationCard(status:.caution)
+    InformationCard(status:.safe)
 }
