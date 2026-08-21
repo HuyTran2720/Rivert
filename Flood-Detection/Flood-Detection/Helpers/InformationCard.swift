@@ -18,20 +18,20 @@ struct InformationCard: View {
     
     var body: some View {
         Spacer()
-        ZStack(alignment:.center) {
+        ZStack(alignment: .leading) {
             Rectangle()
                 .fill(LinearGradient(
                     colors: [.white, backgroundColor],
                     startPoint: .top,
                     endPoint: .bottom
                 ))
-                .frame(width: 400, height: 300)
+                .frame(width: 400, height: 400)
                 .cornerRadius(50)
             HStack {
                 DangerPhase()
                 WaterLevelCard(currentLevel: 2.0, range: 0...4)
                     .frame(width: 150, height: 225)
-
+                
                 VStack (alignment:.center, spacing: 30){
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)

@@ -4,160 +4,104 @@
 //
 //  Created by Gian Denggan Benjamin on 06/08/26.
 //
-//  CONTROLLER — Handles all map interaction logic as the MKMapViewDelegate.
-//  This is the "C" in MVC: it responds to user actions on the map (pin taps,
-//  callout button taps) and decides what to show.
+//  VIEWMODEL — Holds map state, location logic, and the MKMapViewDelegate.
 //
 
-import UIKit
+import Foundation
 import MapKit
+import CoreLocation
 import SwiftUI
+import Combine
 
-// MARK: - FloodZoneAnnotationView
+class MapViewModel: ObservableObject {
 
-/// Custom annotation view that renders a circle pin icon with the flood
-/// warning image inside. When zoomed in, a MapAnnotationCard appears
-/// directly next to the pin — no MapKit callout bubble, no white background.
-class FloodZoneAnnotationView: MKAnnotationView {
+    @Published var centerOnUser = false
 
-    static let pinReuseID = "FloodZonePin"
+    let floodZones: [FloodZone] = FloodZone.sampleZones
+    let locationManager = CLLocationManager()
 
-    private var cardHostView: UIView?
-
-    /// Controls whether the info card beside the pin is visible.
-    var isCardVisible: Bool = false {
-        didSet {
-            guard oldValue != isCardVisible else { return }
-            UIView.animate(withDuration: 0.2) {
-                self.cardHostView?.alpha = self.isCardVisible ? 1 : 0
-            }
+    /// Adds a pin annotation for each flood zone.
+    func addPins(to mapView: MKMapView) {
+        for zone in floodZones {
+            let pin = FloodZoneAnnotation()
+            pin.coordinate = zone.center
+            pin.title = zone.name
+            pin.subtitle = "\(zone.status.statusEmoji) \(zone.status.rawValue)"
+            pin.status = zone.status
+            pin.zoneName = zone.name
+            pin.zoneDescription = zone.description
+            mapView.addAnnotation(pin)
         }
     }
 
-    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
-        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        canShowCallout = false   // No MapKit callout — we draw our own card
-        clipsToBounds = false
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        cardHostView?.removeFromSuperview()
-        cardHostView = nil
-        isCardVisible = false
-    }
-
-    // MARK: - Configuration
-
-    /// Sets the pin icon and builds the card for a given flood annotation.
-    func configure(with floodAnnotation: FloodZoneAnnotation) {
-
-        // 1. Render the circle pin icon using the PinMarker component
-        let pinImage = PinMarker.image(for: floodAnnotation.status)
-        self.image = pinImage
-
-        // Offset so the bottom-center of the circle sits at the coordinate
-        centerOffset = CGPoint(x: 0, y: -PinMarker.diameter / 2)
-
-        // 2. Build the MapAnnotationCard as a subview
-        cardHostView?.removeFromSuperview()
-
-        let card = MapAnnotationCard(
-            title: floodAnnotation.zoneName,
-            message: floodAnnotation.zoneDescription,
-            status: floodAnnotation.status
+    /// Centers the map on the user's current location.
+    func centerOnUserLocation(mapView: MKMapView) {
+        guard let location = mapView.userLocation.location else { return }
+        let region = MKCoordinateRegion(
+            center: location.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
-        let hostingController = UIHostingController(rootView: card)
-        hostingController.view.backgroundColor = .clear
-
-        // Size the card to fit its content
-        let fittingSize = hostingController.view.systemLayoutSizeFitting(
-            CGSize(width: 220, height: UIView.layoutFittingCompressedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-
-        let cardView = hostingController.view!
-
-        // Position the card to the right of the pin, vertically centered
-        let pinWidth = pinImage.size.width
-        let pinHeight = pinImage.size.height
-        cardView.frame = CGRect(
-            x: pinWidth / 2 + 6,
-            y: -(fittingSize.height / 2) - (pinHeight / 2),
-            width: fittingSize.width,
-            height: fittingSize.height
-        )
-        cardView.alpha = isCardVisible ? 1 : 0
-
-        addSubview(cardView)
-        self.cardHostView = cardView
+        mapView.setRegion(region, animated: true)
     }
 
+    /// Requests location permission.
+    func requestLocationPermission() {
+        locationManager.requestWhenInUseAuthorization()
+    }
 }
 
+// MARK: - Map Delegate
 
-// MARK: - MapCoordinator
-
-/// Acts as the MKMapViewDelegate to handle map events.
-/// - Provides each annotation with a FloodZoneAnnotationView (custom pin + card).
-/// - Toggles card visibility based on zoom level.
+/// Handles pin rendering and zoom-based card visibility.
 class MapCoordinator: NSObject, MKMapViewDelegate {
 
-    /// The latitude-delta threshold below which we consider the map "zoomed in"
-    /// and show annotation cards.
     private let zoomThreshold: Double = 0.05
 
-    // MARK: - Pin Appearance
-
-    /// Called by MapKit whenever it needs to display an annotation.
-    /// Returns a custom FloodZoneAnnotationView with no MapKit callout.
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation { return nil }
 
-        // Only customize our FloodZoneAnnotation pins
-        guard let floodAnnotation = annotation as? FloodZoneAnnotation else {
-            return nil
-        }
+        guard let flood = annotation as? FloodZoneAnnotation else { return nil }
 
-        var annotationView = mapView.dequeueReusableAnnotationView(
-            withIdentifier: FloodZoneAnnotationView.pinReuseID
+        var view = mapView.dequeueReusableAnnotationView(
+            withIdentifier: FloodZoneAnnotationView.reuseID
         ) as? FloodZoneAnnotationView
 
-        if annotationView == nil {
-            annotationView = FloodZoneAnnotationView(
-                annotation: floodAnnotation,
-                reuseIdentifier: FloodZoneAnnotationView.pinReuseID
-            )
+        if view == nil {
+            view = FloodZoneAnnotationView(annotation: flood, reuseIdentifier: FloodZoneAnnotationView.reuseID)
         } else {
-            annotationView?.annotation = floodAnnotation
+            view?.annotation = flood
         }
 
-        annotationView?.configure(with: floodAnnotation)
+        view?.configure(with: flood)
+        view?.isCardVisible = mapView.region.span.latitudeDelta < zoomThreshold
 
-        // Set initial card visibility based on current zoom
-        let isZoomedIn = mapView.region.span.latitudeDelta < zoomThreshold
-        annotationView?.isCardVisible = isZoomedIn
-
-        return annotationView
+        return view
     }
 
-    // MARK: - Zoom-Aware Card Visibility
-
-    /// Called every time the visible map region changes (pan, zoom, rotate).
-    /// Toggles the MapAnnotationCard visibility on all annotations based
-    /// on the current zoom level.
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         let isZoomedIn = mapView.region.span.latitudeDelta < zoomThreshold
 
         for annotation in mapView.annotations {
-            if let floodAnnotation = annotation as? FloodZoneAnnotation,
-               let view = mapView.view(for: floodAnnotation) as? FloodZoneAnnotationView {
+            if let flood = annotation as? FloodZoneAnnotation,
+               let view = mapView.view(for: flood) as? FloodZoneAnnotationView {
                 view.isCardVisible = isZoomedIn
             }
         }
+    }
+
+    func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
+        guard let flood = annotation as? FloodZoneAnnotation else { return }
+
+        // If zoomed out, zoom in to show the card
+        if mapView.region.span.latitudeDelta >= zoomThreshold {
+            let region = MKCoordinateRegion(
+                center: flood.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
+            )
+            mapView.setRegion(region, animated: true)
+        }
+
+        // Deselect so the pin can be tapped again
+        mapView.deselectAnnotation(flood, animated: false)
     }
 }
