@@ -12,13 +12,67 @@ import MapKit
 import CoreLocation
 import SwiftUI
 import Combine
+import FirebaseFirestore
 
 class MapViewModel: ObservableObject {
 
     @Published var centerOnUser = false
+    @Published var needsRefresh = false
 
-    let floodZones: [FloodZone] = FloodZone.sampleZones
     let locationManager = CLLocationManager()
+
+    // Static zones (other areas keep hardcoded data)
+    private let staticZones: [FloodZone] = FloodZone.sampleZones
+
+    // Live sensor state from Firestore
+    private var sensorState: SensorState?
+    private var listener: ListenerRegistration?
+
+    /// All flood zones: static ones + live Legian zone from Firestore.
+    var floodZones: [FloodZone] {
+        var zones = staticZones
+
+        // Add Legian zone with live status from the sensor
+        let legianStatus = sensorState?.safetyStatus ?? .safe
+        let description: String
+        if let state = sensorState {
+            description = "Water level: \(String(format: "%.0f", state.levelMM)) mm — \(state.riskState)"
+        } else {
+            description = "Sensor data loading…"
+        }
+
+        let legian = FloodZone(
+            name: "Legian",
+            status: legianStatus,
+            center: CLLocationCoordinate2D(latitude: -8.6900, longitude: 115.1700),
+            description: description
+        )
+        zones.append(legian)
+        return zones
+    }
+
+    /// Start listening to the Firestore state document for Legian sensor.
+    func startListening() {
+        let db = Firestore.firestore()
+        listener = db.collection("state").document("legian-01")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                guard let snapshot = snapshot, snapshot.exists else { return }
+
+                self.sensorState = try? snapshot.data(as: SensorState.self)
+                self.needsRefresh = true
+            }
+    }
+
+    /// Stop listening when no longer needed.
+    func stopListening() {
+        listener?.remove()
+        listener = nil
+    }
+
+    deinit {
+        stopListening()
+    }
 
     /// Adds a pin annotation for each flood zone.
     func addPins(to mapView: MKMapView) {
@@ -32,6 +86,13 @@ class MapViewModel: ObservableObject {
             pin.zoneDescription = zone.description
             mapView.addAnnotation(pin)
         }
+    }
+
+    /// Removes all non-user annotations and re-adds with current data.
+    func refreshPins(on mapView: MKMapView) {
+        let existing = mapView.annotations.filter { !($0 is MKUserLocation) }
+        mapView.removeAnnotations(existing)
+        addPins(to: mapView)
     }
 
     /// Centers the map on the user's current location.

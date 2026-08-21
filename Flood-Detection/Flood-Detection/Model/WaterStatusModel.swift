@@ -5,21 +5,21 @@
 //  Created by Gian Denggan Benjamin on 13/08/26.
 //
 struct WaterStatusData {
-    let currentLevel: Float
-    let riseRate: Float
-    let trend:  waterTrend
-    let staleness: String
+    var currentLevel: Float
+    var riseRate: Float
+    var trend:  waterTrend
+    var staleness: String
 }
 
 enum waterTrend: String {
-    case risingFast
-    case dropingFast
-    case normal
+    case risingFast = "Rising Fast"
+    case rising = " Rising"
+    case normal = "Normal"
     
     var systemImageName: String {
         switch self {
         case .risingFast: return "arrow.up"
-        case .dropingFast: return "arrow.down"
+        case .rising: return "arrow.up"
         case .normal: return "water.waves"
         }
     }

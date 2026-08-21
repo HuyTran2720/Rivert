@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0410302C494F003303A5 /* FirebaseCore */; };
+		89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */,
+				89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +94,7 @@
 			name = "Flood-Detection";
 			packageProductDependencies = (
 				3EDC0410302C494F003303A5 /* FirebaseCore */,
+				3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */,
 			);
 			productName = "Flood-Detection";
 			productReference = 3E6E840F3024752900A7D079 /* Flood-Detection.app */;
@@ -298,6 +301,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Ryan.Flood-Detection";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -332,6 +336,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Ryan.Flood-Detection";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -379,6 +384,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		3EDC0410302C494F003303A5 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
