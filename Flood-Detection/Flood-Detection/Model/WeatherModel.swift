@@ -8,16 +8,20 @@
 struct WeatherModel {
     
     //Weather condition to determine if its raining/not and the intensity of the rain
-    let weatherCondition: String
+    var weatherCondition: String
     
     //The percentage of possibilty if the rain is happening
-    let weatherProbability: Int
+    var weatherProbability: Int
     
     // Icon of each weather
+<<<<<<< HEAD
+    var weatherIcon : weatherIcon
+=======
     let weatherIcon : WeatherIcon
+>>>>>>> Feat-NewMap
     
     // date of the weather
-    let date: String
+    var date: String
 }
 
 

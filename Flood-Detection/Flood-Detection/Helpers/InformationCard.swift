@@ -9,6 +9,13 @@ import SwiftUI
 
 struct InformationCard: View {
     let status: SafetyStatus
+<<<<<<< HEAD
+    var currentLevel: Float = 0
+    var rateValue: String = "0"
+    var trend: waterTrend = .normal
+
+
+=======
     let water = WaterStatusData(
         currentLevel: 2.0,
         riseRate : 0.5,
@@ -16,6 +23,7 @@ struct InformationCard: View {
         staleness: "Now"
     )
     
+>>>>>>> Feat-NewMap
     var body: some View {
         Spacer()
         ZStack(alignment: .leading) {
@@ -29,20 +37,29 @@ struct InformationCard: View {
                 .cornerRadius(50)
             HStack {
                 DangerPhase()
-                WaterLevelCard(currentLevel: 2.0, range: 0...4)
+                WaterLevelCard(currentLevel: currentLevel, range: 0...3000)
                     .frame(width: 150, height: 225)
-                
+
                 VStack (alignment:.center, spacing: 30){
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)
                         .foregroundColor(backgroundColor)
                         .bold()
+<<<<<<< HEAD
+                    WaterRateCard(value: rateValue)
+                    HStack {
+                        Text(trend.rawValue)
+                            .font(.bodyFD2)
+                            .bold()
+                        Image(systemName: trend.systemImageName)
+=======
                     WaterRateCard()
                         HStack {
                             Text(water.trend.rawValue)
                                 .font(. bodyFD2)
                                 .bold()
                             Image(systemName: water.trend.systemImageName)
+>>>>>>> Feat-NewMap
                     }
                     .padding(5)
                     .foregroundColor(.primaryFD)
@@ -59,10 +76,26 @@ struct InformationCard: View {
         case .danger: return .redBackground
         }
 
+<<<<<<< HEAD
+    }
+    private var textColor: Color {
+        switch status {
+        case .safe: return .greenText
+        case .caution: return .yellowText
+        case .danger: return .redText
+        }
+
+    }
+}
+
+#Preview {
+    InformationCard(status:.caution, currentLevel: 2000, rateValue: "5", trend: .rising)
+=======
 }
 
 }
 
 #Preview {
     InformationCard(status:.safe)
+>>>>>>> Feat-NewMap
 }

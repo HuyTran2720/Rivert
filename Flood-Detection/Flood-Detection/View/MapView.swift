@@ -37,6 +37,12 @@ struct MapKitView: UIViewRepresentable {
             viewModel.centerOnUserLocation(mapView: uiView)
             DispatchQueue.main.async { viewModel.centerOnUser = false }
         }
+
+        // Refresh pins when Firestore data changes
+        if viewModel.needsRefresh {
+            viewModel.refreshPins(on: uiView)
+            DispatchQueue.main.async { viewModel.needsRefresh = false }
+        }
     }
 }
 
@@ -67,6 +73,9 @@ struct MapView: View {
             }
             .padding(.trailing, 16)
             .padding(.bottom, 100)
+        }
+        .task {
+            viewModel.startListening()
         }
     }
 }
