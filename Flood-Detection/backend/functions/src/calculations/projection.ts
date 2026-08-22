@@ -1,5 +1,8 @@
 import { Rate, Calibration, MinuteRange } from "../types/models";
-import { MAX_PROJECTION_MIN } from "../config";
+import {
+  MAX_PROJECTION_MIN,
+  MIN_FIT_QUALITY_FOR_PROJECTION,
+} from "../config";
 import { travelMinutes } from "./crossSection";
 
 /**
@@ -11,7 +14,8 @@ function round1(x: number): number {
 }
 
 /**
- * Project with the fastest and slowest believable rate (95% band).
+ * Project with the fastest and slowest believable rate, taken from the
+ * observed spread of pairwise slopes rather than a normal assumption.
  *
  * @param {number} narrowMM Distance to climb inside the channel.
  * @param {number} wideMM Distance to climb above the benches.
@@ -27,12 +31,13 @@ function projectRange(
 ): MinuteRange | null {
   if (rate.mmPerMin <= 0) return null;
 
-  const band = 1.96 * rate.seMMPerMin;
-  const fastest = rate.mmPerMin + band;
-  const slowest = rate.mmPerMin - band;
+  // A window this poorly described by a line is not something to
+  // extrapolate from. The rise still gets reported; only the countdown
+  // is withheld.
+  if (rate.fitQuality < MIN_FIT_QUALITY_FOR_PROJECTION) return null;
 
-  const lower = travelMinutes(narrowMM, wideMM, fastest, cal);
-  const upper = travelMinutes(narrowMM, wideMM, slowest, cal);
+  const lower = travelMinutes(narrowMM, wideMM, rate.fastestMMPerMin, cal);
+  const upper = travelMinutes(narrowMM, wideMM, rate.slowestMMPerMin, cal);
 
   if (!Number.isFinite(lower) || lower > MAX_PROJECTION_MIN) return null;
 

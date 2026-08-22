@@ -16,11 +16,17 @@ export interface RiskInput {
  * @return {RiskState} The classification.
  */
 export function classifyRisk(input: RiskInput): RiskState {
+  // Silence still outranks everything: stale news of a flood is not a
+  // flood, and we cannot tell which we are looking at.
   if (input.staleness === "noData") return "unknown";
-  if (!input.haveRate) return "unknown";
 
-  // Water is over the bank now, confirmed twice.
+  // Water is over the bank now, confirmed twice. A measured fact that
+  // needs no model, so it is settled before the rate is consulted —
+  // otherwise a site that has not yet collected MIN_READINGS_FOR_RATE
+  // samples reports an active overspill as "unknown".
   if (input.bankConfirmed) return "danger";
+
+  if (!input.haveRate) return "unknown";
 
   const soonest = input.timeToBankMin?.lower ?? null;
 

@@ -61,7 +61,20 @@ export async function recomputeAndWriteState(
     };
   });
 
-  const newState = computeSiteState(siteId, readings, cal, now);
+  // Feeds the sustained-rise check: a countdown is only published once
+  // two consecutive recomputes agree the water is rising.
+  const prevRateMMPerMin =
+    typeof prevState?.rateMMPerMin === "number" ?
+      prevState.rateMMPerMin :
+      null;
+
+  const newState = computeSiteState(
+    siteId,
+    readings,
+    cal,
+    now,
+    prevRateMMPerMin,
+  );
 
   if (!newState) {
     console.warn(
