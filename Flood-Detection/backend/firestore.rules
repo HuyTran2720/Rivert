@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // state/{siteId} — the only thing the app needs to read to render
+    // the flood display. Written exclusively by Cloud Functions (Admin
+    // SDK, which bypasses these rules entirely) — never by clients.
+    match /state/{siteId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // sites/{siteId} — calibration constants, hand-edited via the
+    // console. Readable so the app can show `calibrated: false`
+    // honestly; never client-writable.
+    match /sites/{siteId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // readings/{readingId} — raw sensor history. Not needed by the
+    // app today; keep fully closed until there's a reason to expose it.
+    match /readings/{readingId} {
+      allow read, write: if false;
+    }
+
+    // devices/{fcmToken} — the app registers its own token here (doc
+    // ID = the token itself) and deletes it on refresh. No Firebase
+    // Auth in this project, so there's no real "owner" check possible
+    // beyond "you know the token" — same trust model most anonymous
+    // FCM registration flows use. Reads are closed so nobody can
+    // enumerate every registered device.
+    match /devices/{token} {
+      allow create, update, delete: if true;
+      allow read: if false;
+    }
+
+    // Everything else stays closed by default.
+  }
+}
