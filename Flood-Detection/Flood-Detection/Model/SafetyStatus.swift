@@ -10,13 +10,8 @@ import UIKit
 enum SafetyStatus: String, CaseIterable {
     case danger
     case caution
-<<<<<<< HEAD:Flood-Detection/Flood-Detection/Model/SafetyStatusModel.swift
-    case safe 
-
-=======
     case safe
-    
->>>>>>> Feat-NewMap:Flood-Detection/Flood-Detection/Model/SafetyStatus.swift
+
     /// The color used for the map pin marker.
     var pinTintColor: UIColor {
         switch self {
