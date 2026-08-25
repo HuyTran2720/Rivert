@@ -14,13 +14,8 @@ struct WeatherModel {
     var weatherProbability: Int
     
     // Icon of each weather
-<<<<<<< HEAD
-    var weatherIcon : weatherIcon
-=======
     let weatherIcon : WeatherIcon
->>>>>>> Feat-NewMap
-    
-    // date of the weather
+        // date of the weather
     var date: String
 }
 

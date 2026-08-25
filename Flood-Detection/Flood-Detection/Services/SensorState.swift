@@ -37,11 +37,11 @@ struct SensorState: Codable {
     }
 
     // Convert rateMMPerMin into a waterTrend
-    var trend: waterTrend {
+    var trend: WaterTrend {
         if rateMMPerMin > 10 {
             return .risingFast
         } else if rateMMPerMin > 0 {
-            return .rising
+            return .droping
         } else {
             return .normal
         }

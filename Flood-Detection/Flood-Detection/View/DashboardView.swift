@@ -90,7 +90,7 @@ struct DashboardView: View {
                     Spacer()
                     
                     ZStack(alignment:.bottom) {
-                        InformationCard(status: .safe)
+                        InformationCard(status: .safe, trend: .risingFast)
                         TimeCard()
                             .padding(.bottom,270)
                     }
