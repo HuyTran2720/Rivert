@@ -89,10 +89,11 @@ struct DashboardView: View {
                     
                     Spacer()
                     
+                    
                     ZStack(alignment:.bottom) {
                         InformationCard(status: .safe)
-                        TimeCard()
-                            .padding(.bottom,270)
+                        TimeCard(status: .safe)
+                            .padding(.bottom,310)
                     }
                 }.ignoresSafeArea(edges:.bottom)
                 

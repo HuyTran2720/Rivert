@@ -13,7 +13,7 @@ struct DangerPhase: View {
     var body: some View {
         HStack(spacing: 5) {
             // Text labels
-            VStack(alignment: .trailing, spacing: 45) {
+            VStack(alignment: .trailing, spacing: 65.33) {
                 Text("Danger")
                     .font(.headingFD3)
                     .foregroundStyle(Color.redTitle)
@@ -32,10 +32,10 @@ struct DangerPhase: View {
             ZStack {
                 Rectangle()
                     .fill(Color.gray.opacity(0.4))
-                    .frame(width: 2, height: 200)
+                    .frame(width: 2, height: 205)
                     .padding(.vertical, 4)
                     
-                VStack(spacing: 47) {
+                VStack(spacing: 68.33) {
                     Circle().fill(Color.redTitle).frame(width: 10, height: 10)
                     Circle().fill(Color.yellowTitle).frame(width: 10, height: 10)
                     Circle().fill(Color.greenTitle).frame(width: 10, height: 10)

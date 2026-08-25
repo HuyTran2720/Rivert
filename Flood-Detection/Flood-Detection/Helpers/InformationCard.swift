@@ -22,7 +22,7 @@ struct InformationCard: View {
                     startPoint: .top,
                     endPoint: .bottom
                 ))
-                .frame(width: 400, height: 400)
+                .frame(width: 400, height: 350)
                 .cornerRadius(50)
             HStack {
                 DangerPhase()

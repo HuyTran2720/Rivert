@@ -1,102 +1,60 @@
 //
-//  TimeCard.swift
+//  TimeCard2.swift
 //  Flood-Detection
 //
-//  Created by RyanMFDR on 18/08/26.
+//  Created by Gian Denggan Benjamin on 24/08/26.
 //
-//
-//  TimeCard.swift
-//  Flood-Detection
-//
-//  Created by RyanMFDR on 18/08/26.
-//
+
 import SwiftUI
-import Combine
 
 struct TimeCard: View {
-    @State private var now = Date()
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
-    enum Selection {
-        case now, next
-    }
     
-    //later for Binding not yet connected
-    @State private var selection: Selection = .now
-
-    private var formatter: DateFormatter {
-        let f = DateFormatter()
-        f.dateFormat = "HH.mm"
-        return f
-    }
-
-    private var nextHour: Date {
-        Calendar.current.date(byAdding: .hour, value: 1, to: now) ?? now
-    }
+    let status: SafetyStatus
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(spacing: 0) {
-                Text("Now")
-                    .font(.bodyFD3)
-                    .foregroundStyle(Color.extraFD)
-                Text(formatter.string(from: now))
-                    .font(.headingFD2)
-                    .foregroundStyle(selection == .now ? Color.white : Color.extraFD)
-                    .frame(width: 57, height: 40)
-                    .background(
-                        RoundedRectangle(cornerRadius: 7)
-                            .fill(selection == .now ? Color.extraFD : Color.clear)
-                    )
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    selection = .now
-                }
-            }
-
-            Text("---")
-                .font(.headingFD2)
-                .foregroundStyle(Color.extraFD)
-
-            VStack(spacing: 0) {
-                Text("Next")
-                    .font(.bodyFD3)
-                    .foregroundStyle(Color.extraFD)
-                Text(formatter.string(from: nextHour))
-                    .font(.headingFD2)
-                    .foregroundStyle(selection == .next ? Color.white : Color.extraFD)
-                    .frame(width: 57, height: 40)
-                    .background(
-                        RoundedRectangle(cornerRadius: 7)
-                            .fill(selection == .next ? Color.extraFD : Color.clear)
-                    )
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    selection = .next
-                }
+        ZStack {
+            Rectangle()
+                .fill(Color.white)
+                .frame(width: 180, height: 67.5)
+                .cornerRadius(8)
+            Rectangle()
+                .fill(backgroundColor)
+                .frame(width: 165, height: 52.5)
+                .cornerRadius(8)
+            
+            VStack(spacing: 4) {
+                Text("River Overflow")
+                    .font(.system(size: 10.5, weight: .regular))
+                    .foregroundColor(.white)
+                
+                Text(mainText)
+                    .font(.system(size: 13.4, weight: .bold))
+                    .foregroundColor(.white)
             }
         }
-        .onReceive(timer) { input in
-            now = input
+    }
+    
+    private var mainText: String {
+        switch status {
+        case .danger: return "Flood Detected"
+        case .caution: return "< 30 Minutes"
+        case .safe: return "No flood detected"
         }
-        .frame(width: 189, height: 59)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(
-                    LinearGradient(
-                        colors: [.white, .white],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-        )
+    }
+    
+    private var backgroundColor: Color {
+        switch status {
+        case .danger: return .redTitle
+        case .caution: return Color.orange // Using standard orange as it matches the mockup best
+        case .safe: return .secondaryFD
+        }
     }
 }
 
 #Preview {
-    TimeCard()
+    VStack {
+        TimeCard(status: .caution)
+        TimeCard(status: .danger)
+        TimeCard(status: .safe)
+    }
 }
