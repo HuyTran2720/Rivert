@@ -7,16 +7,41 @@
 
 import SwiftUI
 
+struct DashboardCardShape: Shape {
+    var badgeWidth: CGFloat = 209
+    var badgeHeight: CGFloat = 70
+    var badgeCornerRadius: CGFloat = 24
+    var mainCornerRadius: CGFloat = 50
+    var mainTopInset: CGFloat = 20
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        let badgeX = (rect.width - badgeWidth) / 2
+        let badgeRect = CGRect(x: badgeX, y: 0, width: badgeWidth, height: badgeHeight)
+        path.addPath(Path(roundedRect: badgeRect, cornerRadius: badgeCornerRadius))
+
+        let mainRect = CGRect(
+            x: 0,
+            y: mainTopInset,
+            width: rect.width,
+            height: rect.height - mainTopInset
+        )
+        path.addPath(Path(roundedRect: mainRect, cornerRadius: mainCornerRadius))
+
+        return path
+    }
+}
+
 struct InformationCard: View {
     let status: SafetyStatus
-    var currentLevel: Float = 0
-    var rateValue: String = "0"
-    var trend: waterTrend = .normal
+    var currentLevel: Float
+    var rateValue: String
+    var trend: WaterTrend
 
     var body: some View {
-        Spacer()
-        ZStack(alignment: .leading) {
-            Rectangle()
+        ZStack(alignment: .top) {
+            DashboardCardShape()
                 .fill(LinearGradient(
                     colors: [.white, backgroundColor],
                     startPoint: .top,
@@ -29,17 +54,17 @@ struct InformationCard: View {
                 WaterLevelCard(currentLevel: currentLevel, range: 0...3000)
                     .frame(width: 150, height: 225)
 
-                VStack (alignment:.center, spacing: 30){
+                VStack(alignment: .center, spacing: 30) {
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)
                         .foregroundColor(backgroundColor)
                         .bold()
                     WaterRateCard(value: rateValue)
                     HStack {
-                        Text(trend.rawValue)
+                        Text(trend.WaterTrendName)
                             .font(.bodyFD2)
                             .bold()
-                        Image(systemName: trend.systemImageName)
+                        Image(systemName: trend.WaterTrendIcon)
                     }
                     .padding(5)
                     .foregroundColor(.primaryFD)
@@ -47,8 +72,10 @@ struct InformationCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
+            .padding(.top, 70)   // pushes content below the notch
         }
     }
+
     private var backgroundColor: Color {
         switch status {
         case .safe: return .secondaryFD
@@ -56,6 +83,7 @@ struct InformationCard: View {
         case .danger: return .redBackground
         }
     }
+
     private var textColor: Color {
         switch status {
         case .safe: return .greenText
@@ -66,5 +94,5 @@ struct InformationCard: View {
 }
 
 #Preview {
-    InformationCard(status:.caution, currentLevel: 2000, rateValue: "5", trend: .rising)
+    InformationCard(status: .caution, currentLevel: 2000, rateValue: "5", trend: .risingFast)
 }

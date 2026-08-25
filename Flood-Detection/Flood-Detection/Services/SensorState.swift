@@ -29,29 +29,21 @@ struct SensorState: Codable {
     // Convert the Firestore riskState string to our SafetyStatus enum
     var safetyStatus: SafetyStatus {
         switch riskState {
-        case "danger": return SafetyStatus.danger
-        case "caution": return SafetyStatus.caution
-        case "safe": return SafetyStatus.safe
-        default: return SafetyStatus.safe
+        case "danger": return .danger
+        case "caution": return .caution
+        case "safe", "normal": return .safe
+        default: return .safe
         }
     }
 
     // Convert rateMMPerMin into a waterTrend
-    var trend: waterTrend {
+    var trend: WaterTrend {
         if rateMMPerMin > 10 {
             return .risingFast
         } else if rateMMPerMin > 0 {
-            return .rising
+            return .droping
         } else {
             return .normal
         }
     }
 }
-
-//
-//InformationCard(
-//    status: state.safetyStatus,
-//    currentLevel: Float(state.levelMM),
-//    rateValue: String(format: "%.0f", state.rateMMPerMin),
-//    trend: state.trend
-//)

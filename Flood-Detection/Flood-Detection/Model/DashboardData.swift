@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct DashboardData  {
-    let location: MapData
-    let weather: WeatherModel
-    let waterStatus: WaterStatusData
+    var location: MapData? = nil
+    var weather: WeatherModel? = nil
+    var waterStatus: WaterStatusData? = nil
     var dashboardStatus: SafetyStatus {
-        location.mapStatus
+        location?.mapStatus ?? .safe
     }
 }

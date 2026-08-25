@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct DashboardView: View {
-    let dashboard = DashboardData.self
-    
+    @StateObject private var viewModel = DashboardViewModel()
     
     var body: some View {
         NavigationStack {
@@ -89,16 +89,27 @@ struct DashboardView: View {
                     
                     Spacer()
                     
-                    
-                    ZStack(alignment:.bottom) {
-                        InformationCard(status: .safe)
-                        TimeCard(status: .safe)
-                            .padding(.bottom,310)
-                    }
+                    ZStack(alignment:.top) {
+                        InformationCard(
+                            status: viewModel.status,
+                            currentLevel: viewModel.currentLevel,
+                            rateValue: viewModel.rateValue,
+                            trend: viewModel.trend
+                            )
+                        TimeCard(
+                            status: viewModel.status,
+                            timeToBank: viewModel.timeToBank
+                        ).padding(.top,10)
+                    }.padding(.bottom,-80)
                 }.ignoresSafeArea(edges:.bottom)
                 
             }
             
+        }.task {
+            viewModel.startListening()
+        }
+        .onDisappear {
+            viewModel.stopListening()
         }
     }
 }

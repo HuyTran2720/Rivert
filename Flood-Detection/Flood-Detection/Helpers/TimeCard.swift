@@ -10,6 +10,7 @@ import SwiftUI
 struct TimeCard: View {
     
     let status: SafetyStatus
+    let timeToBank: String   
 
     var body: some View {
         ZStack {
@@ -49,6 +50,22 @@ struct TimeCard: View {
         case .safe: return .secondaryFD
         }
     }
+
+    private var statusText: String {
+        switch status {
+        case .danger: return "Flood Detected"
+        case .caution: return "< \(timeToBank)"
+        case .safe: return "No flood detected"
+        }
+    }
+
+    private var backgroundColor: Color {
+        switch status {
+        case .danger: return Color(red: 205/255, green: 71/255, blue: 71/255)
+        case .caution: return Color(red: 217/255, green: 137/255, blue: 0/255)
+        case .safe: return .secondaryFD
+        }
+    }
 }
 
 #Preview {
@@ -57,4 +74,6 @@ struct TimeCard: View {
         TimeCard(status: .danger)
         TimeCard(status: .safe)
     }
+    .padding()
+    .background(Color.gray)
 }
