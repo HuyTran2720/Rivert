@@ -2,58 +2,83 @@
 //  DashboardViewModel.swift
 //  Flood-Detection
 //
-//  ViewModel that listens to the Firestore "state/legian-01" document
-//  and publishes changes to the Views.
-//
 
-import Foundation
+import SwiftUI
 import Combine
 import FirebaseFirestore
 
-class DashboardViewModel: ObservableObject {
-
-    @Published var sensorState: SensorState?
-    @Published var isLoading = true
-    @Published var errorMessage: String?
-
+@MainActor
+final class DashboardViewModel: ObservableObject {
+    
+    @Published var data = DashboardData()
+    
     private var listener: ListenerRegistration?
-
-    /// Start listening to the Firestore state document in real time.
+    
+    // MARK: - InformationCard
+    
+    var status: SafetyStatus {
+        data.waterStatus?.status ?? .safe
+    }
+    
+    private var sensorStatus: SafetyStatus = .safe
+    
+    var currentLevel: Float {
+        data.waterStatus?.currentLevel ?? 0
+    }
+    
+    var rateValue: String {
+        guard let rate = data.waterStatus?.riseRate else { return "0" }
+        return String(format: "%.0f", rate)
+    }
+    
+    var trend: WaterTrend {
+        data.waterStatus?.trend ?? .normal
+    }
+    
+    // MARK: - TimeCard
+    
+    var timeToBank: String {
+        data.waterStatus?.timeToBank ?? "--"
+    }
+    
+    // MARK: - Firestore listener
+    
     func startListening() {
+        print("🔵 startListening called")
         let db = Firestore.firestore()
-
         listener = db.collection("state").document("legian-01")
             .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
-
-                self.isLoading = false
-
-                if let error = error {
-                    self.errorMessage = error.localizedDescription
+                guard let self else { return }
+                
+                if let error {
+                    print("🔴 Firestore error: \(error.localizedDescription)")
                     return
                 }
-
-                guard let snapshot = snapshot, snapshot.exists else {
-                    self.errorMessage = "No data found"
+                
+                guard let snapshot, snapshot.exists else {
+                    print("🟡 Document does not exist at state/legian-01")
                     return
                 }
-
+                
+                print("🟢 Raw document data: \(snapshot.data() ?? [:])")
+                
                 do {
-                    self.sensorState = try snapshot.data(as: SensorState.self)
-                    self.errorMessage = nil
+                    let sensor = try snapshot.data(as: SensorState.self)
+                    print("🟢 Decoded successfully: \(sensor)")
+                    self.updateSensor(sensor)
                 } catch {
-                    self.errorMessage = "Failed to decode: \(error.localizedDescription)"
+                    print("🔴 Decode error: \(error)")
                 }
             }
     }
-
-    /// Stop listening when no longer needed.
+    
     func stopListening() {
         listener?.remove()
         listener = nil
     }
-
-    deinit {
-        stopListening()
+    
+    func updateSensor(_ sensor: SensorState) {
+        data.waterStatus = WaterStatusData(from: sensor)
+        sensorStatus = sensor.safetyStatus
     }
 }
