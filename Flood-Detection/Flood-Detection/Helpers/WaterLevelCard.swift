@@ -14,7 +14,7 @@ import Combine
 
 struct WaveShape: Shape {
     var offset: Angle
-    var percent: Double     // 0.0 (empty) ... 1.0 (full)
+    var percent: Double
     var amplitude: CGFloat = 6
 
     var animatableData: AnimatablePair<Double, Double> {
@@ -47,8 +47,41 @@ struct WaveShape: Shape {
     }
 }
 
-// MARK: - WaterLevel Component
+// MARK: - Pointer Tag Shape
+// A rounded pill with a small triangular tail pointing left, used as the
+// background for the level readout badge. Because it's applied via
+// `.background()`, `rect` will exactly match the size of the Text it sits behind.
 
+struct PointerTagShape: Shape {
+    var cornerRadius: CGFloat = 8
+    var tailWidth: CGFloat = 6
+    var tailHeight: CGFloat = 10
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Pill body, inset from the left to leave room for the tail
+        let bodyRect = CGRect(
+            x: rect.minX + tailWidth,
+            y: rect.minY,
+            width: rect.width - tailWidth,
+            height: rect.height
+        )
+        path.addRoundedRect(in: bodyRect, cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
+        
+        let midY = rect.midY
+        var tail = Path()
+        tail.move(to: CGPoint(x: bodyRect.minX, y: midY - tailHeight / 2))
+        tail.addLine(to: CGPoint(x: rect.minX, y: midY))
+        tail.addLine(to: CGPoint(x: bodyRect.minX, y: midY + tailHeight / 2))
+        tail.closeSubpath()
+
+        path.addPath(tail)
+        return path
+    }
+}
+
+// MARK: - WaterLevel Component
 
 struct WaterLevel: View {
     var currentLevel: Float
@@ -128,7 +161,10 @@ struct WaterLevel: View {
 struct WaterLevelCard: View {
     var currentLevel: Float
     var range: ClosedRange<Float> = 0...100
-    var unit: String = "mm"
+    var unit: String = "cm"
+    var pointerColor: Color = Color(red: 0.8627450980392157, green: 0.4666666666666667, blue: 0.4666666666666667)
+
+    private let badgeHeight: CGFloat = 22
 
     private var percent: Double {
         let clamped = min(max(currentLevel, range.lowerBound), range.upperBound)
@@ -143,34 +179,33 @@ struct WaterLevelCard: View {
 
             GeometryReader { geo in
                 let height = geo.size.height
-                // 0% = bottom, 100% = top, so flip the y position
                 let pointerY = height * (1 - CGFloat(percent))
 
                 ZStack(alignment: .topLeading) {
-                    // pointer line
-                    Path { path in
-                        path.move(to: CGPoint(x: 0, y: pointerY))
-                        path.addLine(to: CGPoint(x: 14, y: pointerY))
-                    }
-                    .stroke(Color(red: 0.20, green: 0.55, blue: 0.58), lineWidth: 2)
-
-                    Text("\(Int(currentLevel)) \(unit)")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(red: 0.20, green: 0.55, blue: 0.58))
+                    Text(String(format: "%.1f%@", currentLevel, unit))
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.primaryFD)
+                        .padding(.leading, 12)
+                        .padding(.trailing, 8)
+                        .frame(height: badgeHeight)
+                        .background(
+                            PointerTagShape(cornerRadius: badgeHeight / 2, tailWidth: 6, tailHeight: 10)
+                                .fill(pointerColor)
+                        )
                         .fixedSize()
-                        .position(x: 32, y: pointerY)
+                        .offset(x: 0, y: pointerY - badgeHeight / 2)
                 }
                 .animation(.easeInOut(duration: 0.8), value: percent)
             }
-            .frame(width: 60)
+            .frame(width: 70)
         }
     }
 }
 
 #Preview {
-    WaterLevelCard(currentLevel: 2.0, range: 0...4)
+    WaterLevelCard(currentLevel: 2.8, range: 0...4)
         .frame(width: 200, height: 300)
+        .padding()
+        .background(Color.black.opacity(0.8))
 }
-
-

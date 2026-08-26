@@ -18,7 +18,9 @@ extension Font {
     static var bodyFD1: Font { .system(size: 14, weight: .regular, design: .default) }
     static var bodyFD2: Font { .system(size: 12, weight: .regular, design: .default) }
     static var bodyFD3: Font { .system(size: 10, weight: .regular, design: .default) }
+    static var extraFD: Font { .system(size: 8, weight: .regular, design: .default) }
     }
+
 
 //MARK: - Color
 extension Color {

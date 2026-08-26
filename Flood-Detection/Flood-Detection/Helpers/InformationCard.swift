@@ -10,8 +10,8 @@ import SwiftUI
 struct DashboardCardShape: Shape {
     var badgeWidth: CGFloat = 209
     var badgeHeight: CGFloat = 70
-    var badgeCornerRadius: CGFloat = 24
-    var mainCornerRadius: CGFloat = 50
+    var badgeCornerRadius: CGFloat = 10
+    var mainCornerRadius: CGFloat = 23
     var mainTopInset: CGFloat = 20
 
     func path(in rect: CGRect) -> Path {
@@ -43,19 +43,27 @@ struct InformationCard: View {
         ZStack(alignment: .top) {
             DashboardCardShape()
                 .fill(LinearGradient(
-                    colors: [.white, backgroundColor],
+                    colors: [.white,Color(red: 182/255, green: 227/255, blue: 228/255)],
                     startPoint: .top,
                     endPoint: .bottom
                 ))
                 .frame(width: 400, height: 350)
                 .cornerRadius(50)
-
-                .frame(width: 400, height: 440)
-
-            HStack {
-                DangerPhase()
-                WaterLevelCard(currentLevel: currentLevel, range: 0...3000)
-                    .frame(width: 150, height: 225)
+            HStack(spacing:10) {
+                VStack {
+                    HStack {
+                        DangerPhase(height: 225, verticalInset: 30)
+                        WaterLevelCard(currentLevel: currentLevel, range: 0...21.2)
+                            .frame(width: 150, height: 225)
+                            .overlay(
+                                ThresholdCrossLines(
+                                    height: 225,
+                                    colors: [.redTitle, .yellowTitle, .greenTitle],verticalInset: 30
+                                ).frame(width: 71),
+                                alignment: .leading
+                            ).padding(.bottom,10)
+                    }
+                }
 
                 VStack(alignment: .center, spacing: 30) {
                     Text("Rate of Water Rise")
@@ -75,7 +83,7 @@ struct InformationCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
-            .padding(.top, 70)   // pushes content below the notch
+            .padding(.top, 80)
         }
     }
 
@@ -97,5 +105,5 @@ struct InformationCard: View {
 }
 
 #Preview {
-    InformationCard(status: .caution, currentLevel: 2000, rateValue: "5", trend: .risingFast)
+    InformationCard(status: .safe, currentLevel: 21, rateValue: "5", trend: .risingFast)
 }
