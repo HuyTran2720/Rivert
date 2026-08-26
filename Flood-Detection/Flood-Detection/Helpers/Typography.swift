@@ -45,7 +45,7 @@ extension Color {
     //warning color - red
     static let redOutline    = Color(red: 255 / 255.0, green: 151 / 255.0, blue: 151 / 255.0)
     static let redTitle      = Color(red: 214 / 255.0, green: 62 / 255.0, blue: 62 / 255.0)
-    static let redText       = Color(red: 215 / 255.0, green: 154 / 255.0, blue: 154 / 255.0)
+    static let redText       = Color(red: 164 / 255.0, green: 50 / 255.0, blue: 50 / 255.0) // #A43232
     static let redBackground = Color(red: 255 / 255.0, green: 231 / 255.0, blue: 231 / 255.0)
     
     //warning color - green

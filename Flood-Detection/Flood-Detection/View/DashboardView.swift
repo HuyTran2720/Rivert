@@ -83,9 +83,10 @@ struct DashboardView: View {
                     .padding(.horizontal, 40)
                     
                     VStack(spacing:20) {
-                        Image(.safeCaution)
+                        SafetyStatusCard(status: viewModel.status, size: .small)
                         Image(.mascot)
                     }
+                    .padding(.top, 20)
                     
                     Spacer()
                     

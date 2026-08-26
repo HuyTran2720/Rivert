@@ -7,37 +7,135 @@
 
 import SwiftUI
 
+enum SafetyStatusCardSize {
+    case small, medium, large
+
+    var iconSize: CGSize {
+        switch self {
+        case .small:  return CGSize(width: 28, height: 23)
+        case .medium: return CGSize(width: 42, height: 35)
+        case .large:  return CGSize(width: 56, height: 47)
+        }
+    }
+
+    var titleFont: Font {
+        switch self {
+        case .small:  return .subheadline
+        case .medium: return .headline
+        case .large:  return .title3
+        }
+    }
+
+    var messageFont: Font {
+        switch self {
+        case .small:  return .caption
+        case .medium: return .bodyFD2
+        case .large:  return .body
+        }
+    }
+
+    var horizontalPadding: CGFloat {
+        switch self {
+        case .small:  return 16
+        case .medium: return 24
+        case .large:  return 32
+        }
+    }
+
+    var verticalPadding: CGFloat {
+        switch self {
+        case .small:  return 14
+        case .medium: return 18
+        case .large:  return 22
+        }
+    }
+
+    var maxWidth: CGFloat {
+        switch self {
+        case .small:  return 190
+        case .medium: return 240
+        case .large:  return 300
+        }
+    }
+}
+
 struct SafetyStatusCard: View {
     let status: SafetyStatus
+    var size: SafetyStatusCardSize = .medium
 
-    
+    @State private var isPulsing = false
+
     var body: some View {
             VStack(alignment: .center, spacing: 4) {
                 HStack {
-                    Image(imageResource)
-                        .resizable()
-                        .frame(width: 42, height: 35)
-                        .zIndex(1)
-                        .padding(.bottom,8)
+                    Group {
+                        if status == .safe {
+                            Image(systemName: "checkmark.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundStyle(titleColor)
+                        } else {
+                            Image(imageResource)
+                                .resizable()
+                        }
+                    }
+                    .frame(width: iconSize.width, height: iconSize.height)
+                    .zIndex(1)
+                    .padding(.bottom, status == .safe ? 0 : 8)
                     Text(title)
+                        .font(size.titleFont)
                         .foregroundStyle(titleColor)
                         .fontWeight(.bold)
                 }
                 Text(message)
-                    .font(.bodyFD2)
+                    .font(size.messageFont)
                     .foregroundStyle(textColor)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 8)
             }
-            .frame(width: 300, alignment: .center)
-            .frame(minHeight: 40, alignment: .center)
-            .padding()
+            .frame(maxWidth: size.maxWidth, alignment: .center)
+            .padding(.horizontal, size.horizontalPadding)
+            .padding(.vertical, size.verticalPadding)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 200, style: .continuous)
                     .stroke(outlineColor, lineWidth: 2)
+                    .shadow(color: outlineColor.opacity(glowOpacity), radius: glowRadius)
+                    .shadow(color: outlineColor.opacity(glowOpacity * 0.6), radius: glowRadius * 2)
             )
+            .scaleEffect(status == .danger && isPulsing ? 1.03 : 1.0)
+            .onAppear {
+                guard status == .danger else { return }
+                withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                    isPulsing = true
+                }
+            }
         }
-        
+
+    private var iconSize: CGSize {
+        guard status == .safe else { return size.iconSize }
+        return CGSize(width: size.iconSize.width * 0.55, height: size.iconSize.height * 0.55)
+    }
+
+    private var glowRadius: CGFloat {
+        switch status {
+        case .safe: return 6
+        case .caution: return 10
+        case .danger: return 18
+        }
+    }
+
+    private var glowOpacity: Double {
+        switch status {
+        case .safe: return 0.5
+        case .caution: return 0.65
+        case .danger: return 0.95
+        }
+    }
+
     private var title: String {
         switch status {
         case .safe: return "SAFE"
@@ -48,9 +146,9 @@ struct SafetyStatusCard: View {
     
     private var message: String {
         switch status {
-        case .safe: return "it's safe to leave now, stay safe!"
+        case .safe: return "River is within normal levels."
         case .caution: return "Higher flood risk is expected within the next hour. Be prepared!"
-        case .danger: return "Floodwater is reaching homes and roads may no longer be accessible."
+        case .danger: return "The river has overspilled. Avoid this area!"
         }
     }
 
@@ -98,9 +196,15 @@ struct SafetyStatusCard: View {
 
 #Preview {
     VStack(spacing: 12) {
-        SafetyStatusCard(status: .caution)
-        SafetyStatusCard(status: .danger)
-        SafetyStatusCard(status: .safe)
+        SafetyStatusCard(status: .caution, size: .small)
+        SafetyStatusCard(status: .caution, size: .medium)
+        SafetyStatusCard(status: .caution, size: .large)
+        SafetyStatusCard(status: .safe, size: .small)
+        SafetyStatusCard(status: .safe, size: .medium)
+        SafetyStatusCard(status: .safe, size: .large)
+        SafetyStatusCard(status: .danger, size: .small)
+        SafetyStatusCard(status: .danger, size: .medium)
+        SafetyStatusCard(status: .danger, size: .large)
     }
     .padding()
 }
