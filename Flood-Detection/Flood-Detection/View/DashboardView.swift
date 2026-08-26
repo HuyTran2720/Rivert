@@ -11,6 +11,14 @@ import FirebaseFirestore
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
     
+    //Fot Date
+    private var currentFormattedDate: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "E, d MMMM"
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            return formatter.string(from: Date())
+        }
+    
     var body: some View {
         NavigationStack {
             ZStack() {
@@ -35,7 +43,7 @@ struct DashboardView: View {
                     //Top Part
                     VStack(alignment:.leading,spacing:12) {
                         HStack {
-                            Text("Thu, 6 August")
+                            Text(currentFormattedDate)
                                 .font(.headingFD3)
                                 .foregroundStyle(Color.terniaryFD)
                             Spacer()
@@ -100,7 +108,7 @@ struct DashboardView: View {
                             status: viewModel.status,
                             timeToBank: viewModel.timeToBank
                         ).padding(.top,10)
-                    }.padding(.bottom,-80)
+                    }
                 }.ignoresSafeArea(edges:.bottom)
                 
             }
