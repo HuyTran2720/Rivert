@@ -4,11 +4,16 @@
 export const MS_PER_MIN = 60 * 1000;
 export const MS_PER_HOUR = 60 * MS_PER_MIN;
 
-// The fit window and its minimum sample count move together: at the
-// device's ~10s posting rate a 3 min window holds ~18 readings, so 8 is
-// reachable about 80s after the first post. Theil-Sen needs a decent
-// sample to be worth its robustness — three points is not a trend.
-export const RATE_WINDOW_MIN = 3; // [15]
+// The fit window and its minimum sample count move together. The rig
+// posts once every 10s (6 readings/min), so a 2 min window holds 12
+// readings and the 8-reading minimum is reached about 80s after the
+// first post. Theil-Sen needs a decent sample to be worth its
+// robustness — three points is not a trend.
+//
+// 2 rather than 3 is a demo choice: on a ~4 min climb, a 3 min window
+// smooths over three quarters of the event and the countdown visibly
+// lags at the end. 2 trades a tighter fit for a countdown that tracks.
+export const RATE_WINDOW_MIN = 2; // [15]
 export const MIN_READINGS_FOR_RATE = 8; // [20]
 
 // An honest forecast reaches about three times as far as the trajectory
@@ -40,18 +45,34 @@ export const MIN_FIT_QUALITY_FOR_PROJECTION = 0.7;
 
 // Both thresholds must stay under MAX_PROJECTION_MIN or they can never
 // fire — nothing beyond the horizon is ever published.
-export const DANGER_WITHIN_MIN = 1; // [10]
-export const CAUTION_WITHIN_MIN = 5; // [30]
+export const DANGER_WITHIN_MIN = 0.5; // [10]
+export const CAUTION_WITHIN_MIN = 1.5; // [30]
 
+// At one post per 10s: stale after 3 missed, noData after 9.
 export const STALE_AFTER_MIN = 0.5; // [2]
-export const NO_DATA_AFTER_MIN = 2; // [15]
-export const PLAUSIBILITY_UPPER_MARGIN_MM = 100;
-export const PLAUSIBILITY_LOWER_MARGIN_MM = 500;
-export const RECOMPUTE_INTERVAL_MS = 30_000;
+export const NO_DATA_AFTER_MIN = 1.5; // [15]
+
+// Sized for the scaled rig, where the whole channel is 205mm deep. The
+// lower margin must stay loose enough that water at the tank rim — which
+// reads 110mm — is still plausible, or the filter would throw away
+// readings during the overspill we are demonstrating.
+export const PLAUSIBILITY_UPPER_MARGIN_MM = 30; // [100]
+export const PLAUSIBILITY_LOWER_MARGIN_MM = 50; // [500]
+
+// Posts arrive every 10s; anything below that means every post
+// recomputes. At 30_000 only every third one did, and the dashboard
+// updated 8 times across a 4 minute demo.
+export const RECOMPUTE_INTERVAL_MS = 5_000; // [30_000]
 
 export const WEATHER_SLOT_HOURS = 3;
 export const WEATHER_HORIZON_HOURS = 6;
 export const WEATHER_FETCH_TIMEOUT_MS = 8000;
 export const WEATHER_STALE_AFTER_MIN = 180;
 export const WEATHER_NO_DATA_AFTER_MIN = 720;
+// How many 3-hour slots ride along on the state document. Index 0 is
+// the current slot, so 5 covers now plus the next four — what the UI
+// strip shows. Aggregates are still computed from the FULL forecast;
+// only this published list is truncated.
+export const WEATHER_FORECAST_SLOTS = 5;
+
 export const WEATHER_SITE_ID = "legian-01";

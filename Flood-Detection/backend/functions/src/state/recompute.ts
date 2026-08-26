@@ -47,8 +47,8 @@ export function computeSiteState(
   // Costs one recompute cycle (~30s) of lead time on a projected
   // danger; buys immunity from the danger/normal flapping that would
   // otherwise fire a push on every oscillation and get the app muted.
-  // Water actually over the bank is unaffected — bankConfirmed below
-  // does not depend on any projection.
+  // Water actually over the street is unaffected — that rung reads
+  // freeboard directly and does not depend on any projection.
   const sustained =
     rate !== null &&
     rate.mmPerMin > 0 &&
@@ -57,12 +57,6 @@ export function computeSiteState(
 
   const projected = timeToBank(fbBench, fbBank, rate, cal);
   const toBank = sustained ? projected : null;
-
-  const prev = good.length > 1 ? good[good.length - 2] : null;
-  const bankConfirmed =
-    fbBank <= 0 &&
-    prev !== null &&
-    freeboardBankMM(prev.rawDistanceMM, cal) <= 0;
 
   const state = staleness(latest.timestamp, now);
 
@@ -82,7 +76,7 @@ export function computeSiteState(
       staleness: state,
       freeboardBenchMM: fbBench,
       timeToBankMin: toBank,
-      bankConfirmed,
+      freeboardBankMM: fbBank,
       haveRate: rate !== null,
     }),
     staleness: state,

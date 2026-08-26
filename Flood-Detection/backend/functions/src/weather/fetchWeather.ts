@@ -1,11 +1,14 @@
-// Weather context for the state document. Display only — nothing here
-// ever reaches classifyRisk.
+// Weather context for the state document. Display only — nothing here ever reaches classifyRisk.
 //
-// BMKG is the primary source (official, 3-hourly, Legian village code).
-// Open-Meteo supplies the one thing BMKG has no field for: rain
-// probability. If Open-Meteo fails we still publish weather, just with
-// null probabilities. If BMKG fails we publish nothing and the caller
-// keeps whatever it cached last.
+// BMKG is the only source (official, 3-hourly, Legian village code).
+// If it fails we publish nothing and the caller keeps whatever it
+// cached last.
+//
+// Open-Meteo used to supply rain probability. It was dropped: the app
+// never displayed it, and the two fields derived from it contradicted
+// each other — "now" was picked from the nearest hourly point in EITHER
+// direction while the 6h peak only looked forward, so a reading just
+// behind us could make now (3%) exceed the peak (0%).
 
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { onRequest } from "firebase-functions/v2/https";
@@ -14,6 +17,7 @@ import { db } from "../db/firestore";
 import {
   WEATHER_SLOT_HOURS,
   WEATHER_HORIZON_HOURS,
+  WEATHER_FORECAST_SLOTS,
   WEATHER_FETCH_TIMEOUT_MS,
   WEATHER_STALE_AFTER_MIN,
   WEATHER_NO_DATA_AFTER_MIN,
@@ -22,18 +26,25 @@ import {
   MS_PER_HOUR,
 } from "../config";
 import { BMKG_URL, WeatherSlot, parseBMKG } from "./bmkg";
-import { OPEN_METEO_URL, ProbPoint, parseOpenMeteo } from "./openMeteo";
+
+/** One published 3-hour forecast slot. */
+export interface ForecastSlot {
+  at: Date;
+  tempC: number;
+  /** Total precipitation across the whole 3h slot, mm. */
+  precipMM: number;
+  description: string;
+  iconURL: string;
+}
 
 /** What gets merged into the state document. */
 export interface Weather {
-  nowDesc: string;
-  nowIconURL: string;
-  nowTempC: number;
-  precipRateMMPerHour: number;
-  /** Chance of rain this hour. Null if Open-Meteo was unreachable. */
-  precipProbabilityNowPct: number | null;
-  /** Peak chance of rain across the next 6h. */
-  precipProbabilityNext6hPct: number | null;
+  /**
+   * The slot covering now, followed by the next few. Index 0 IS the
+   * current conditions — there is deliberately no separate copy of them
+   * to drift out of sync.
+   */
+  forecast: ForecastSlot[];
   next6hTotalMM: number;
   /** Searched across the FULL forecast, not just the 6h horizon. */
   rainStartsAt: Date | null;
@@ -76,41 +87,6 @@ function currentSlot(
 }
 
 /**
- * @param {ProbPoint[]} probs Probability points.
- * @param {Date} now Current time.
- * @return {number | null} Probability at the nearest hour, or null.
- */
-function probNearest(probs: ProbPoint[], now: Date): number | null {
-  if (probs.length === 0) return null;
-  let best = probs[0];
-  for (const p of probs) {
-    const gap = Math.abs(p.at.getTime() - now.getTime());
-    if (gap < Math.abs(best.at.getTime() - now.getTime())) {
-      best = p;
-    }
-  }
-  return best.probabilityPct;
-}
-
-/**
- * @param {ProbPoint[]} probs Probability points.
- * @param {number} fromMs Window start.
- * @param {number} toMs Window end.
- * @return {number | null} Highest probability in the window, or null.
- */
-function probPeak(
-  probs: ProbPoint[],
-  fromMs: number,
-  toMs: number,
-): number | null {
-  const inWindow = probs.filter(
-    (p) => p.at.getTime() >= fromMs && p.at.getTime() <= toMs,
-  );
-  if (inWindow.length === 0) return null;
-  return Math.max(...inWindow.map((p) => p.probabilityPct));
-}
-
-/**
  * @param {Date} fetchedAt When the forecast was last pulled.
  * @param {Date} now Current time.
  * @return {Staleness} fresh, stale, or noData.
@@ -127,14 +103,12 @@ export function weatherStaleness(fetchedAt: Date, now: Date): Staleness {
  * touching the network.
  *
  * @param {WeatherSlot[]} slots Parsed BMKG slots.
- * @param {ProbPoint[]} probs Parsed Open-Meteo points. May be empty.
  * @param {Date} fetchedAt When the forecast was pulled.
  * @param {Date} now Current time.
  * @return {Weather | null} The summary, or null if nothing usable.
  */
 export function summarize(
   slots: WeatherSlot[],
-  probs: ProbPoint[],
   fetchedAt: Date,
   now: Date,
 ): Weather | null {
@@ -168,13 +142,21 @@ export function summarize(
     rainDurationHours = wet * WEATHER_SLOT_HOURS;
   }
 
+  // Aggregates above are computed from the FULL forecast; only the
+  // published list is truncated. Truncating both would break
+  // rainStartsAt for anything past the fifth slot.
+  const forecast: ForecastSlot[] = ahead
+    .slice(0, WEATHER_FORECAST_SLOTS)
+    .map((slot) => ({
+      at: slot.at,
+      tempC: slot.tempC,
+      precipMM: slot.precipMM,
+      description: slot.description,
+      iconURL: slot.iconURL,
+    }));
+
   return {
-    nowDesc: current.description,
-    nowIconURL: current.iconURL,
-    nowTempC: current.tempC,
-    precipRateMMPerHour: round1(current.precipMM / WEATHER_SLOT_HOURS),
-    precipProbabilityNowPct: probNearest(probs, now),
-    precipProbabilityNext6hPct: probPeak(probs, nowMs, horizonEnd),
+    forecast,
     next6hTotalMM: round1(next6hTotalMM),
     rainStartsAt,
     rainDurationHours,
@@ -204,28 +186,22 @@ async function getJSON(url: string): Promise<unknown> {
  * @return {Promise<Weather | null>} The summary, or null on failure.
  */
 export async function fetchWeather(now: Date): Promise<Weather | null> {
-  const [bmkg, om] = await Promise.allSettled([
-    getJSON(BMKG_URL),
-    getJSON(OPEN_METEO_URL),
-  ]);
-
-  if (bmkg.status === "rejected") {
-    console.error("BMKG unreachable:", bmkg.reason);
+  let raw: unknown;
+  try {
+    raw = await getJSON(BMKG_URL);
+  } catch (err) {
+    console.error("BMKG unreachable:", err);
     return null;
   }
-  if (om.status === "rejected") {
-    console.warn("Open-Meteo unreachable; probability omitted");
-  }
 
-  const slots = parseBMKG(bmkg.value);
-  const probs = om.status === "fulfilled" ? parseOpenMeteo(om.value) : [];
+  const slots = parseBMKG(raw);
 
   if (slots.length === 0) {
     console.error("BMKG returned no parseable slots");
     return null;
   }
 
-  return summarize(slots, probs, now, now);
+  return summarize(slots, now, now);
 }
 
 // Hourly, because that is as often as the upstream forecasts actually
@@ -246,16 +222,18 @@ export const refreshWeather = onSchedule(
       return;
     }
 
-    // merge: this function owns the weather field and nothing else on
-    // the document. ingest owns all the rest.
+    // mergeFields, not merge: this function owns the weather field and
+    // nothing else. merge:true would DEEP merge the nested map, leaving
+    // keys we no longer publish behind forever; mergeFields replaces the
+    // whole field while still leaving ingest's fields untouched.
     await db
       .doc(`state/${WEATHER_SITE_ID}`)
-      .set({ weather }, { merge: true });
+      .set({ weather }, { mergeFields: ["weather"] });
 
     console.log(
-      `weather/${WEATHER_SITE_ID} → ${weather.nowDesc}, ` +
-      `${weather.precipRateMMPerHour}mm/h, ` +
-      `${weather.precipProbabilityNext6hPct}% next 6h`,
+      `weather/${WEATHER_SITE_ID} → ${weather.forecast[0].description}, ` +
+      `${weather.forecast.length} slots, ` +
+      `${weather.next6hTotalMM}mm next 6h`,
     );
   },
 );
@@ -277,11 +255,13 @@ export const refreshWeatherHTTP = onRequest(
       return;
     }
 
-    // merge: this function owns the weather field and nothing else on
-    // the document. ingest owns all the rest.
+    // mergeFields, not merge: this function owns the weather field and
+    // nothing else. merge:true would DEEP merge the nested map, leaving
+    // keys we no longer publish behind forever; mergeFields replaces the
+    // whole field while still leaving ingest's fields untouched.
     await db
       .doc(`state/${WEATHER_SITE_ID}`)
-      .set({ weather }, { merge: true });
+      .set({ weather }, { mergeFields: ["weather"] });
     res.json({ ok: true });
   },
 );

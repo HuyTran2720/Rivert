@@ -5,7 +5,7 @@ export interface RiskInput {
   staleness: Staleness;
   freeboardBenchMM: number;
   timeToBankMin: MinuteRange | null;
-  bankConfirmed: boolean;
+  freeboardBankMM: number;
   haveRate: boolean;
 }
 
@@ -20,11 +20,20 @@ export function classifyRisk(input: RiskInput): RiskState {
   // flood, and we cannot tell which we are looking at.
   if (input.staleness === "noData") return "unknown";
 
-  // Water is over the bank now, confirmed twice. A measured fact that
-  // needs no model, so it is settled before the rate is consulted —
-  // otherwise a site that has not yet collected MIN_READINGS_FOR_RATE
-  // samples reports an active overspill as "unknown".
-  if (input.bankConfirmed) return "danger";
+  // Water is over the street. A measured fact that needs no model, so
+  // it is settled before the rate is consulted — otherwise a site that
+  // has not yet collected MIN_READINGS_FOR_RATE samples reports an
+  // active overspill as "unknown".
+  //
+  // A single reading is enough, deliberately. This used to require two
+  // consecutive ones so a lone false echo could not trip danger, but at
+  // the crossing itself timeToBank goes null (there is no freeboard
+  // left to project through) and the first over-the-line reading then
+  // fell through to the bench rung — dropping the badge from danger
+  // back to caution for exactly one tick, mid-flood, and firing a
+  // downgrade notification with it. Glitch protection belongs upstream
+  // anyway: the device sends a median, and isPlausible screens the rest.
+  if (input.freeboardBankMM <= 0) return "danger";
 
   if (!input.haveRate) return "unknown";
 
