@@ -162,7 +162,15 @@ struct WaterLevelCard: View {
     var currentLevel: Float
     var range: ClosedRange<Float> = 0...100
     var unit: String = "cm"
-    var pointerColor: Color = Color(red: 0.8627450980392157, green: 0.4666666666666667, blue: 0.4666666666666667)
+    var status: SafetyStatus = .danger
+
+    private var pointerColor: Color {
+        switch status {
+        case .danger:  return Color(red: 0.8627450980392157, green: 0.4666666666666667, blue: 0.4666666666666667)
+        case .caution: return Color(red: 232 / 255.0, green: 180 / 255.0, blue: 91 / 255.0)  // #E8B45B
+        case .safe:    return Color(red: 135 / 255.0, green: 174 / 255.0, blue: 179 / 255.0) // #87AEB3
+        }
+    }
 
     private let badgeHeight: CGFloat = 22
 
@@ -204,8 +212,12 @@ struct WaterLevelCard: View {
 }
 
 #Preview {
-    WaterLevelCard(currentLevel: 2.8, range: 0...4)
-        .frame(width: 200, height: 300)
-        .padding()
-        .background(Color.black.opacity(0.8))
+    HStack {
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .safe)
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .caution)
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .danger)
+    }
+    .frame(height: 300)
+    .padding()
+    .background(Color.black.opacity(0.8))
 }

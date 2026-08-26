@@ -23,7 +23,7 @@ final class DashboardViewModel: ObservableObject {
     private var sensorStatus: SafetyStatus = .safe
     
     var currentLevel: Float {
-        (data.waterStatus?.currentLevel ?? 0)/100
+        (data.waterStatus?.currentLevel ?? 0)/10
     }
     
     var rateValue: String {
