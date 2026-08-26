@@ -12,7 +12,7 @@ struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
 
     // Flip to false to hide the manual status picker and always use live data.
-    private let showStatusOverride = true
+    private let showStatusOverride = false
 
     @State private var debugStatusOverride: SafetyStatus? = nil
 
