@@ -31,9 +31,26 @@ extension Color {
     static let terniaryFD = Color(red: 75 / 255.0, green: 124 / 255.0, blue: 144 / 255.0)
     
     
-    //dashboard background color
+    //dashboard background color - safe
     static let softCyan = Color(red: 196 / 255.0, green: 237 / 255.0, blue: 238 / 255.0)
     static let softMint = Color(red: 239 / 255.0, green: 246 / 255.0, blue: 234 / 255.0)
+
+    //dashboard background color - caution
+    static let softYellow = Color(red: 255 / 255.0, green: 214 / 255.0, blue: 118 / 255.0) // #FFD676
+    static let softCream  = Color(red: 239 / 255.0, green: 228 / 255.0, blue: 200 / 255.0) // #EFE4C8
+
+    //dashboard background color - danger
+    static let softRose  = Color(red: 255 / 255.0, green: 80 / 255.0, blue: 80 / 255.0)    // #FF5050
+    static let softBlush = Color(red: 141 / 255.0, green: 141 / 255.0, blue: 141 / 255.0)  // #8D8D8D
+
+    //information card background color - safe
+    static let cardCyan = Color(red: 182 / 255.0, green: 227 / 255.0, blue: 228 / 255.0)
+
+    //information card background color - caution
+    static let cardAmber = Color(red: 255 / 255.0, green: 221 / 255.0, blue: 165 / 255.0) // #FFDDA5
+
+    //information card background color - danger
+    static let cardRed = Color(red: 255 / 255.0, green: 174 / 255.0, blue: 174 / 255.0)   // #FFAEAE
     static let extraFD = Color(red: 62 / 255.0, green: 107 / 255.0, blue: 115 / 255.0)
     static let littledotsFD = Color(red: 105 / 255.0, green: 234 / 255.0, blue: 240 / 255.0)
     
@@ -56,16 +73,38 @@ extension Color {
     static let greenText       = Color(red: 16 / 255.0, green: 185 / 255.0, blue: 129 / 255.0)
     static let greenBackground = Color(red: 210 / 255.0, green: 255 / 255.0, blue: 222 / 255.0)
 
-    
+    /// Solid accent color per status, used for status-driven fills where a pale background color would wash out (e.g. TimeCard, InformationCard capsule/labels).
+    static func statusAccent(for status: SafetyStatus) -> Color {
+        switch status {
+        case .danger:  return Color(red: 205 / 255.0, green: 71 / 255.0, blue: 71 / 255.0)
+        case .caution: return Color(red: 217 / 255.0, green: 137 / 255.0, blue: 0 / 255.0)
+        case .safe:    return .secondaryFD
+        }
+    }
 }
 
 //for Dashboard background
 extension LinearGradient {
-    static let backgroundGradient = LinearGradient(
-        colors: [.softCyan, .softMint],
-        startPoint: .top,
-        endPoint: .bottom
-    )
+    static func backgroundGradient(for status: SafetyStatus) -> LinearGradient {
+        let colors: [Color]
+        switch status {
+        case .safe:    colors = [.softCyan, .softMint]
+        case .caution: colors = [.softYellow, .softCream]
+        case .danger:  colors = [.softRose, .softBlush]
+        }
+        return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
+    }
+
+    //for InformationCard background
+    static func cardGradient(for status: SafetyStatus) -> LinearGradient {
+        let bottomColor: Color
+        switch status {
+        case .safe:    bottomColor = .cardCyan
+        case .caution: bottomColor = .cardAmber
+        case .danger:  bottomColor = .cardRed
+        }
+        return LinearGradient(colors: [.white, bottomColor], startPoint: .top, endPoint: .bottom)
+    }
 }
 
 
@@ -73,7 +112,7 @@ struct ColorView : View {
     var body: some View {
         ZStack {
             Rectangle().fill(
-                LinearGradient.backgroundGradient
+                LinearGradient.backgroundGradient(for: .safe)
             )
             VStack {
                 Text("Primary")
