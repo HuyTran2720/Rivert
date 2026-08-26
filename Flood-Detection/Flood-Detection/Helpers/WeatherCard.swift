@@ -17,16 +17,22 @@ struct WeatherCard: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(Color.softCyan.opacity(0.5))
+                .fill(Color.clear)
                 .frame(width: 350, height: 80)
+                    .background(
+                        // 2. The blur effect (reduced opacity for high transparency)
+                        RoundedRectangle(cornerRadius: 25)
+                            .fill(.ultraThinMaterial.opacity(0.6))
+                    )
                 .cornerRadius(16)
+                .glassEffect(in: .rect(cornerRadius: 16))
 
             HStack(spacing: 16) {
                 // Current weather
                 HStack(spacing: 8) {
-                    Image(systemName: currentIcon.systemImageName)
+                    Image(currentIcon.systemImageName)
                         .font(.system(size: 30))
-                        .foregroundColor(.secondaryFD)
+                        .foregroundColor(.black)
                     
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(currentTemp)°")
@@ -48,14 +54,13 @@ struct WeatherCard: View {
                             Text(forecast[i].date)
                                 .font(.bodyFD3)
                                 .foregroundColor(.terniaryFD)
-                            Image(systemName: forecast[i].weatherIcon.systemImageName)
+                            Image(forecast[i].weatherIcon.systemImageName)
                                 .font(.system(size: 20))
                                 .foregroundColor(.secondaryFD)
                         }
                     }
                 }
             }
-            .padding(.horizontal, 16)
         }
     }
 }
@@ -64,7 +69,7 @@ struct WeatherCard: View {
     WeatherCard(
         currentTemp: 19,
         currentCondition: "Sunny",
-        currentIcon: .clear,
+        currentIcon: .sunny,
         forecast: [
             WeatherModel(weatherCondition: "Cloudy", weatherProbability: 20, weatherIcon: .cloudy, date: "12"),
             WeatherModel(weatherCondition: "Cloudy", weatherProbability: 40, weatherIcon: .cloudy, date: "15"),
