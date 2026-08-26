@@ -35,7 +35,7 @@ struct DashboardView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack() {
+            ZStack(alignment:.top) {
                 //Background Color
                 Rectangle()
                     .fill(LinearGradient.backgroundGradient(for: displayStatus))
@@ -43,15 +43,8 @@ struct DashboardView: View {
                     .animation(.easeInOut(duration: 0.5), value: displayStatus)
                 
                 //Background Image
-                VStack(alignment:.center,spacing:0) {
-                    Image(.townBuilding)
-                        .padding(.bottom,-12)
-                    Image(.grass)
-                        .padding(.bottom,-40)
-                        .zIndex(1)
-                    Image(.river)
-                        .padding(.bottom,40)
-                }
+                DashboardBackground(status: viewModel.status)
+                    .padding(.top,130)
                 
                 //Main VStack
                 VStack(){
