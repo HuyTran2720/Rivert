@@ -10,7 +10,8 @@ import {
  * @return {boolean} True if the reading is geometrically possible.
  */
 export function isPlausible(r: Reading, cal: Calibration): boolean {
-  if (r.rawDistanceMM > cal.d_bed + PLAUSIBILITY_UPPER_MARGIN_MM) {
+  if (r.rawDistanceMM - cal.sensor_offset_mm >
+      cal.d_bed + PLAUSIBILITY_UPPER_MARGIN_MM) {
     return false;
   }
   if (r.rawDistanceMM < cal.sensor_offset_mm - PLAUSIBILITY_LOWER_MARGIN_MM) {

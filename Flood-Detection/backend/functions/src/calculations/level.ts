@@ -7,7 +7,7 @@ import { isPlausible } from "./validity";
  * @return {number} Water height above the channel bed, mm.
  */
 export function levelMM(rawDistanceMM: number, cal: Calibration): number {
-  return cal.d_bed - rawDistanceMM;
+  return cal.d_bed - (rawDistanceMM - cal.sensor_offset_mm);
 }
 
 /**

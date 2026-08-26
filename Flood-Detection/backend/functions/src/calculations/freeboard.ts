@@ -20,7 +20,7 @@ export function freeboardBenchMM(
   rawDistanceMM: number,
   cal: Calibration,
 ): number {
-  return rawDistanceMM - cal.d_bench;
+  return (rawDistanceMM - cal.sensor_offset_mm) - cal.d_bench;
 }
 
 /**
