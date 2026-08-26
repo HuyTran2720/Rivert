@@ -31,9 +31,17 @@ extension Color {
     static let terniaryFD = Color(red: 75 / 255.0, green: 124 / 255.0, blue: 144 / 255.0)
     
     
-    //dashboard background color
+    //dashboard background color - safe
     static let softCyan = Color(red: 196 / 255.0, green: 237 / 255.0, blue: 238 / 255.0)
     static let softMint = Color(red: 239 / 255.0, green: 246 / 255.0, blue: 234 / 255.0)
+
+    //dashboard background color - caution
+    static let softYellow = Color(red: 255 / 255.0, green: 202 / 255.0, blue: 82 / 255.0)  // #FFCA52
+    static let softCream  = Color(red: 239 / 255.0, green: 228 / 255.0, blue: 200 / 255.0) // #EFE4C8
+
+    //dashboard background color - danger
+    static let softRose  = Color(red: 255 / 255.0, green: 80 / 255.0, blue: 80 / 255.0)    // #FF5050
+    static let softBlush = Color(red: 141 / 255.0, green: 141 / 255.0, blue: 141 / 255.0)  // #8D8D8D
     static let extraFD = Color(red: 62 / 255.0, green: 107 / 255.0, blue: 115 / 255.0)
     static let littledotsFD = Color(red: 105 / 255.0, green: 234 / 255.0, blue: 240 / 255.0)
     
@@ -61,11 +69,15 @@ extension Color {
 
 //for Dashboard background
 extension LinearGradient {
-    static let backgroundGradient = LinearGradient(
-        colors: [.softCyan, .softMint],
-        startPoint: .top,
-        endPoint: .bottom
-    )
+    static func backgroundGradient(for status: SafetyStatus) -> LinearGradient {
+        let colors: [Color]
+        switch status {
+        case .safe:    colors = [.softCyan, .softMint]
+        case .caution: colors = [.softYellow, .softCream]
+        case .danger:  colors = [.softRose, .softBlush]
+        }
+        return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
+    }
 }
 
 
@@ -73,7 +85,7 @@ struct ColorView : View {
     var body: some View {
         ZStack {
             Rectangle().fill(
-                LinearGradient.backgroundGradient
+                LinearGradient.backgroundGradient(for: .safe)
             )
             VStack {
                 Text("Primary")

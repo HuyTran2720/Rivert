@@ -10,7 +10,16 @@ import FirebaseFirestore
 
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
-    
+
+    // Flip to false to hide the manual status picker and always use live data.
+    private let showStatusOverride = true
+
+    @State private var debugStatusOverride: SafetyStatus? = nil
+
+    private var displayStatus: SafetyStatus {
+        (showStatusOverride ? debugStatusOverride : nil) ?? viewModel.status
+    }
+
     //Fot Date
     private var currentFormattedDate: String {
             let formatter = DateFormatter()
@@ -24,8 +33,9 @@ struct DashboardView: View {
             ZStack() {
                 //Background Color
                 Rectangle()
-                    .fill(LinearGradient.backgroundGradient)
+                    .fill(LinearGradient.backgroundGradient(for: displayStatus))
                     .ignoresSafeArea()
+                    .animation(.easeInOut(duration: 0.5), value: displayStatus)
                 
                 //Background Image
                 VStack(alignment:.center,spacing:0) {
@@ -40,6 +50,17 @@ struct DashboardView: View {
                 
                 //Main VStack
                 VStack(){
+                    if showStatusOverride {
+                        Picker("Preview Status", selection: $debugStatusOverride) {
+                            Text("Live").tag(SafetyStatus?.none)
+                            ForEach(SafetyStatus.allCases, id: \.self) { status in
+                                Text(status.rawValue.capitalized).tag(SafetyStatus?.some(status))
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal, 40)
+                    }
+
                     //Top Part
                     VStack(alignment:.leading,spacing:12) {
                         HStack {
@@ -91,7 +112,7 @@ struct DashboardView: View {
                     .padding(.horizontal, 40)
                     
                     VStack(spacing:20) {
-                        SafetyStatusCard(status: viewModel.status, size: .small)
+                        SafetyStatusCard(status: displayStatus, size: .small)
                         Image(.mascot)
                     }
                     .padding(.top, 20)
@@ -100,13 +121,13 @@ struct DashboardView: View {
                     
                     ZStack(alignment:.top) {
                         InformationCard(
-                            status: viewModel.status,
+                            status: displayStatus,
                             currentLevel: viewModel.currentLevel,
                             rateValue: viewModel.rateValue,
                             trend: viewModel.trend
                             )
                         TimeCard(
-                            status: viewModel.status,
+                            status: displayStatus,
                             timeToBank: viewModel.timeToBank
                         ).padding(.top,10)
                     }
