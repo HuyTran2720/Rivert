@@ -42,11 +42,7 @@ struct InformationCard: View {
     var body: some View {
         ZStack(alignment: .top) {
             DashboardCardShape()
-                .fill(LinearGradient(
-                    colors: [.white,Color(red: 182/255, green: 227/255, blue: 228/255)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                ))
+                .fill(LinearGradient.cardGradient(for: status))
                 .frame(width: 400, height: 350)
                 .cornerRadius(50)
             HStack(spacing:10) {

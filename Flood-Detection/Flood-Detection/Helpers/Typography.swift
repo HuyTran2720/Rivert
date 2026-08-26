@@ -42,6 +42,15 @@ extension Color {
     //dashboard background color - danger
     static let softRose  = Color(red: 255 / 255.0, green: 80 / 255.0, blue: 80 / 255.0)    // #FF5050
     static let softBlush = Color(red: 141 / 255.0, green: 141 / 255.0, blue: 141 / 255.0)  // #8D8D8D
+
+    //information card background color - safe
+    static let cardCyan = Color(red: 182 / 255.0, green: 227 / 255.0, blue: 228 / 255.0)
+
+    //information card background color - caution
+    static let cardAmber = Color(red: 255 / 255.0, green: 221 / 255.0, blue: 165 / 255.0) // #FFDDA5
+
+    //information card background color - danger
+    static let cardRed = Color(red: 255 / 255.0, green: 174 / 255.0, blue: 174 / 255.0)   // #FFAEAE
     static let extraFD = Color(red: 62 / 255.0, green: 107 / 255.0, blue: 115 / 255.0)
     static let littledotsFD = Color(red: 105 / 255.0, green: 234 / 255.0, blue: 240 / 255.0)
     
@@ -77,6 +86,17 @@ extension LinearGradient {
         case .danger:  colors = [.softRose, .softBlush]
         }
         return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
+    }
+
+    //for InformationCard background
+    static func cardGradient(for status: SafetyStatus) -> LinearGradient {
+        let bottomColor: Color
+        switch status {
+        case .safe:    bottomColor = .cardCyan
+        case .caution: bottomColor = .cardAmber
+        case .danger:  bottomColor = .cardRed
+        }
+        return LinearGradient(colors: [.white, bottomColor], startPoint: .top, endPoint: .bottom)
     }
 }
 
