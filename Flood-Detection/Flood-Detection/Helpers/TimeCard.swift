@@ -1,14 +1,8 @@
 //
-//  TimeCard.swift
+//  TimeCard2.swift
 //  Flood-Detection
 //
-//  Created by RyanMFDR on 18/08/26.
-//
-//
-//  TimeCard.swift
-//  Flood-Detection
-//
-//  Created by RyanMFDR on 18/08/26.
+//  Created by Gian Denggan Benjamin on 24/08/26.
 //
 //
 //  TimeCard.swift
