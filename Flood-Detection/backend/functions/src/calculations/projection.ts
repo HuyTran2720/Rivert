@@ -1,6 +1,6 @@
 import { Rate, Calibration, MinuteRange } from "../types/models";
 import {
-  MAX_PROJECTION_MIN,
+  MAX_PUBLISHED_UPPER_MIN,
   MIN_FIT_QUALITY_FOR_PROJECTION,
 } from "../config";
 import { travelMinutes } from "./crossSection";
@@ -39,13 +39,20 @@ function projectRange(
   const lower = travelMinutes(narrowMM, wideMM, rate.fastestMMPerMin, cal);
   const upper = travelMinutes(narrowMM, wideMM, rate.slowestMMPerMin, cal);
 
-  if (!Number.isFinite(lower) || lower > MAX_PROJECTION_MIN) return null;
+  // Distance-based horizons are gone: a projection is withheld only
+  // when it cannot be computed at all, never for being far away. A
+  // slow rise is still a rise, and reporting "90 minutes" beats
+  // reporting nothing and leaving the app unable to tell "no rise"
+  // apart from "rise too gradual to bother you with".
+  if (!Number.isFinite(lower)) return null;
 
   const lowerMin = Math.max(0, round1(lower));
-  const upperMin = Math.min(
-    MAX_PROJECTION_MIN,
-    Number.isFinite(upper) ? round1(upper) : MAX_PROJECTION_MIN,
-  );
+
+  // Only the infinite case is capped — that is a slow edge at or below
+  // zero, i.e. "might not be rising at all", not a real 24h estimate.
+  const upperMin = Number.isFinite(upper) ?
+    Math.min(round1(upper), MAX_PUBLISHED_UPPER_MIN) :
+    MAX_PUBLISHED_UPPER_MIN;
 
   return { lower: lowerMin, upper: Math.max(lowerMin, upperMin) };
 }

@@ -84,6 +84,9 @@ export interface SiteState {
   /** The display bucket. This is the field the app should render. */
   leadTime: LeadTime;
   riskState: RiskState;
+  /** When riskState last changed. Persisted so the dwell gate survives
+   * across invocations — recompute is stateless otherwise. */
+  riskStateSince: Date;
   staleness: Staleness;
   latestReadingAt: Date;
   computedAt: Date;

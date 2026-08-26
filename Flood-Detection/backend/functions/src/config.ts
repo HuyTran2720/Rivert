@@ -19,9 +19,24 @@ export const MIN_READINGS_FOR_RATE = 8; // [20]
 // An honest forecast reaches about three times as far as the trajectory
 // it was fitted from. Derived rather than hand-set so the horizon can
 // never quietly drift away from the window that justifies it.
+//
+// NOTE: this is no longer a publish gate. A projection further out than
+// this used to be discarded entirely, which meant timeToBankMin was
+// null for every rise slower than ~30 mm/min and the field looked
+// permanently broken. It is kept as the honest-confidence marker: past
+// this many minutes the number is an extrapolation well beyond its fit
+// window, and the UI should present it as soft.
 export const PROJECTION_HORIZON_MULTIPLE = 3;
 export const MAX_PROJECTION_MIN =
   PROJECTION_HORIZON_MULTIPLE * RATE_WINDOW_MIN;
+
+// Ceiling on the PUBLISHED upper bound only. When the slow edge of the
+// rate band sits at or below zero the slow-side projection is Infinity,
+// which Firestore cannot store — so it is reported as this instead.
+// Deliberately far beyond any decision threshold: nothing in
+// classifyRisk or leadTime reads `upper`, so this only ever affects
+// display, never a badge.
+export const MAX_PUBLISHED_UPPER_MIN = 1440; // 24h
 
 // Percentiles of the pairwise-slope distribution that become the
 // fastest/slowest believable rate. Empirical, so no normality assumed.
@@ -47,6 +62,36 @@ export const MIN_FIT_QUALITY_FOR_PROJECTION = 0.7;
 // fire — nothing beyond the horizon is ever published.
 export const DANGER_WITHIN_MIN = 0.5; // [10]
 export const CAUTION_WITHIN_MIN = 1.5; // [30]
+
+// ---- Level-based caution rung -------------------------------------
+// Fires on HEIGHT + SUSTAINED RISE together, replacing the old bench
+// crossing. Expressed as a fraction of channel depth (0 = bed, 1 =
+// street) so it reads the same at any site regardless of geometry.
+
+// Raise at half depth; clear at 45%. The gap is deliberate: with a
+// single threshold, water hovering at the line flips the badge on every
+// recompute and multicasts a push each time.
+export const CAUTION_RAISE_FRACTION = 0.50;
+export const CAUTION_CLEAR_FRACTION = 0.45;
+
+// Positional floor. A channel this full is worth a warning even with no
+// rate at all — a stalled rise, a blocked culvert, or the first 80s of
+// an event before MIN_READINGS_FOR_RATE is met. Checked BEFORE the
+// haveRate gate for exactly that reason.
+export const CAUTION_LEVEL_FLOOR_FRACTION = 0.75;
+
+// The minimum rise that counts as rising. NOT a physical constant — it
+// is the sensor's noise floor, and it is a PLACEHOLDER until measured:
+// run the rig on still water, take the distribution of fitted rates,
+// and set this above its 95th percentile. Too low and a spring tide
+// filling the channel slowly reads as a flood; that false positive is
+// the entire reason this rung takes a rate at all.
+export const CAUTION_RISE_MMPERMIN = 3; // [TO BE MEASURED]
+
+// How long the height+rise condition must hold before the badge moves.
+// Applies to the LEVEL rung only — the projection rungs above it are
+// ungated, so a genuinely fast rise still escalates immediately.
+export const CAUTION_DWELL_SEC = 5; // [90]
 
 // At one post per 10s: stale after 3 missed, noData after 9.
 export const STALE_AFTER_MIN = 0.5; // [2]

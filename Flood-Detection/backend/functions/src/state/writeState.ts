@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { db } from "../db/firestore";
-import { Reading, Calibration } from "../types/models";
+import { Reading, Calibration, RiskState } from "../types/models";
 import { RATE_WINDOW_MIN, RECOMPUTE_INTERVAL_MS } from "../config";
 import { computeSiteState } from "./recompute";
 
@@ -68,12 +68,23 @@ export async function recomputeAndWriteState(
       prevState.rateMMPerMin :
       null;
 
+  // Feed the dwell/hysteresis gate. Without these two the level rung
+  // has no memory and cannot debounce at all.
+  const prevRiskState =
+    typeof prevState?.riskState === "string" ?
+      (prevState.riskState as RiskState) :
+      null;
+  const prevRiskStateSince: Date | null =
+    prevState?.riskStateSince?.toDate?.() ?? null;
+
   const newState = computeSiteState(
     siteId,
     readings,
     cal,
     now,
     prevRateMMPerMin,
+    prevRiskState,
+    prevRiskStateSince,
   );
 
   if (!newState) {
