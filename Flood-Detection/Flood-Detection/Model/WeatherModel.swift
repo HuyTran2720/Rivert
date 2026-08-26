@@ -15,8 +15,7 @@ struct WeatherModel {
     
     // Icon of each weather
     let weatherIcon : WeatherIcon
-
-    // date of the weather
+        // date of the weather
     var date: String
 }
 

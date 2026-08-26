@@ -11,7 +11,7 @@ enum SafetyStatus: String, CaseIterable {
     case danger
     case caution
     case safe
-
+    
     /// The color used for the map pin marker.
     var pinTintColor: UIColor {
         switch self {
