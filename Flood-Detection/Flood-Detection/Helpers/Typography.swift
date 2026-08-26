@@ -36,7 +36,7 @@ extension Color {
     static let softMint = Color(red: 239 / 255.0, green: 246 / 255.0, blue: 234 / 255.0)
 
     //dashboard background color - caution
-    static let softYellow = Color(red: 255 / 255.0, green: 202 / 255.0, blue: 82 / 255.0)  // #FFCA52
+    static let softYellow = Color(red: 255 / 255.0, green: 214 / 255.0, blue: 118 / 255.0) // #FFD676
     static let softCream  = Color(red: 239 / 255.0, green: 228 / 255.0, blue: 200 / 255.0) // #EFE4C8
 
     //dashboard background color - danger
@@ -73,7 +73,14 @@ extension Color {
     static let greenText       = Color(red: 16 / 255.0, green: 185 / 255.0, blue: 129 / 255.0)
     static let greenBackground = Color(red: 210 / 255.0, green: 255 / 255.0, blue: 222 / 255.0)
 
-    
+    /// Solid accent color per status, used for status-driven fills where a pale background color would wash out (e.g. TimeCard, InformationCard capsule/labels).
+    static func statusAccent(for status: SafetyStatus) -> Color {
+        switch status {
+        case .danger:  return Color(red: 205 / 255.0, green: 71 / 255.0, blue: 71 / 255.0)
+        case .caution: return Color(red: 217 / 255.0, green: 137 / 255.0, blue: 0 / 255.0)
+        case .safe:    return .secondaryFD
+        }
+    }
 }
 
 //for Dashboard background

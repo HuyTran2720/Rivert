@@ -20,6 +20,11 @@ struct DashboardView: View {
         (showStatusOverride ? debugStatusOverride : nil) ?? viewModel.status
     }
 
+    // Top half's accent color: white for danger since the accent color there is too dark to read against the red gradient.
+    private var topAccentColor: Color {
+        displayStatus == .danger ? .white : Color.statusAccent(for: displayStatus)
+    }
+
     //Fot Date
     private var currentFormattedDate: String {
             let formatter = DateFormatter()
@@ -66,7 +71,7 @@ struct DashboardView: View {
                         HStack {
                             Text(currentFormattedDate)
                                 .font(.headingFD3)
-                                .foregroundStyle(Color.terniaryFD)
+                                .foregroundStyle(topAccentColor)
                             Spacer()
                             //Button navigate
                             NavigationLink(destination: MapView().ignoresSafeArea()){

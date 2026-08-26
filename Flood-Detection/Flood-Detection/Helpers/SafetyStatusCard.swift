@@ -52,9 +52,9 @@ enum SafetyStatusCardSize {
 
     var maxWidth: CGFloat {
         switch self {
-        case .small:  return 190
-        case .medium: return 240
-        case .large:  return 300
+        case .small:  return 220
+        case .medium: return 280
+        case .large:  return 340
         }
     }
 }
@@ -106,14 +106,22 @@ struct SafetyStatusCard: View {
                     .shadow(color: outlineColor.opacity(glowOpacity), radius: glowRadius)
                     .shadow(color: outlineColor.opacity(glowOpacity * 0.6), radius: glowRadius * 2)
             )
-            .scaleEffect(status == .danger && isPulsing ? 1.03 : 1.0)
-            .onAppear {
-                guard status == .danger else { return }
-                withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                    isPulsing = true
-                }
+            .scaleEffect(isPulsing ? 1.03 : 1.0)
+            .onAppear { updatePulsing(for: status) }
+            .onChange(of: status) { _, newStatus in updatePulsing(for: newStatus) }
+        }
+
+    private func updatePulsing(for status: SafetyStatus) {
+        if status == .danger {
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                isPulsing = true
+            }
+        } else {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isPulsing = false
             }
         }
+    }
 
     private var iconSize: CGSize {
         guard status == .safe else { return size.iconSize }
