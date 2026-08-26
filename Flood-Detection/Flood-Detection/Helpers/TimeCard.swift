@@ -49,6 +49,7 @@ struct TimeCard: View {
         case .safe: return .secondaryFD
         }
     }
+
 }
 
 #Preview {
