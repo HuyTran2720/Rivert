@@ -114,15 +114,6 @@ export function computeSiteState(
     levelMM: levelMM(latest.rawDistanceMM, cal),
     rateMMPerMin: rate ? rate.mmPerMin : null,
     freeboardMM: fbBank,
-    // Published so a caution decision can be explained from the state
-    // document alone. This is the number the bench rung reads, and
-    // without it every caution was unexplainable from the outside.
-    freeboardBenchMM: fbBench,
-    /** How linear the fit window was. Gates the projection, so when
-     * timeToBankMin is null this is usually why. */
-    fitQuality: rate ? rate.fitQuality : null,
-    /** 0 = bed, 1 = street. The number the caution rung reads. */
-    levelFraction: fraction,
     timeToBankMin: toBank,
     leadTime: leadTime({
       freeboardBankMM: fbBank,

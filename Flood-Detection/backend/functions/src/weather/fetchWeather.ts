@@ -1,4 +1,5 @@
-// Weather context for the state document. Display only — nothing here ever reaches classifyRisk.
+// Weather context for the state document. Display only — nothing
+// here ever reaches classifyRisk.
 //
 // BMKG is the only source (official, 3-hourly, Legian village code).
 // If it fails we publish nothing and the caller keeps whatever it

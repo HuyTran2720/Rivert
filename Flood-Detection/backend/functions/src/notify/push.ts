@@ -37,6 +37,8 @@ export function shouldNotify(before: RiskState, after: RiskState): boolean {
  * @param {string} siteId Which site changed.
  * @param {RiskState} before Previous riskState.
  * @param {RiskState} after New riskState.
+ * @param {MinuteRange | null} timeToBankMin Projected minutes to
+ * overspill, appended to the caution body when present.
  * @return {Promise<void>} Resolves once the send attempt completes.
  */
 async function sendRiskTransitionPush(
@@ -54,9 +56,9 @@ async function sendRiskTransitionPush(
   }
 
   const { title, body } = MESSAGE_FOR[after];
-  const finalBody = after === "caution" && timeToBankMin
-    ? `${body}${timeToBankMin.lower}–${timeToBankMin.upper} minutes.`
-    : `${body}.`;
+  const finalBody = after === "caution" && timeToBankMin ?
+    `${body}${timeToBankMin.lower}–${timeToBankMin.upper} minutes.` :
+    `${body}.`;
 
   const result = await getMessaging().sendEachForMulticast({
     tokens,
@@ -90,6 +92,8 @@ export const checkRiskAndNotify = onDocumentUpdated(
     if (!shouldNotify(before, after)) return;
     if (after === "unknown") return;
 
-    await sendRiskTransitionPush(event.params.siteId, before, after, timeToBankMin);
+    await sendRiskTransitionPush(
+      event.params.siteId, before, after, timeToBankMin,
+    );
   },
 );
