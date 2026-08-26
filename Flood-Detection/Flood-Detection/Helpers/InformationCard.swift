@@ -42,18 +42,14 @@ struct InformationCard: View {
     var body: some View {
         ZStack(alignment: .top) {
             DashboardCardShape()
-                .fill(LinearGradient(
-                    colors: [.white,Color(red: 182/255, green: 227/255, blue: 228/255)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                ))
+                .fill(LinearGradient.cardGradient(for: status))
                 .frame(width: 400, height: 350)
                 .cornerRadius(50)
             HStack(spacing:10) {
                 VStack {
                     HStack {
                         DangerPhase(height: 225, verticalInset: 30)
-                        WaterLevelCard(currentLevel: currentLevel, range: 0...21.2)
+                        WaterLevelCard(currentLevel: currentLevel, range: 0...21.2, status: status)
                             .frame(width: 150, height: 225)
                             .overlay(
                                 ThresholdCrossLines(
@@ -68,9 +64,9 @@ struct InformationCard: View {
                 VStack(alignment: .center, spacing: 30) {
                     Text("Rate of Water Rise")
                         .font(.bodyFD2)
-                        .foregroundColor(backgroundColor)
+                        .foregroundColor(accentColor)
                         .bold()
-                    WaterRateCard(value: rateValue)
+                    WaterRateCard(value: rateValue, status: status)
                     HStack {
                         Text(trend.WaterTrendName)
                             .font(.bodyFD2)
@@ -79,7 +75,7 @@ struct InformationCard: View {
                     }
                     .padding(5)
                     .foregroundColor(.primaryFD)
-                    .background(backgroundColor)
+                    .background(accentColor)
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
                 }
             }
@@ -87,20 +83,8 @@ struct InformationCard: View {
         }
     }
 
-    private var backgroundColor: Color {
-        switch status {
-        case .safe: return .secondaryFD
-        case .caution: return .yellowBackground
-        case .danger: return .redBackground
-        }
-    }
-
-    private var textColor: Color {
-        switch status {
-        case .safe: return .greenText
-        case .caution: return .yellowText
-        case .danger: return .redText
-        }
+    private var accentColor: Color {
+        Color.statusAccent(for: status)
     }
 }
 
