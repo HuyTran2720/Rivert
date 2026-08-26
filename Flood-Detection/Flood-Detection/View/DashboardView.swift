@@ -43,7 +43,7 @@ struct DashboardView: View {
                     .animation(.easeInOut(duration: 0.5), value: displayStatus)
                 
                 //Background Image
-                DashboardBackground(status: viewModel.status)
+                DashboardBackground(status: displayStatus)
                     .padding(.top,130)
                 
                 //Main VStack
