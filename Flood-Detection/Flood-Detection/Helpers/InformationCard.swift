@@ -47,13 +47,11 @@ struct InformationCard: View {
                     startPoint: .top,
                     endPoint: .bottom
                 ))
-<<<<<<< HEAD
                 .frame(width: 400, height: 350)
                 .cornerRadius(50)
-=======
+
                 .frame(width: 400, height: 440)
 
->>>>>>> main
             HStack {
                 DangerPhase()
                 WaterLevelCard(currentLevel: currentLevel, range: 0...3000)
