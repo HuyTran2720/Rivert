@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0410302C494F003303A5 /* FirebaseCore */; };
+		813F53BF303ECB990001D132 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 813F53BE303ECB990001D132 /* Lottie */; };
 		89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 			files = (
 				3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */,
 				89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */,
+				813F53BF303ECB990001D132 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +97,7 @@
 			packageProductDependencies = (
 				3EDC0410302C494F003303A5 /* FirebaseCore */,
 				3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */,
+				813F53BE303ECB990001D132 /* Lottie */,
 			);
 			productName = "Flood-Detection";
 			productReference = 3E6E840F3024752900A7D079 /* Flood-Detection.app */;
@@ -126,6 +129,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				813F53BD303ECB990001D132 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3E6E84103024752900A7D079 /* Products */;
@@ -381,6 +385,14 @@
 				minimumVersion = 12.17.0;
 			};
 		};
+		813F53BD303ECB990001D132 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -393,6 +405,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		813F53BE303ECB990001D132 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 813F53BD303ECB990001D132 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

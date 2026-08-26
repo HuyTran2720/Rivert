@@ -54,7 +54,7 @@ struct WeatherCard: View {
                             Text(forecast[i].date)
                                 .font(.bodyFD3)
                                 .foregroundColor(.terniaryFD)
-                            Image(currentIcon.systemImageName)
+                            Image(forecast[i].weatherIcon.systemImageName)
                                 .font(.system(size: 20))
                                 .foregroundColor(.secondaryFD)
                         }
