@@ -36,9 +36,9 @@ class MapViewModel: ObservableObject {
         let legianStatus = sensorState?.safetyStatus ?? .safe
         let description: String
         if let state = sensorState {
-            description = "Water level: \(String(format: "%.0f", state.levelMM)) mm — \(state.riskState)"
+            description = AppStrings.waterLevelDesc(mm: String(format: "%.0f", state.levelMM), risk: state.riskState)
         } else {
-            description = "Sensor data loading…"
+            description = AppStrings.sensorDataLoading
         }
 
         let legian = FloodZone(

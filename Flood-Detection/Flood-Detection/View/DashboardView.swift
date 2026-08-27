@@ -10,6 +10,7 @@ import FirebaseFirestore
 
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
 
     // Flip to false to hide the manual status picker and always use live data.
     private let showStatusOverride = false
@@ -29,7 +30,7 @@ struct DashboardView: View {
     private var currentFormattedDate: String {
             let formatter = DateFormatter()
             formatter.dateFormat = "E, d MMMM"
-            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.locale = Locale(identifier: appLanguage == "id" ? "id_ID" : "en_US_POSIX")
             return formatter.string(from: Date())
         }
     
@@ -67,6 +68,43 @@ struct DashboardView: View {
                                 .font(.headingFD3)
                                 .foregroundStyle(topAccentColor)
                             Spacer()
+                            
+                            // Language dropdown
+                            Menu {
+                                Button {
+                                    appLanguage = "en"
+                                } label: {
+                                    HStack {
+                                        Text("English")
+                                        if appLanguage == "en" { Image(systemName: "checkmark") }
+                                    }
+                                }
+                                Button {
+                                    appLanguage = "id"
+                                } label: {
+                                    HStack {
+                                        Text("Indonesia")
+                                        if appLanguage == "id" { Image(systemName: "checkmark") }
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(appLanguage.uppercased())
+                                        .font(.headingFD3)
+                                        .foregroundStyle(Color.black)
+                                    Image(systemName: "chevron.down")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundStyle(Color.black)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.primaryFD.opacity(0.5))
+                                        .shadow(radius: 4)
+                                )
+                            }
+                            
                             //Button navigate
                             NavigationLink(destination: MapView().ignoresSafeArea()){
                                 HStack {
@@ -123,6 +161,7 @@ struct DashboardView: View {
                 }.ignoresSafeArea(edges:.bottom)
                 
             }
+            .id(appLanguage)
             
         }.task {
             viewModel.startListening()

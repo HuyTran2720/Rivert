@@ -17,7 +17,7 @@ struct TimeCard: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            Text("River Overflow")
+            Text(AppStrings.riverOverflow)
                 .font(.bodyFD3)
                 .foregroundStyle(Color.white)
 
@@ -36,9 +36,9 @@ struct TimeCard: View {
 
     private var statusText: String {
         switch status {
-        case .danger: return "Flood Detected"
+        case .danger: return AppStrings.floodDetected
         case .caution: return "< \(timeToBank)"
-        case .safe: return "No flood detected"
+        case .safe: return AppStrings.noFloodDetected
         }
     }
 
@@ -50,9 +50,9 @@ struct TimeCard: View {
 
 #Preview {
     VStack(spacing: 16) {
-        TimeCard(status: .danger, timeToBank: "30 Minutes")
-        TimeCard(status: .caution, timeToBank: "30 Minutes")
-        TimeCard(status: .safe, timeToBank: "30 Minutes")
+        TimeCard(status: .danger, timeToBank: String(localized: "30 Minutes"))
+        TimeCard(status: .caution, timeToBank: String(localized: "30 Minutes"))
+        TimeCard(status: .safe, timeToBank: String(localized:"30 Minutes"))
     }
     .padding()
     .background(Color.gray)

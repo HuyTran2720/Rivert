@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EDC0410302C494F003303A5 /* FirebaseCore */; };
 		813F53BF303ECB990001D132 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 813F53BE303ECB990001D132 /* Lottie */; };
+		813F54C6303FE0970001D132 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 813F54C5303FE0970001D132 /* Localizable.xcstrings */; };
 		89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */; };
 		F29AE31359271AF6FB7A3BA8 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 82AFDC2E5446F7A0B894CE65 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3E6E840F3024752900A7D079 /* Flood-Detection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flood-Detection.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		813F54C5303FE0970001D132 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +58,7 @@
 		3E6E84063024752900A7D079 = {
 			isa = PBXGroup;
 			children = (
+				813F54C5303FE0970001D132 /* Localizable.xcstrings */,
 				3E6E84113024752900A7D079 /* Flood-Detection */,
 				3EDC040F302C494F003303A5 /* Frameworks */,
 				3E6E84103024752900A7D079 /* Products */,
@@ -127,6 +130,7 @@
 			knownRegions = (
 				en,
 				Base,
+				id,
 			);
 			mainGroup = 3E6E84063024752900A7D079;
 			minimizedProjectReferenceProxies = 1;
@@ -149,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				813F54C6303FE0970001D132 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +230,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -282,6 +288,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

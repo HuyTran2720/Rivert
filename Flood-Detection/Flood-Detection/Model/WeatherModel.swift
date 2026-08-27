@@ -4,7 +4,7 @@
 //
 //  Created by Gian Denggan Benjamin on 13/08/26.
 //
-
+import SwiftUI
 struct WeatherModel {
     
     //Weather condition to determine if its raining/not and the intensity of the rain
@@ -28,10 +28,10 @@ enum WeatherIcon: String {
     
     var systemImageName: String {
         switch self {
-        case .rain: return "Rain"
-        case .sunny: return "Sunny"
-        case .cloudy: return "Cloudy"
-        case .storm: return "Storm"
+        case .rain: return String(localized: "Rain")
+        case .sunny: return String(localized: "Sunny")
+        case .cloudy: return String(localized: "Cloudy")
+        case .storm: return String(localized:"Storm")
         }
     }
 
@@ -61,7 +61,7 @@ enum WeatherIcon: String {
             || d.contains("mist") || d.contains("smoke") {
             return .cloudy
         }
-        if d.contains("clear") || d.contains("sunny") || d.contains("fair") {
+        if d.contains(String(localized:"clear")) || d.contains(String(localized:"sunny")) || d.contains(String(localized:"fair")) {
             return .sunny
         }
         return .cloudy
