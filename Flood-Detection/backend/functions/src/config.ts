@@ -68,11 +68,13 @@ export const CAUTION_WITHIN_MIN = 1.5; // [30]
 // crossing. Expressed as a fraction of channel depth (0 = bed, 1 =
 // street) so it reads the same at any site regardless of geometry.
 
-// Raise at half depth; clear at 45%. The gap is deliberate: with a
-// single threshold, water hovering at the line flips the badge on every
-// recompute and multicasts a push each time.
+// Raise at half depth. Clearing is anchored to the positional floor
+// below, not to the raise threshold: caution is mostly raised by that
+// floor rung, and clearing at 45% meant a channel draining normally
+// held the badge for thirty points of depth after it was already safe.
+// Water under the floor and not rising is not a warning.
 export const CAUTION_RAISE_FRACTION = 0.50;
-export const CAUTION_CLEAR_FRACTION = 0.45;
+export const CAUTION_CLEAR_FRACTION = 0.75;
 
 // Positional floor. A channel this full is worth a warning even with no
 // rate at all — a stalled rise, a blocked culvert, or the first 80s of
