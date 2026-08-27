@@ -17,12 +17,11 @@ struct WaveShape: Shape {
     var percent: Double
     var amplitude: CGFloat = 6
 
-    var animatableData: AnimatablePair<Double, Double> {
-        get { AnimatablePair(offset.degrees, percent) }
-        set {
-            offset = Angle(degrees: newValue.first)
-            percent = newValue.second
-        }
+    // Only `percent` needs smooth interpolation now — `offset` is supplied
+    // fresh every frame by TimelineView, so it never needs to be animated.
+    var animatableData: Double {
+        get { percent }
+        set { percent = newValue }
     }
 
     func path(in rect: CGRect) -> Path {
@@ -87,9 +86,6 @@ struct WaterLevel: View {
     var currentLevel: Float
     var range: ClosedRange<Float> = 0...100
 
-    @State private var waveOffset1 = Angle(degrees: 0)
-    @State private var waveOffset2 = Angle(degrees: 180)
-
     private var percent: Double {
         let clamped = min(max(currentLevel, range.lowerBound), range.upperBound)
         let span = range.upperBound - range.lowerBound
@@ -98,62 +94,69 @@ struct WaterLevel: View {
     }
 
     var body: some View {
-        GeometryReader { geo in
-            let width = geo.size.width
-            let height = geo.size.height
-            let capsuleShape = Capsule()
+        TimelineView(.animation) { timeline in
+            GeometryReader { geo in
+                let width = geo.size.width
+                let height = geo.size.height
+                let capsuleShape = Capsule()
 
-            ZStack {
-                capsuleShape
-                    .fill(.ultraThinMaterial)
+                // Continuous phase derived straight from wall-clock time —
+                // never touched by SwiftUI's animation system, so it can't
+                // be interrupted by unrelated state changes like `percent`.
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                let phase1 = Angle(degrees: t.truncatingRemainder(dividingBy: 3) / 3 * 360)
+                let phase2 = Angle(degrees: 180 - t.truncatingRemainder(dividingBy: 4.5) / 4.5 * 360)
+                let phase3 = Angle(degrees: 90 + t.truncatingRemainder(dividingBy: 6.5) / 6.5 * 360)
 
-                capsuleShape
-                    .fill(Color.primaryFD.opacity(0.15))
-
-                WaveShape(offset: waveOffset2, percent: percent, amplitude: height * 0.02)
-                    .fill(Color.secondaryFD.opacity(0.7))
-                    .frame(width: width, height: height)
-
-                WaveShape(offset: waveOffset1, percent: percent, amplitude: height * 0.025)
-                    .fill(Color.terniaryFD)
-                    .frame(width: width, height: height)
-
-                capsuleShape
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.primaryFD.opacity(0.35), Color.primaryFD.opacity(0)],
-                            startPoint: .topLeading,
-                            endPoint: .center
-                        )
-                    )
+                ZStack {
+                    capsuleShape
+                        .fill(.ultraThinMaterial)
 
                     capsuleShape
-                    .stroke(Color.secondaryFD.opacity(0.5), lineWidth: 2)
+                        .fill(Color.primaryFD.opacity(0.15))
 
-                // Inner shadow — gives the glass rim depth/concavity
-                capsuleShape
-                    .stroke(Color.black.opacity(0.25), lineWidth: 6)
-                    .blur(radius: 4)
-                    .offset(y: 2)
-                    .mask(capsuleShape.fill(LinearGradient(
-                        colors: [.black, .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )))
-                    .clipShape(capsuleShape)
-            }
-            .clipShape(capsuleShape)
-            .shadow(color: Color.black.opacity(0.25), radius: 12, x: 0, y: 8)
-            .onAppear {
-                withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
-                    waveOffset1 = Angle(degrees: 360)
+                    // Slowest, subtlest layer — sits furthest back
+                    WaveShape(offset: phase3, percent: percent, amplitude: height * 0.015)
+                        .fill(Color.secondaryFD)
+                        .frame(width: width, height: height)
+
+                    WaveShape(offset: phase2, percent: percent, amplitude: height * 0.02)
+                        .fill(Color.secondaryFD.opacity(0.7))
+                        .frame(width: width, height: height)
+
+                    WaveShape(offset: phase1, percent: percent, amplitude: height * 0.025)
+                        .fill(Color.terniaryFD.opacity(0.3))
+                        .frame(width: width, height: height)
+
+                    capsuleShape
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.primaryFD.opacity(0.35), Color.primaryFD.opacity(0)],
+                                startPoint: .topLeading,
+                                endPoint: .center
+                            )
+                        )
+
+                    capsuleShape
+                        .stroke(Color.secondaryFD.opacity(0.5), lineWidth: 2)
+
+                    // Inner shadow — gives the glass rim depth/concavity
+                    capsuleShape
+                        .stroke(Color.black.opacity(0.25), lineWidth: 6)
+                        .blur(radius: 4)
+                        .offset(y: 2)
+                        .mask(capsuleShape.fill(LinearGradient(
+                            colors: [.black, .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )))
+                        .clipShape(capsuleShape)
                 }
-                withAnimation(.linear(duration: 4.5).repeatForever(autoreverses: false)) {
-                    waveOffset2 = Angle(degrees: -360)
-                }
+                .clipShape(capsuleShape)
+                .shadow(color: Color.black.opacity(0.25), radius: 12, x: 0, y: 8)
             }
-            .animation(.easeInOut(duration: 0.8), value: percent)
         }
+        .animation(.easeInOut(duration: 0.8), value: percent)
     }
 }
 // MARK: - WaterLevelCard with Height Pointer
@@ -234,10 +237,8 @@ struct WaterLevelCard: View {
 #Preview {
     HStack {
         WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .safe)
-        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .caution)
-        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .danger)
     }
-    .frame(height: 300)
+    .frame(height: 500)
     .padding()
     .background(Color.black.opacity(0.8))
 }
