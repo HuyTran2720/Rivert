@@ -17,25 +17,14 @@ struct DashboardBackground: View {
                     Image(.backgroundCitySafe)
                         .resizable()
                         .scaledToFit()
-                    
-                    LottieMascot(status: status)
-                        .padding(.top, 40)
-                    
                 case .caution:
                     Image(.backgroundCityCautious)
                         .resizable()
                         .scaledToFit()
-                    
-                    LottieMascot(status: status)
-                        .padding(.top, 40)
-                    
                 case .danger:
                     Image(.backgroundCityDanger)
                         .resizable()
                         .scaledToFit()
-                    
-                    LottieMascot(status: status)
-                        .padding(.top, 40)
             }
         }
         .animation(.easeInOut, value: status)

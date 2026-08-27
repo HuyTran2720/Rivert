@@ -43,9 +43,9 @@ struct DashboardView: View {
                     .animation(.easeInOut(duration: 0.5), value: displayStatus)
                 
                 //Background Image
-                DashboardBackground(status: .safe)
+                DashboardBackground(status: displayStatus)
                     .padding(.top,130)
-                LottieMascot(status: .caution)
+                LottieMascot(status: displayStatus)
                 
                 //Main VStack
                 VStack(){
