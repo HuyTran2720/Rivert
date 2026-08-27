@@ -52,6 +52,8 @@ extension Color {
     //information card background color - danger
     static let cardRed = Color(red: 255 / 255.0, green: 174 / 255.0, blue: 174 / 255.0)   // #FFAEAE
     static let extraFD = Color(red: 62 / 255.0, green: 107 / 255.0, blue: 115 / 255.0)
+    /// #3E7D92 — weather card text.
+    static let weatherFD = Color(red: 62 / 255.0, green: 125 / 255.0, blue: 146 / 255.0)
     static let littledotsFD = Color(red: 105 / 255.0, green: 234 / 255.0, blue: 240 / 255.0)
     
     //warning color - yellow
