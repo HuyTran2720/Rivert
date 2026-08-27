@@ -66,7 +66,7 @@ struct WeatherCard: View {
                 Text(current.map { "\($0.tempC)°" } ?? "--°")
                     .font(.system(size: 24, weight: .semibold))
                     .foregroundStyle(Color.weatherFD)
-                Text(current?.description ?? "No forecast")
+                Text(current?.description ??  "No forecast")
                     .font(.bodyFD2)
                     .foregroundStyle(Color.weatherFD)
                     .lineLimit(1)

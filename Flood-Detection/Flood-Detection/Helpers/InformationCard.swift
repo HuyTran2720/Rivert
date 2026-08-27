@@ -50,7 +50,7 @@ struct InformationCard: View {
             HStack(alignment: .top, spacing: 5) {
                 // MARK: - Left Column (River Water Level)
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("River Water Level")
+                    Text(AppStrings.riverWaterLevel)
                         .font(.bodyFD1)
                         .foregroundColor(accentColor)
                         .bold()
@@ -64,12 +64,12 @@ struct InformationCard: View {
                 // MARK: - Right Column (Rate of Water Rise)
                 VStack(spacing: 16) {
                     VStack(alignment:.leading,spacing: 2) {
-                        Text("Rate of Water Rise")
+                        Text(AppStrings.rateOfWaterRise)
                             .font(.bodyFD1)
                             .foregroundColor(accentColor)
                             .bold()
 
-                        Text("How fast the river water level is rising")
+                        Text(AppStrings.rateDescription)
                             .font(.bodyFD3)
                             .foregroundColor(accentColor.opacity(0.5))
                             .multilineTextAlignment(.leading)
@@ -89,8 +89,8 @@ struct InformationCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
 
                     VStack(alignment:.trailing,spacing: 2) {
-                        Text("Measured by river sensor")
-                        Text(lastUpdated)
+                        Text(AppStrings.measuredBySensor)
+                        Text(AppStrings.updatedAgo)
                     }
                     .padding(.top,-5)
                     .font(.bodyFD2)

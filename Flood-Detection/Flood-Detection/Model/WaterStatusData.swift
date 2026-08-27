@@ -41,9 +41,9 @@ enum WaterTrend: String {
     
     var WaterTrendName: String {
         switch self {
-        case .risingFast: return "Rising Fast"
-        case .droping: return "Droping"
-        case .normal: return "Normal"
+        case .risingFast: return AppStrings.risingFast
+        case .droping: return AppStrings.dropping
+        case .normal: return AppStrings.normal
         }
     }
 }

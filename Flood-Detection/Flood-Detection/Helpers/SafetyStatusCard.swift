@@ -145,19 +145,11 @@ struct SafetyStatusCard: View {
     }
 
     private var title: String {
-        switch status {
-        case .safe: return "SAFE"
-        case .caution: return "CAUTION"
-        case .danger: return "DANGER"
-        }
+        AppStrings.statusTitle(for: status)
     }
     
     private var message: String {
-        switch status {
-        case .safe: return "River is within normal levels."
-        case .caution: return "Higher flood risk is expected within the next hour. Be prepared!"
-        case .danger: return "The river has overspilled. Avoid this area!"
-        }
+        AppStrings.statusMessage(for: status)
     }
 
     
