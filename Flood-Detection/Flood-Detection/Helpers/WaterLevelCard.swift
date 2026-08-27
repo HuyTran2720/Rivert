@@ -173,6 +173,9 @@ struct WaterLevelCard: View {
     }
 
     private let badgeHeight: CGFloat = 22
+    private let lineX: CGFloat = 4          // horizontal position of the guide line & dot
+    private let dotSize: CGFloat = 12
+    private let gap: CGFloat = 8           // space between dot and start of the badge tail
 
     private var percent: Double {
         let clamped = min(max(currentLevel, range.lowerBound), range.upperBound)
@@ -190,23 +193,40 @@ struct WaterLevelCard: View {
                 let pointerY = height * (1 - CGFloat(percent))
 
                 ZStack(alignment: .topLeading) {
+                    // Vertical guide line running the full height of the capsule
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.35))
+                        .frame(width: 1.5, height: height)
+                        .position(x: lineX, y: height / 2)
+
+                    // Marker dot — separate from the badge, glowing
+                    Circle()
+                        .fill(pointerColor)
+                        .frame(width: dotSize, height: dotSize)
+                        .shadow(color: pointerColor.opacity(0.9), radius: 6)
+                        .shadow(color: pointerColor.opacity(0.6), radius: 12)
+                        .position(x: lineX, y: pointerY)
+
+                    // Level readout badge — offset past the dot, with its own glow
                     Text(String(format: "%.1f%@", currentLevel, unit))
                         .font(.caption2)
                         .fontWeight(.bold)
-                        .foregroundColor(Color.primaryFD)
+                        .foregroundColor(.white)
                         .padding(.leading, 12)
-                        .padding(.trailing, 8)
+                        .padding(.trailing, 10)
                         .frame(height: badgeHeight)
                         .background(
-                            PointerTagShape(cornerRadius: badgeHeight / 2, tailWidth: 6, tailHeight: 10)
+                            PointerTagShape(cornerRadius: badgeHeight / 2, tailWidth: 3, tailHeight: 8)
                                 .fill(pointerColor)
                         )
                         .fixedSize()
-                        .offset(x: 0, y: pointerY - badgeHeight / 2)
+                        .shadow(color: pointerColor.opacity(0.8), radius: 6)
+                        .shadow(color: pointerColor.opacity(0.5), radius: 12)
+                        .offset(x: lineX + dotSize / 2 + gap, y: pointerY - badgeHeight / 2)
                 }
                 .animation(.easeInOut(duration: 0.8), value: percent)
             }
-            .frame(width: 70)
+            .frame(width: 90)
         }
     }
 }

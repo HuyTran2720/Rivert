@@ -38,6 +38,7 @@ struct InformationCard: View {
     var currentLevel: Float
     var rateValue: String
     var trend: WaterTrend
+    var lastUpdated: String = "Updated 2 min ago"
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -45,28 +46,37 @@ struct InformationCard: View {
                 .fill(LinearGradient.cardGradient(for: status))
                 .frame(width: 400, height: 350)
                 .cornerRadius(50)
-            HStack(spacing:10) {
-                VStack {
-                    HStack {
-                        DangerPhase(height: 225, verticalInset: 30)
-                        WaterLevelCard(currentLevel: currentLevel, range: 0...21.2, status: status)
-                            .frame(width: 150, height: 225)
-                            .overlay(
-                                ThresholdCrossLines(
-                                    height: 225,
-                                    colors: [.redTitle, .yellowTitle, .greenTitle],verticalInset: 30
-                                ).frame(width: 71),
-                                alignment: .leading
-                            ).padding(.bottom,10)
-                    }
-                }
 
-                VStack(alignment: .center, spacing: 30) {
-                    Text("Rate of Water Rise")
-                        .font(.bodyFD2)
+            HStack(alignment: .top, spacing: 5) {
+                // MARK: - Left Column (River Water Level)
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("River Water Level")
+                        .font(.bodyFD1)
                         .foregroundColor(accentColor)
                         .bold()
+
+                    WaterLevelCard(currentLevel: currentLevel, range: 0...21.2, status: status)
+                        .frame(width: 190, height: 200)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading,20)
+
+                // MARK: - Right Column (Rate of Water Rise)
+                VStack(spacing: 16) {
+                    VStack(alignment:.leading,spacing: 2) {
+                        Text("Rate of Water Rise")
+                            .font(.bodyFD1)
+                            .foregroundColor(accentColor)
+                            .bold()
+
+                        Text("How fast the river water level is rising")
+                            .font(.bodyFD3)
+                            .foregroundColor(accentColor.opacity(0.5))
+                            .multilineTextAlignment(.leading)
+                    }
+
                     WaterRateCard(value: rateValue, status: status)
+
                     HStack {
                         Text(trend.WaterTrendName)
                             .font(.bodyFD2)
@@ -77,8 +87,19 @@ struct InformationCard: View {
                     .foregroundColor(.primaryFD)
                     .background(accentColor)
                     .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
+
+                    VStack(alignment:.trailing,spacing: 2) {
+                        Text("Measured by river sensor")
+                        Text(lastUpdated)
+                    }
+                    .padding(.top,-5)
+                    .font(.bodyFD2)
+                    .foregroundColor(accentColor.opacity(0.8))
+                    .multilineTextAlignment(.trailing)
                 }
+                .frame(maxWidth: .infinity)
             }
+            .padding(.horizontal, 20)
             .padding(.top, 80)
         }
     }
@@ -89,5 +110,5 @@ struct InformationCard: View {
 }
 
 #Preview {
-    InformationCard(status: .safe, currentLevel: 21, rateValue: "5", trend: .risingFast)
+    InformationCard(status: .danger, currentLevel: 21, rateValue: "5", trend: .risingFast)
 }
