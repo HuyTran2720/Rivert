@@ -8,25 +8,34 @@
 import SwiftUI
 
 struct DashboardBackground: View {
-    var status : SafetyStatus
+    var status: SafetyStatus
     
     var body: some View {
-        ZStack(alignment:.top) {
+        ZStack(alignment: .top) {
             switch status {
                 case .safe:
                     Image(.backgroundCitySafe)
                         .resizable()
                         .scaledToFit()
-                            
+                    
+                    LottieMascot(status: status)
+                        .padding(.top, 40)
+                    
                 case .caution:
                     Image(.backgroundCityCautious)
                         .resizable()
                         .scaledToFit()
-                            
+                    
+                    LottieMascot(status: status)
+                        .padding(.top, 40)
+                    
                 case .danger:
                     Image(.backgroundCityDanger)
                         .resizable()
                         .scaledToFit()
+                    
+                    LottieMascot(status: status)
+                        .padding(.top, 40)
             }
         }
         .animation(.easeInOut, value: status)
@@ -35,5 +44,4 @@ struct DashboardBackground: View {
 
 #Preview {
     DashboardBackground(status: .safe)
-
 }
