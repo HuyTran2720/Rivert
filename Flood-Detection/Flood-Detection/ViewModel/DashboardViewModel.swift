@@ -41,6 +41,34 @@ final class DashboardViewModel: ObservableObject {
         data.waterStatus?.timeToBank ?? "--"
     }
     
+    // MARK: - WeatherCard
+
+    /// Site-local clock. BMKG stamps its slots in UTC, so without this
+    /// the strip would label them in whatever zone the phone is set to
+    /// and a traveller would see the wrong hours for Legian.
+    private static let slotHourFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "H"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "Asia/Makassar") ?? .current
+        return f
+    }()
+
+    /// Current slot first, then the next four. Empty until refreshWeather
+    /// has run — the card renders its own placeholder in that case.
+    var weatherSlots: [WeatherSlotDisplay] {
+        guard let forecast = data.weather?.forecast else { return [] }
+        return forecast.prefix(5).map { slot in
+            WeatherSlotDisplay(
+                id: slot.date,
+                hourLabel: Self.slotHourFormatter.string(from: slot.date),
+                tempC: Int(slot.tempC.rounded()),
+                description: slot.description,
+                icon: WeatherIcon.from(description: slot.description)
+            )
+        }
+    }
+
     // MARK: - Firestore listener
     
     func startListening() {
@@ -80,5 +108,6 @@ final class DashboardViewModel: ObservableObject {
     func updateSensor(_ sensor: SensorState) {
         data.waterStatus = WaterStatusData(from: sensor)
         sensorStatus = sensor.safetyStatus
+        data.weather = sensor.weather
     }
 }

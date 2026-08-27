@@ -22,6 +22,11 @@ struct SensorState: Codable {
     var computedAt: Timestamp
     var latestReadingAt: Timestamp
 
+    /// Merged onto the same document by the refreshWeather scheduled
+    /// function, not by ingest. Optional because it is absent until
+    /// refreshWeather has run at least once.
+    var weather: WeatherState?
+
     // Convert Timestamp to Date for display
     var computedDate: Date { computedAt.dateValue() }
     var latestReadingDate: Date { latestReadingAt.dateValue() }

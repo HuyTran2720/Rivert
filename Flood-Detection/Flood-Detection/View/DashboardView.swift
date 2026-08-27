@@ -91,23 +91,14 @@ struct DashboardView: View {
                                 )
                             }
                         }
-                        HStack(spacing: 15) {
-                            //need to change later with data
-                            Image(.cloud)
-                                .resizable()
-                                .frame(width: 54, height: 32)
-                            VStack () {
-                                Text("19")
-                                    .font(.headingFD2)
-                                    .foregroundStyle(Color.terniaryFD)
-                                Text("Sunny")
-                                    .font(.bodyFD2)
-                                    .foregroundStyle(Color.terniaryFD)
-                            }
-                        }
-                        
                     }
                     .padding(.horizontal, 40)
+
+                    // Sits OUTSIDE the 40pt inset above: the card is a
+                    // fixed 364 wide, which will not fit inside it on a
+                    // 402pt screen.
+                    WeatherCard(slots: viewModel.weatherSlots)
+                        .padding(.top, 12)
                     
                     VStack(spacing:20) {
                         SafetyStatusCard(status: displayStatus, size: .small)
