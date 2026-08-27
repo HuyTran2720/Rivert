@@ -126,6 +126,7 @@ struct DashboardView: View {
             
         }.task {
             viewModel.startListening()
+            PushNotificationManager.shared.requestAuthorizationOnFirstLaunch()
         }
         .onDisappear {
             viewModel.stopListening()
