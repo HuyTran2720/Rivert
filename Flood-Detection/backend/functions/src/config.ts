@@ -93,7 +93,7 @@ export const CAUTION_RISE_MMPERMIN = 3; // [TO BE MEASURED]
 // How long the height+rise condition must hold before the badge moves.
 // Applies to the LEVEL rung only — the projection rungs above it are
 // ungated, so a genuinely fast rise still escalates immediately.
-export const CAUTION_DWELL_SEC = 5; // [90]
+export const CAUTION_DWELL_SEC = 2; // [90]
 
 // At one post per 10s: stale after 3 missed, noData after 9.
 export const STALE_AFTER_MIN = 0.5; // [2]
