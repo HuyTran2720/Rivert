@@ -25,17 +25,17 @@ struct LottieMascot: View {
                 .playing(loopMode: .loop)
                 .frame(width: 250, height: 250)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.top,50)
+                .padding(.top,10)
         case .caution:
             LottieView(animation: .named("caution-rat"))
                 .playing(loopMode: .loop)
-                .frame(width: 500, height: 500)
+                .frame(width: 300, height: 300)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            padding(.bottom,20)
+                .padding(.bottom,110)
         case .safe:
             LottieView(animation: .named("safe-rat"))
                 .playing(loopMode: .loop)
-                .frame(maxWidth: 250, maxHeight: 250)
+                .frame(maxWidth: 200, maxHeight: 200)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.bottom,140)
         }
@@ -44,7 +44,7 @@ struct LottieMascot: View {
 
 #Preview {
     ZStack {
-        DashboardBackground(status:.safe)
-        LottieMascot(status: .safe)
+        DashboardBackground(status:.danger)
+        LottieMascot(status: .danger)
     }
 }
