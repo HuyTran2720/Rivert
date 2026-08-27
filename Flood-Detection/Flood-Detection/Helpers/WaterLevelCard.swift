@@ -162,9 +162,20 @@ struct WaterLevelCard: View {
     var currentLevel: Float
     var range: ClosedRange<Float> = 0...100
     var unit: String = "cm"
-    var pointerColor: Color = Color(red: 0.8627450980392157, green: 0.4666666666666667, blue: 0.4666666666666667)
+    var status: SafetyStatus = .danger
+
+    private var pointerColor: Color {
+        switch status {
+        case .danger:  return Color(red: 0.8627450980392157, green: 0.4666666666666667, blue: 0.4666666666666667)
+        case .caution: return Color(red: 232 / 255.0, green: 180 / 255.0, blue: 91 / 255.0)  // #E8B45B
+        case .safe:    return Color(red: 135 / 255.0, green: 174 / 255.0, blue: 179 / 255.0) // #87AEB3
+        }
+    }
 
     private let badgeHeight: CGFloat = 22
+    private let lineX: CGFloat = 4          // horizontal position of the guide line & dot
+    private let dotSize: CGFloat = 12
+    private let gap: CGFloat = 8           // space between dot and start of the badge tail
 
     private var percent: Double {
         let clamped = min(max(currentLevel, range.lowerBound), range.upperBound)
@@ -182,30 +193,51 @@ struct WaterLevelCard: View {
                 let pointerY = height * (1 - CGFloat(percent))
 
                 ZStack(alignment: .topLeading) {
+                    // Vertical guide line running the full height of the capsule
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.35))
+                        .frame(width: 1.5, height: height)
+                        .position(x: lineX, y: height / 2)
+
+                    // Marker dot — separate from the badge, glowing
+                    Circle()
+                        .fill(pointerColor)
+                        .frame(width: dotSize, height: dotSize)
+                        .shadow(color: pointerColor.opacity(0.9), radius: 6)
+                        .shadow(color: pointerColor.opacity(0.6), radius: 12)
+                        .position(x: lineX, y: pointerY)
+
+                    // Level readout badge — offset past the dot, with its own glow
                     Text(String(format: "%.1f%@", currentLevel, unit))
                         .font(.caption2)
                         .fontWeight(.bold)
-                        .foregroundColor(Color.primaryFD)
+                        .foregroundColor(.white)
                         .padding(.leading, 12)
-                        .padding(.trailing, 8)
+                        .padding(.trailing, 10)
                         .frame(height: badgeHeight)
                         .background(
-                            PointerTagShape(cornerRadius: badgeHeight / 2, tailWidth: 6, tailHeight: 10)
+                            PointerTagShape(cornerRadius: badgeHeight / 2, tailWidth: 3, tailHeight: 8)
                                 .fill(pointerColor)
                         )
                         .fixedSize()
-                        .offset(x: 0, y: pointerY - badgeHeight / 2)
+                        .shadow(color: pointerColor.opacity(0.8), radius: 6)
+                        .shadow(color: pointerColor.opacity(0.5), radius: 12)
+                        .offset(x: lineX + dotSize / 2 + gap, y: pointerY - badgeHeight / 2)
                 }
                 .animation(.easeInOut(duration: 0.8), value: percent)
             }
-            .frame(width: 70)
+            .frame(width: 90)
         }
     }
 }
 
 #Preview {
-    WaterLevelCard(currentLevel: 2.8, range: 0...4)
-        .frame(width: 200, height: 300)
-        .padding()
-        .background(Color.black.opacity(0.8))
+    HStack {
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .safe)
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .caution)
+        WaterLevelCard(currentLevel: 2.8, range: 0...4, status: .danger)
+    }
+    .frame(height: 300)
+    .padding()
+    .background(Color.black.opacity(0.8))
 }

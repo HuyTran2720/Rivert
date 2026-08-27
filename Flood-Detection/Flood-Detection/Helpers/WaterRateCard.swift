@@ -9,6 +9,19 @@ import SwiftUI
 
 struct WaterRateCard: View {
     var value: String = "5"
+    var status: SafetyStatus = .safe
+
+    private var accentColor: Color {
+        Color.statusAccent(for: status)
+    }
+
+    private var glowColor: Color {
+        switch status {
+        case .safe:    return .softCyan
+        case .caution: return .cardAmber
+        case .danger:  return .cardRed
+        }
+    }
 
     private let outerRadius: CGFloat = 55
     private let innerRadius: CGFloat = 42
@@ -28,7 +41,7 @@ struct WaterRateCard: View {
             Circle()
                 .fill(Color.primaryFD)
                 .frame(width: 110, height: 110)
-                .shadow(color: Color.softCyan.opacity(1), radius: 12, x: 0, y: 4)
+                .shadow(color: glowColor.opacity(1), radius: 12, x: 0, y: 4)
 
             //the small dots (there's slow moving animation)
             ForEach(0..<dotConfigs.count, id: \.self) { i in
@@ -40,7 +53,7 @@ struct WaterRateCard: View {
                     .fill(Color.primaryFD)
                     .zIndex(1)
                     .overlay(
-                        Circle().fill(Color.littledotsFD)
+                        Circle().fill(accentColor)
                     )
                     .frame(width: config.size, height: config.size)
                     .offset(
@@ -52,15 +65,15 @@ struct WaterRateCard: View {
             Circle()
                 .fill(Color.white)
                 .frame(width: 84, height: 84)
-                .shadow(color: Color.softCyan.opacity(1), radius: 12, x: 0, y: 4)
+                .shadow(color: glowColor.opacity(1), radius: 12, x: 0, y: 4)
 
-            VStack(spacing: 2) {
+            VStack(spacing: 0) {
                 Text(value)
                     .font(.headingFD1)
-                    .foregroundStyle(Color.terniaryFD)
+                    .foregroundStyle(accentColor)
                 Text("mm/min")
                     .font(.bodyFD3)
-                    .foregroundStyle(Color.terniaryFD)
+                    .foregroundStyle(accentColor)
             }
         }
         .onAppear {
@@ -79,7 +92,10 @@ struct WaterRateCard: View {
 }
 
 #Preview {
-    ZStack {
-        WaterRateCard()
+    HStack(spacing: 20) {
+        WaterRateCard(status: .safe)
+        WaterRateCard(status: .caution)
+        WaterRateCard(status: .danger)
     }
+    .padding()
 }
