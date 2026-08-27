@@ -11,6 +11,7 @@
 		813F53BF303ECB990001D132 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 813F53BE303ECB990001D132 /* Lottie */; };
 		813F54C6303FE0970001D132 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 813F54C5303FE0970001D132 /* Localizable.xcstrings */; };
 		89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */; };
+		F29AE31359271AF6FB7A3BA8 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 82AFDC2E5446F7A0B894CE65 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 			files = (
 				3EDC0411302C494F003303A5 /* FirebaseCore in Frameworks */,
 				89B3F7233B0C1AA6B1B8D2C3 /* FirebaseFirestore in Frameworks */,
+				F29AE31359271AF6FB7A3BA8 /* FirebaseMessaging in Frameworks */,
 				813F53BF303ECB990001D132 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,6 +102,7 @@
 			packageProductDependencies = (
 				3EDC0410302C494F003303A5 /* FirebaseCore */,
 				3EAECEAD2AF7AE9A6D788668 /* FirebaseFirestore */,
+				82AFDC2E5446F7A0B894CE65 /* FirebaseMessaging */,
 				813F53BE303ECB990001D132 /* Lottie */,
 			);
 			productName = "Flood-Detection";
@@ -417,6 +420,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 813F53BD303ECB990001D132 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		82AFDC2E5446F7A0B894CE65 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EDC03AE302C47D1003303A5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

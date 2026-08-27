@@ -28,9 +28,16 @@ struct WeatherCard: View {
     /// five is rendered as-is rather than padded — a short forecast is
     /// better shown short than faked.
     let slots: [WeatherSlotDisplay]
+    var status: SafetyStatus = .safe
 
     private var current: WeatherSlotDisplay? { slots.first }
     private var upcoming: [WeatherSlotDisplay] { Array(slots.dropFirst()) }
+
+    // Same rule as the date's accent: white for danger since the accent
+    // color there is too dark to read against the red gradient.
+    private var accentColor: Color {
+        status == .danger ? .white : Color.statusAccent(for: status)
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -65,10 +72,10 @@ struct WeatherCard: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(current.map { "\($0.tempC)°" } ?? "--°")
                     .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(Color.weatherFD)
-                Text(current?.description ??  "No forecast")
+                    .foregroundStyle(accentColor)
+                Text(current?.description ?? "No forecast")
                     .font(.bodyFD2)
-                    .foregroundStyle(Color.weatherFD)
+                    .foregroundStyle(accentColor)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
@@ -84,7 +91,7 @@ struct WeatherCard: View {
                 VStack(spacing: 1) {
                     Text(slot.hourLabel)
                         .font(.bodyFD3)
-                        .foregroundStyle(Color.weatherFD)
+                        .foregroundStyle(accentColor)
                     Image(slot.icon.systemImageName)
                         .resizable()
                         .scaledToFit()
