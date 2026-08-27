@@ -37,9 +37,9 @@ struct MapAnnotationCard: View {
         .frame(width:250,height:40)
         .padding(.vertical, 10)
         .background(backgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(outlineColor, lineWidth: 1.5)
         )
     }

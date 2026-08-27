@@ -115,5 +115,13 @@ extension FloodZone {
             center: CLLocationCoordinate2D(latitude: -8.4544, longitude: 115.3500),
             description: "Central highland region. Elevated terrain provides natural flood protection."
         ),
+        
+        FloodZone(
+            name: "Apple Developer Academy",
+            status: .safe,
+            center: CLLocationCoordinate2D(latitude: -8.7369, longitude: 115.1772),
+            description: "Central highland region. Elevated terrain provides natural flood protection."
+        ),
+
     ]
 }
