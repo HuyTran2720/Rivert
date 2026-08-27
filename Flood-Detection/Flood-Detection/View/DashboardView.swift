@@ -98,7 +98,7 @@ struct DashboardView: View {
                     // Sits OUTSIDE the 40pt inset above: the card is a
                     // fixed 364 wide, which will not fit inside it on a
                     // 402pt screen.
-                    WeatherCard(slots: viewModel.weatherSlots)
+                    WeatherCard(slots: viewModel.weatherSlots, status: displayStatus)
                         .padding(.top, 12)
                     
                     VStack(spacing:20) {
