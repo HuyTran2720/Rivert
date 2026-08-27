@@ -35,6 +35,11 @@
 			path = "Flood-Detection";
 			sourceTree = "<group>";
 		};
+		813F5424303FBB430001D132 /* LottieFiles */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = LottieFiles;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +59,7 @@
 		3E6E84063024752900A7D079 = {
 			isa = PBXGroup;
 			children = (
+				813F5424303FBB430001D132 /* LottieFiles */,
 				3E6E84113024752900A7D079 /* Flood-Detection */,
 				3EDC040F302C494F003303A5 /* Frameworks */,
 				3E6E84103024752900A7D079 /* Products */,
@@ -92,6 +98,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				3E6E84113024752900A7D079 /* Flood-Detection */,
+				813F5424303FBB430001D132 /* LottieFiles */,
 			);
 			name = "Flood-Detection";
 			packageProductDependencies = (
