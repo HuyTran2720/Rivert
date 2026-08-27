@@ -67,7 +67,7 @@ struct WaterRateCard: View {
                 .frame(width: 84, height: 84)
                 .shadow(color: glowColor.opacity(1), radius: 12, x: 0, y: 4)
 
-            VStack(spacing: 2) {
+            VStack(spacing: 0) {
                 Text(value)
                     .font(.headingFD1)
                     .foregroundStyle(accentColor)

@@ -111,7 +111,6 @@ struct DashboardView: View {
                     
                     VStack(spacing:20) {
                         SafetyStatusCard(status: displayStatus, size: .small)
-                        Image(.mascot)
                     }
                     .padding(.top, 20)
                     

@@ -20,8 +20,8 @@ struct LottieMascot: View {
     var body: some View {
         VStack {
             LottieView(animation: .named(statusAnimation))
-                .playing(loopMode: .loop) // Plays automatically and loops
-                .frame(width: 250, height: 250) // Scale to fit your UI
+                .playing(loopMode: .loop)
+                .frame(width: 250, height: 250)
         }
     }
 }
