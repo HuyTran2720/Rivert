@@ -4,30 +4,16 @@ Flood response research and prototype — Apple Developer Academy Bali, 2026.
 Six-week project with a five-person team, in partnership with a local
 government agency in Bali.
 
-**Status:** research phase. Problem statement not finalised. No
-implementation decisions made.
-
 ---
 
 ## Who we're building for
 
-People at risk of flooding in the urban metro area of south Bali
-(Denpasar and surrounds).
+People at risk of flooding in the urban metro area of south Bali (Legian and surrounds), without reliable flood detection infrastructure in place.
 
-This is a mixed population, and the reason people fail to act differs by
-group — which is the distinction we're currently working through:
-
-| Group | Why acting early is hard |
-|---|---|
-| Street vendors | Packing up costs a day's income |
-| Renters / kos residents | Nowhere higher to put anything; few local ties |
-| Shift workers | Not present — cannot act at all |
-| Low-mobility households | Need another person, not a signal |
-| Shop owners | Lost trade plus heavy stock to move |
-| Long-term residents | Low cost — already read their own street well |
-
-Not decided: whether we serve one of these groups, or the agency staff
-who monitor and warn them.
+This is a mixed population, but the reason people fail to act leading up or during floods is due to:
+- A lack of trust in current systems.
+- The potential of income for street vendors outweighs the risks.
+- No flood detection infrastructure in certain areas.
 
 ---
 
@@ -56,12 +42,6 @@ This is the thread we are currently pulling.
 - Help comes from whoever is nearby, not from designated responders
 - Secondary disruption (power, supply, access, income) causes more
   reported harm than the water itself
-
-**Inference — not confirmed**
-- Vendors ignore warnings because packing up costs income (this is the
-  agency's reading; no vendor has been interviewed)
-- Residents trust their own judgement — watching the sky — over official
-  warnings
 
 ---
 
@@ -95,7 +75,7 @@ Unresolved:
 
 ## Constraints
 
-- ~4 weeks remaining
+- 6 weeks, from ideation to development
 - Apple ecosystem only (project requirement) — the at-risk population is
   predominantly Android; stated limitation on testing validity
 - Dry season: no live flood events before submission
